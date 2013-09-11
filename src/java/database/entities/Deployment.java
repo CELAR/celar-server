@@ -1,6 +1,7 @@
 package database.entities;
 
 import database.DeploymentTable;
+import database.Tables;
 import java.sql.Timestamp;
 import java.util.Map;
 
@@ -21,9 +22,9 @@ public class Deployment extends DBIDEntity{
 	 * @param end_time the time this deployment was destroyed
 	 */
 	public Deployment(Application application, Timestamp start_time, 
-		Timestamp end_time, DeploymentTable table)
+		Timestamp end_time)
 				throws NotInDBaseException {
-		super(table);
+		super(Tables.deplTable);
 		//check if the app is not strored in the database (for consistency reasons)
 		if(application.id==0||application.modified)
 			throw new NotInDBaseException("the User must be stored "
@@ -40,8 +41,8 @@ public class Deployment extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public Deployment(int id, DeploymentTable table){
-		super(id, table);
+	public Deployment(int id){
+		super(id, Tables.deplTable);
 	}
 	
 

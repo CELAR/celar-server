@@ -49,7 +49,7 @@ public class SpecsTable extends IDTable {
 	}
 
 	public Spec getSpec(int id){
-		return new Spec(id, this);
+		return new Spec(id);
 	}
 
 }

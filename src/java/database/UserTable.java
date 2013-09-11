@@ -29,7 +29,7 @@ public class UserTable extends IDTable {
 	}
 
 	public User getUser(int id){
-		return new User(id,this);	
+		return new User(id);	
 	}
 	
 
@@ -47,22 +47,5 @@ public class UserTable extends IDTable {
 	}
 
 	
-
-	
-	
-	
-	public static void main(String[] args) {
-		UserTable table = new UserTable();
-		table.openConnection();
-		int id=table.insertUser("christaras" );
-		System.out.println(table.exists(id));
-		
-		table.delete(id);
-//		table.insertUser("ggian", null, null, null);
-		System.out.println(table.exists(id));
-		
-		table.closeConnection();
-		
-	}
 
 }

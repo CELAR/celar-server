@@ -55,7 +55,7 @@ public class DeploymentTable extends IDTable {
 
 
 	public Deployment getDeployment(int id){
-		return new Deployment(id, this);
+		return new Deployment(id);
 	}
 
 }

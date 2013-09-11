@@ -4,13 +4,18 @@ import static database.DBConnectable.DB_NAME;
 import static database.DBConnectable.DRIVER;
 import static database.DBConnectable.USER;
 import static database.Table.DEBUG;
+import database.entities.Module;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 
@@ -23,7 +28,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  */
 public abstract class Table implements DBConnectable{
 
-	public static boolean DEBUG=true;
+	public static boolean DEBUG=false;
 	protected Connection connection;
 
 	public Table(){super();}
@@ -206,5 +211,46 @@ public abstract class Table implements DBConnectable{
 	static protected String decode(String text){
 		return StringEscapeUtils.unescapeXml(text);
 	}
+        
+                /**
+         * Retrieves from the table the resultFileds, for the tuples for which testField==value
+         * @param testField the field of the table that will be tested in the select statement 
+         * @param value the desired value of the testField
+         * @param resultFields the comma separated fields of the table to be selected
+         * @return a mapping of ColumnName -> List(culumn values) null if there are no results
+         */
+        public Map<String,List<String>> selectEquals(String resultFields, String testField, int value) {    
+            Map<String, List<String>> results=new TreeMap();
+            Statement statement;
+		try {
+                        
+			statement = this.connection.createStatement();
+                        String query="SELECT "+resultFields+" FROM "+getTableName()+" WHERE "+testField+"='"+value+"';";
+			ResultSet set=statement.executeQuery(query);
+                        ResultSetMetaData rsmd = set.getMetaData();         
+                        //create the map of ColumnNames->List_of_Values
+                        int columnCount=rsmd.getColumnCount();
+                        for (int i = 1; i <= columnCount; i++) {
+                            String columnName=rsmd.getColumnName(i);
+                            results.put(columnName, new LinkedList());
+                        
+                        }
+                        //iterate through results and fill the map
+			while(set.next()){
+                           for (int i = 1; i <= columnCount; i++) {
+                               String columnName=rsmd.getColumnLabel(i);
+                               //select the correct list from the mapp and add the value
+                               results.get(columnName).add(set.getString(i));
+                            }
+                           
+                        }
+			set.close();
+			statement.close();			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+                return results;
+    }
 
 }

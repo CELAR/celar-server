@@ -67,7 +67,7 @@ public class ApplicationTable extends IDTable {
 
 
 	public Application getApplication(int id){
-		return new Application(id, this);
+		return new Application(id);
 	}
 
 

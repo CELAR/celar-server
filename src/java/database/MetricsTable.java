@@ -50,7 +50,7 @@ public class MetricsTable extends IDTable {
 	}
 
 	public Metric getMetric(int id){
-		return new  Metric(id, this);
+		return new  Metric(id);
 	}
 
 }

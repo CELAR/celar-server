@@ -1,6 +1,7 @@
 package database.entities;
 
 import database.ResizingActionsTable;
+import database.Tables;
 import java.util.Map;
 
 /**
@@ -18,9 +19,9 @@ public class ResizingAction extends DBIDEntity{
 	 * @param component the component this resizing action applies to
 	 * @param table a resizingAction table
 	 */
-	public ResizingAction(Module module, Component component, String type, ResizingActionsTable table) 
+	public ResizingAction(Module module, Component component, String type) 
 		throws NotInDBaseException {
-		super(table);
+		super(Tables.raTable);
 		this.type=type;
 		//check if the app is not strored in the database (for consistency reasons)
 		if(module.id==0||module.modified)
@@ -40,8 +41,8 @@ public class ResizingAction extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public ResizingAction(int id, ResizingActionsTable table){
-		super(id, table);
+	public ResizingAction(int id){
+		super(id, Tables.raTable);
 	}
 	
 

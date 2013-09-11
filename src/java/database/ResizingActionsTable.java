@@ -51,7 +51,7 @@ public class ResizingActionsTable extends IDTable {
 	}
 
 	public ResizingAction getResizingAction(int id){
-		return new ResizingAction(id, this);	
+		return new ResizingAction(id);	
 	}
 
 }

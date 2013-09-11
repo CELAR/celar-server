@@ -58,6 +58,7 @@ public abstract class DBEntity {
 	 * @return
 	 */
 	abstract public boolean store();
+        
 
 	
 }

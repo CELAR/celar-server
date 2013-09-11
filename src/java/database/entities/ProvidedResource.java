@@ -1,13 +1,15 @@
 package database.entities;
 
 import database.ProvidedResourceTable;
+import database.Tables;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
  * @author cmantas
  */
-public class ProvidedResource extends DBIDEntity{
+public class ProvidedResource extends DBIDEntity implements JSONExportable{
 	
 	String type, description;
 
@@ -17,8 +19,8 @@ public class ProvidedResource extends DBIDEntity{
 	 * @param description
 	 * @param table a providedResource table
 	 */
-	public ProvidedResource(String type, String description, ProvidedResourceTable table) throws NotInDBaseException {
-		super(table);
+	public ProvidedResource(String type, String description) throws NotInDBaseException {
+		super(Tables.provResTable);
 		this.type=type;
 		this.description=description;
 	}
@@ -30,8 +32,8 @@ public class ProvidedResource extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public ProvidedResource(int id, ProvidedResourceTable table){
-		super(id, table);
+	public ProvidedResource(int id){
+		super(id, Tables.provResTable);
 	}
 	
 
@@ -63,6 +65,14 @@ public class ProvidedResource extends DBIDEntity{
 		this.type=fields.get("type");
 		this.description=fields.get("description");
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+       JSONObject json = new JSONObject();
+        json.put("type", type);
+        json.put("description", description);
+        return json;
+    }
 
 
 	

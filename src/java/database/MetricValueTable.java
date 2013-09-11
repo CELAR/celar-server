@@ -53,7 +53,7 @@ public class MetricValueTable extends IDTable {
 	}
 
 	public MetricValue getMetricValue(int id){
-		return new MetricValue(id, this);
+		return new MetricValue(id);
 	}
 
 }

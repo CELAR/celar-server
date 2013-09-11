@@ -1,14 +1,16 @@
 package database.entities;
 
 import database.ApplicationTable;
+import database.Tables;
 import java.sql.Timestamp;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
  * @author cmantas
  */
-public class Application extends DBIDEntity{
+public class Application extends DBIDEntity implements JSONExportable{
 	
 	String description;
 	Timestamp submitted;
@@ -19,8 +21,8 @@ public class Application extends DBIDEntity{
 	 * @param name
 	 * @param table 
 	 */
-	public Application(String description, Timestamp submitted, User user, ApplicationTable table) throws NotInDBaseException {
-		super(table);
+	public Application(String description, Timestamp submitted, User user) throws NotInDBaseException {
+		super(Tables.appTable);
 		this.description=description;
 		this.submitted=submitted;
 		if(user.id==0||user.modified)
@@ -36,8 +38,8 @@ public class Application extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public Application(int id, ApplicationTable table){
-		super(id, table);
+	public Application(int id){
+		super(id, Tables.appTable);
 	}
 	
 
@@ -73,6 +75,15 @@ public class Application extends DBIDEntity{
 		this.submitted=Timestamp.valueOf(fields.get("submitted"));
 		this.userId=Integer.parseInt(fields.get("USER_id"));
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("description", description);
+        json.put("submitted", submitted);    
+        json.put("USER_id", userId);        
+        return json;
+    }
 
 
 	

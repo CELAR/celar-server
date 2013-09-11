@@ -1,13 +1,15 @@
 package database.entities;
 
 import database.ComponentTable;
+import database.Tables;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
  * @author cmantas
  */
-public class Component extends DBIDEntity{
+public class Component extends DBIDEntity implements JSONExportable{
 	
 	int moduleId, providedResourceId;
 
@@ -17,8 +19,8 @@ public class Component extends DBIDEntity{
 	 * @param pr the provided resource this made from physically
 	 * @param table a component table
 	 */
-	public Component(Module module, ProvidedResource pr, ComponentTable table) throws NotInDBaseException {
-		super(table);
+	public Component(Module module, ProvidedResource pr) throws NotInDBaseException {
+		super(Tables.componentTable);
 		//check if the app is not strored in the database (for consistency reasons)
 		if(module.id==0||module.modified)
 			throw new NotInDBaseException("the module must be stored "
@@ -37,8 +39,8 @@ public class Component extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public Component(int id, ComponentTable table){
-		super(id, table);
+	public Component(int id){
+		super(id, Tables.componentTable);
 	}
 	
 
@@ -70,6 +72,16 @@ public class Component extends DBIDEntity{
 		this.moduleId=Integer.parseInt(fields.get("MODULE_id"));
 		this.providedResourceId=Integer.parseInt(fields.get("PROVIDED_RESOURCE_id"));
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("MODULE_id", moduleId);    
+        ProvidedResource pr =new ProvidedResource(providedResourceId);
+        json.put("provided_resource", pr.toJSONObject());        
+        return json;
+    }
 
 
 	

@@ -1,13 +1,15 @@
 package database.entities;
 
 import database.ModuleTable;
+import database.Tables;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
  * @author cmantas
  */
-public class Module extends DBIDEntity{
+public class Module extends DBIDEntity implements JSONExportable{
 	
 	String name;
 	int applicationId;
@@ -18,8 +20,8 @@ public class Module extends DBIDEntity{
 	 * @param app
 	 * @param table a module table
 	 */
-	public Module(String name, Application app, ModuleTable table) throws NotInDBaseException {
-		super(table);
+	public Module(String name, Application app) throws NotInDBaseException {
+		super(Tables.moduleTable);
 		this.name=name;
 		//check if the app is not strored in the database (for consistency reasons)
 		if(app.id==0||app.modified)
@@ -35,8 +37,8 @@ public class Module extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public Module(int id, ModuleTable table){
-		super(id, table);
+	public Module(int id){
+		super(id, Tables.moduleTable);
 	}
 	
 
@@ -68,6 +70,15 @@ public class Module extends DBIDEntity{
 		this.name=fields.get("name");
 		this.applicationId=Integer.parseInt(fields.get("APPLICATION_id"));
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+       JSONObject json = new JSONObject();
+        json.put("is", id);
+        json.put("APPLICATION_id",applicationId);
+        json.put("name",name);
+        return json;
+    }
 
 
 	

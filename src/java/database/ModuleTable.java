@@ -2,6 +2,11 @@ package database;
 
 import database.entities.Module;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class ModuleTable extends IDTable {
@@ -50,7 +55,23 @@ public class ModuleTable extends IDTable {
 
 
 	public Module getModule(int id){
-		return new Module(id, this);	
+		return new Module(id);	
 	}
+        
+        /**
+         * Retrieves all the modules for the app with the given id
+         * @param appId 
+         */
+        public List<Module> getAppModules(int appId) {  
+            LinkedList<Module> results=new LinkedList();
+            String field="id";
+            String testField="APPLICATION_id";            
+            List<String> IDs=selectEquals(field, testField, appId).get(field);
+            //for each of the ids create the module
+            for(String id : IDs){
+                results.add(new Module(Integer.parseInt(id)));
+            }
+            return  results;
+        }
 
 }

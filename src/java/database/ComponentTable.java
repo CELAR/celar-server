@@ -1,6 +1,8 @@
 package database;
 
 import database.entities.Component;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class ComponentTable extends IDTable {
@@ -50,7 +52,23 @@ public class ComponentTable extends IDTable {
 
 
 	public Component getComponent(int id){
-		return new Component(id, this);
+		return new Component(id);
 	}
+
+        /**
+         * Retrieves all the components for the module with the given id
+         * @param moduleId
+         */
+        public List<Component> getModuleComponents(int moduleId) {  
+            List<Component> results=new LinkedList();
+            String field="id";
+            String testField="MODULE_id";            
+            List<String> IDs=selectEquals(field, testField, moduleId).get(field);
+            //for each of the ids create the component
+            for(String id : IDs){
+                results.add(new Component(Integer.parseInt(id)));
+            }
+            return  results;
+        }
 
 }

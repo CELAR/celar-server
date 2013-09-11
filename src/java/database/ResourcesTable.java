@@ -61,7 +61,7 @@ public class ResourcesTable extends IDTable {
 	}
 
 	public Resource getResource(int id){
-		return new Resource(id, this);
+		return new Resource(id);
 	}
 
 }

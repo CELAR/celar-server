@@ -1,6 +1,6 @@
 package database.entities;
 
-import database.SpecsTable;;
+import database.SpecsTable;import database.Tables;
 import java.util.Map;
 
 /**
@@ -18,8 +18,8 @@ public class Spec extends DBIDEntity{
 	 * @param description
 	 * @param table a spec table
 	 */
-	public Spec(ProvidedResource pr, String description, SpecsTable table) throws NotInDBaseException {
-		super(table);
+	public Spec(ProvidedResource pr, String description) throws NotInDBaseException {
+		super(Tables.specsTable);
 		if(pr.id==0||pr.modified)
 			throw new NotInDBaseException("the provided resource must be stored "
 				+ "in Database before the spec is created");
@@ -34,8 +34,8 @@ public class Spec extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public Spec(int id, SpecsTable table){
-		super(id, table);
+	public Spec(int id){
+		super(id, Tables.specsTable);
 	}
 	
 

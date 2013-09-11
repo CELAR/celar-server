@@ -42,5 +42,9 @@ public abstract class DBIDEntity extends DBEntity {
 		this.modified=true;
 		
 	}
+        
+        public int getId(){
+            return this.id;
+        }
 
 }

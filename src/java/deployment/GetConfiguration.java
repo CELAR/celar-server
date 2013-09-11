@@ -4,13 +4,22 @@
  */
 package deployment;
 
+import database.Tables;
+import database.entities.Application;
+import database.entities.Component;
+import database.entities.Module;
+import database.entities.ProvidedResource;
+import database.entities.Tester;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -18,6 +27,36 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "GetConfiguration", urlPatterns = {"/deployment/getConfiguration"})
 public class GetConfiguration extends HttpServlet {
+    
+    
+        static String crawlApplicationModules(int AppId) {
+        JSONObject result=new JSONObject();
+        Application app=new Application(AppId);
+        List<Module> modules = Tables.moduleTable.getAppModules(AppId);
+        System.out.println("modules for facebook:" + modules);
+        
+        JSONArray modulesListJson = new JSONArray();
+        //iterate modules and add to json list
+        
+        for (Module m : modules) {
+            List<Component> components = Tables.componentTable.getModuleComponents(m.getId());
+            
+            JSONArray componentsListJson = new JSONArray();
+            //iterate components and add to json list
+            for (Component c : components) {
+                componentsListJson.put(c.toJSONObject());
+            }
+            JSONObject moduleJson=m.toJSONObject();
+            moduleJson.put("components", componentsListJson);
+            modulesListJson.put(moduleJson);
+        }
+        
+        JSONObject applicationJson=app.toJSONObject();
+        applicationJson.put("modules", modulesListJson);
+        
+        result.put("application", applicationJson);
+        return result.toString(2);
+    }
 
 	/**
 	 * Processes requests for both HTTP
@@ -37,6 +76,9 @@ public class GetConfiguration extends HttpServlet {
 
 			String DeploymentId=request.getParameter("DeploymentId");
 			String timestamp=request.getParameter("timestamp");
+                        //ignore theese for now
+                        Tester.createStructure();
+                        String result=crawlApplicationModules(Tester.facebook.getId());
 
 			
 			/* TODO output your page here. You may use following sample code. */
@@ -48,6 +90,7 @@ public class GetConfiguration extends HttpServlet {
 			out.println("<body>");
 			out.println("<h1>Servlet GetConfiguration </h1>");
 			out.println("deployment conf for deploymentID: "+DeploymentId+", at timestamp: "+timestamp);
+                        out.println("<textarea>"+result+"</textarea>");
 			out.println("</body>");
 			out.println("</html>");
 		} finally {			

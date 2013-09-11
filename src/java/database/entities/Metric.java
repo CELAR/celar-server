@@ -1,6 +1,7 @@
 package database.entities;
 
 import database.MetricsTable;
+import database.Tables;
 import java.sql.Timestamp;
 import java.util.Map;
 
@@ -16,11 +17,10 @@ public class Metric extends DBIDEntity{
 	/**
 	 * Creates an unstored resource from a type, submitted and the resource table
 	 * @param component the component this metric is from 
-	 * @param table a metrics  table
 	 */
-	public Metric(Component component, Timestamp timestamp, MetricsTable table) 
+	public Metric(Component component, Timestamp timestamp) 
 							throws NotInDBaseException {
-		super(table);
+		super(Tables.metricsTable);
 		//check if the component is not strored in the database (for consistency reasons)
 		if(component.id==0||component.modified)
 			throw new NotInDBaseException("the component must be stored "
@@ -34,10 +34,9 @@ public class Metric extends DBIDEntity{
 	/**
 	 * Creates an previously stored resource directly from  the database
 	 * @param id
-	 * @param table 
 	 */
-	public Metric(int id, MetricsTable table){
-		super(id, table);
+	public Metric(int id){
+		super(id, Tables.metricsTable);
 	}
 	
 

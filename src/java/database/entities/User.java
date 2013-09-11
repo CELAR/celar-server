@@ -3,6 +3,7 @@ package database.entities;
 import database.IDTable;
 import database.UserTable;
 import java.util.Map;
+import database.Tables;
 
 /**
  *
@@ -17,8 +18,8 @@ public class User extends DBIDEntity{
 	 * @param name
 	 * @param table 
 	 */
-	public User(String name, UserTable table) {
-		super(table);
+	public User(String name) {
+		super(Tables.usertable);
 		this.name=name;
 	}
 
@@ -28,8 +29,8 @@ public class User extends DBIDEntity{
 	 * @param fields
 	 * @param table 
 	 */
-	public User(Map <String,String> fields,IDTable table){
-		super(fields, table);
+	public User(Map <String,String> fields){
+		super(fields, Tables.usertable);
 		this.name=fields.get("name");
 	}
 	
@@ -38,8 +39,8 @@ public class User extends DBIDEntity{
 	 * @param id
 	 * @param table 
 	 */
-	public User(int id, IDTable table){
-		super(id, table);
+	public User(int id){
+		super(id, Tables.usertable);
 	}
 	
 

@@ -1,6 +1,7 @@
 package database.entities;
 
 import database.ResourcesTable;
+import database.Tables;
 import java.sql.Timestamp;
 import java.util.Map;
 
@@ -20,9 +21,9 @@ public class Resource extends DBIDEntity{
 	 * @param table a resource table
 	 */
 	public Resource(Deployment deployment, Component component, ProvidedResource pr,
-		Timestamp start_time, Timestamp end_time, ResourcesTable table) 
+		Timestamp start_time, Timestamp end_time) 
 		throws NotInDBaseException {
-		super(table);
+		super(Tables.resTable);
 		//check if the app is not strored in the database (for consistency reasons)
 		if(deployment.id==0||deployment.modified)
 			throw new NotInDBaseException("the deployment must be stored "
@@ -45,10 +46,9 @@ public class Resource extends DBIDEntity{
 	/**
 	 * Creates an previously stored resource directly from  the database
 	 * @param id
-	 * @param table 
 	 */
-	public Resource(int id, ResourcesTable table){
-		super(id, table);
+	public Resource(int id){
+		super(id, Tables.resTable);
 	}
 	
 
