@@ -7,6 +7,7 @@ package database.entities;
 import java.sql.Timestamp;
 import java.util.List;
 import database.Tables;
+import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -134,7 +135,8 @@ public class Tester {
 
 
         //after having created all the structure crawl it
-        crawlApplicationModules(facebook.id);
+        //crawlApplicationModules(facebook.id);
+        getDeployment(dep.id, new Timestamp(System.currentTimeMillis()));
         
         destroyStructure();
 
@@ -174,6 +176,23 @@ public class Tester {
         
         result.put("application", applicationJson);
         System.out.println(result.toString(2));
+    }
+    
+    
+    static void getDeployment(int deploymentId, Timestamp ts){
+        String condition;
+        condition="DEPLOYMENT_id='"+deploymentId+"'";
+//        condition="DEPLOYMENT_id='"+deploymentId+"' AND start_time<='"
+//                    +ts+"' AND end_time>='"+ts+"'";
+      
+       
+       Set<String> componentIds=new java.util.TreeSet();
+       componentIds.addAll( 
+               Tables.resTable.doSelect("COMPONENT_id", condition)
+               .get("COMPONENT_id")
+               );
+        System.out.println(componentIds);
+
     }
 
 }

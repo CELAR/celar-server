@@ -5,6 +5,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -33,19 +35,15 @@ public abstract class IDTable extends Table implements DBIdentifiable{
 	 */
 	@Override
 	public boolean exists(int Id){
-		Statement statement;
-		try {
-			statement = this.connection.createStatement();
-			ResultSet set=statement.executeQuery(this.selectSQL("id='"+Id+"'"));
-			boolean result=set.next();
-			set.close();
-			statement.close();
-			return result;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-
+            try {
+                        ResultSet set=executeQuery(this.selectSQL("id='"+Id+"'"));
+                        boolean result=set.next();
+                        set.close();
+                        return result;
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
 	}
 	
 	

@@ -63,7 +63,7 @@ public class ComponentTable extends IDTable {
             List<Component> results=new LinkedList();
             String field="id";
             String testField="MODULE_id";            
-            List<String> IDs=selectEquals(field, testField, moduleId).get(field);
+            List<String> IDs=doSelectEquals(field, testField, moduleId).get(field);
             //for each of the ids create the component
             for(String id : IDs){
                 results.add(new Component(Integer.parseInt(id)));

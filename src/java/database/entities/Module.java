@@ -74,7 +74,7 @@ public class Module extends DBIDEntity implements JSONExportable{
     @Override
     public JSONObject toJSONObject() {
        JSONObject json = new JSONObject();
-        json.put("is", id);
+        json.put("id", id);
         json.put("APPLICATION_id",applicationId);
         json.put("name",name);
         return json;

@@ -66,7 +66,7 @@ public class ModuleTable extends IDTable {
             LinkedList<Module> results=new LinkedList();
             String field="id";
             String testField="APPLICATION_id";            
-            List<String> IDs=selectEquals(field, testField, appId).get(field);
+            List<String> IDs=doSelectEquals(field, testField, appId).get(field);
             //for each of the ids create the module
             for(String id : IDs){
                 results.add(new Module(Integer.parseInt(id)));
