@@ -10,7 +10,7 @@ import org.json.JSONObject;
  *
  * @author cmantas
  */
-public class Application extends DBIDEntity implements JSONExportable{
+public class Application extends DBIDEntity{
 	
 	String description;
 	Timestamp submitted;
@@ -41,6 +41,15 @@ public class Application extends DBIDEntity implements JSONExportable{
 	public Application(int id){
 		super(id, Tables.appTable);
 	}
+        
+        
+         /**
+         * creates an unstored Application from a json object
+         * @param jo
+         */
+        public Application(JSONObject jo){
+            super(jo, Tables.appTable);
+        }
 	
 
 
@@ -79,10 +88,28 @@ public class Application extends DBIDEntity implements JSONExportable{
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
+        json.put("id",id);
         json.put("description", description);
-        json.put("submitted", submitted);    
-        json.put("USER_id", userId);        
+        json.put("submitted", submitted.toString());    
+        json.put("USER_id", ""+userId);        
         return json;
+    }
+
+   
+        @Override
+        void fromJSON(JSONObject jo)  {
+        String appDescription = (String) jo.get("description");
+        int appUserId = Integer.parseInt((String) jo.get("USER_id"));
+        String appSubmittedString = (String) jo.get("submitted");
+        Timestamp appSubmittedTs;
+        if (appSubmittedString.equalsIgnoreCase("now")) {
+            appSubmittedTs = new Timestamp(System.currentTimeMillis());
+        } else {
+            appSubmittedTs = Timestamp.valueOf(appSubmittedString);
+        }
+        this.description=appDescription;
+        this.submitted=appSubmittedTs;
+        this.userId=appUserId;
     }
 
 

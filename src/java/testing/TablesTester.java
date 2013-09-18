@@ -2,8 +2,22 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package database;
+package testing;
 
+import database.ApplicationTable;
+import database.ComponentDependencyTable;
+import database.ComponentTable;
+import database.DecisionsTable;
+import database.DeploymentTable;
+import database.MetricValueTable;
+import database.MetricsTable;
+import database.ModuleDependencyTable;
+import database.ModuleTable;
+import database.ProvidedResourceTable;
+import database.ResizingActionsTable;
+import database.ResourcesTable;
+import database.SpecsTable;
+import database.UserTable;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -12,7 +26,7 @@ import java.util.List;
  *
  * @author cmantas
  */
-public class Tester {
+public class TablesTester {
 
 	public static void main(String args[]){
 			

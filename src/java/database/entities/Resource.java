@@ -4,12 +4,13 @@ import database.ResourcesTable;
 import database.Tables;
 import java.sql.Timestamp;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
  * @author cmantas
  */
-public class Resource extends DBIDEntity{
+public class Resource extends DBIDEntity {
 	
 	int deploymentId, componentId, providedResourceId;
 	Timestamp startTime, endTime;
@@ -51,6 +52,15 @@ public class Resource extends DBIDEntity{
 		super(id, Tables.resTable);
 	}
 	
+        
+        /**
+         * creates an unstored Resource from a json object
+         * @param jo
+         * @throws NotInDBaseException 
+         */
+        public Resource(JSONObject jo) throws NotInDBaseException{
+            super(jo, Tables.resTable);
+        }
 
 
 	/**
@@ -88,6 +98,32 @@ public class Resource extends DBIDEntity{
 		this.endTime=end==null?null:Timestamp.valueOf(end);
 		
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json= new JSONObject();
+        json.put("id", id);
+        json.put("DEPLOYMENT_id", deploymentId);
+        json.put("COMPONENT_id", componentId);
+        json.put("PROVIDED_RESOURCE_id", providedResourceId);
+        json.put("start_time", startTime.toString());
+        if(endTime!=null) json.put("end_time",endTime.toString());        
+        return json;
+    }
+
+    @Override
+    void fromJSON(JSONObject jo)  {
+        this.deploymentId=jo.getInt("DEPLOYMENT_id");
+        this.componentId=jo.getInt("COMPONENT_id");
+        this.providedResourceId=jo.getInt("PROVIDED_RESOURCE_id");
+        String startTimeString=jo.getString("start_time");
+        this.startTime=Timestamp.valueOf(startTimeString);
+        if(jo.has("end_time")){
+            String endTimeString=jo.getString("end_time");
+            this.endTime=Timestamp.valueOf(endTimeString);
+        }
+        else  this.endTime=null;
+    }
 
 
 	

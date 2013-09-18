@@ -9,7 +9,7 @@ import org.json.JSONObject;
  *
  * @author cmantas
  */
-public class Component extends DBIDEntity implements JSONExportable{
+public class Component extends DBIDEntity {
 	
 	int moduleId, providedResourceId;
 
@@ -42,6 +42,16 @@ public class Component extends DBIDEntity implements JSONExportable{
 	public Component(int id){
 		super(id, Tables.componentTable);
 	}
+        
+      
+        /**
+         * creates an unstored Component from a json object
+         * @param jo
+         * @throws NotInDBaseException 
+         */
+        public Component(JSONObject jo) throws NotInDBaseException{
+            super(jo, Tables.componentTable);
+        }
 	
 
 
@@ -76,11 +86,18 @@ public class Component extends DBIDEntity implements JSONExportable{
     @Override
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
-        json.put("id", id);
-        json.put("MODULE_id", moduleId);    
-        ProvidedResource pr =new ProvidedResource(providedResourceId);
-        json.put("provided_resource", pr.toJSONObject());        
+        json.put("id", ""+id);
+        json.put("MODULE_id", moduleId);
+        json.put("PROVIDED_RESOURCE_id", providedResourceId);
+//        ProvidedResource pr =new ProvidedResource(providedResourceId);
+//        json.put("provided_resource", pr.toJSONObject());        
         return json;
+    }
+
+    @Override
+    void fromJSON(JSONObject jo)  {
+        this.moduleId=jo.getInt("MODULE_id");
+        this.providedResourceId=jo.getInt("PROVIDED_RESOURCE_id");
     }
 
 

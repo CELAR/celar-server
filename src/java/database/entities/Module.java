@@ -9,7 +9,7 @@ import org.json.JSONObject;
  *
  * @author cmantas
  */
-public class Module extends DBIDEntity implements JSONExportable{
+public class Module extends DBIDEntity {
 	
 	String name;
 	int applicationId;
@@ -41,6 +41,15 @@ public class Module extends DBIDEntity implements JSONExportable{
 		super(id, Tables.moduleTable);
 	}
 	
+        
+         /**
+         * creates an unstored Module from a json object
+         * @param jo
+         * @throws NotInDBaseException 
+         */
+        public Module(JSONObject jo) throws NotInDBaseException{
+            super(jo, Tables.moduleTable);
+        }
 
 
 	/**
@@ -75,9 +84,17 @@ public class Module extends DBIDEntity implements JSONExportable{
     public JSONObject toJSONObject() {
        JSONObject json = new JSONObject();
         json.put("id", id);
-        json.put("APPLICATION_id",applicationId);
+        json.put("APPLICATION_id",""+applicationId);
         json.put("name",name);
         return json;
+    }
+
+    @Override
+    void fromJSON(JSONObject m)  {
+
+          this.applicationId=m.getInt("APPLICATION_id");
+          this.name=m.getString("name");
+          
     }
 
 

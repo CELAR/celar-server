@@ -9,7 +9,7 @@ import org.json.JSONObject;
  *
  * @author cmantas
  */
-public class ProvidedResource extends DBIDEntity implements JSONExportable{
+public class ProvidedResource extends DBIDEntity {
 	
 	String type, description;
 
@@ -37,6 +37,14 @@ public class ProvidedResource extends DBIDEntity implements JSONExportable{
 	}
 	
 
+         /**
+         * creates an unstored Proved Resource from a json object
+         * @param jo
+         */
+        public ProvidedResource(JSONObject jo) {
+            super(jo, Tables.provResTable);
+        }
+	
 
 	/**
 	 * Stores the providedResource in the database and retrieves the id he was assigned
@@ -69,9 +77,16 @@ public class ProvidedResource extends DBIDEntity implements JSONExportable{
     @Override
     public JSONObject toJSONObject() {
        JSONObject json = new JSONObject();
+        json.put("id",id);
         json.put("type", type);
-        json.put("description", description);
+        json.put("description", ""+description);
         return json;
+    }
+
+    @Override
+    void fromJSON(JSONObject jo) {
+        this.description=jo.getString("description");
+        this.type=jo.getString("type");
     }
 
 

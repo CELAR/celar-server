@@ -4,6 +4,7 @@ import database.DeploymentTable;
 import database.Tables;
 import java.sql.Timestamp;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
@@ -46,6 +47,14 @@ public class Deployment extends DBIDEntity{
 	}
 	
 
+         /**
+         * creates an unstored Deployment from a json object
+         * @param jo
+         * @throws NotInDBaseException 
+         */
+        public Deployment(JSONObject jo) {
+            super(jo, Tables.deplTable);
+        }
 
 	/**
 	 * Stores the deployment in the database and retrieves the id he was assigned
@@ -79,6 +88,42 @@ public class Deployment extends DBIDEntity{
 		this.endTime= end==null?null:Timestamp.valueOf(fields.get("end_time"));
 	
 	}
+
+    public int getApplicationId() {
+        return applicationId;
+    }
+
+    public Timestamp getStartTime() {
+        return startTime;
+    }
+
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json= new JSONObject();
+        json.put("id", id);
+        json.put("APPLICATION_id", applicationId);
+        json.put("start_time", startTime);
+        json.put("end_time", endTime);
+        return json;
+        
+    }
+
+    @Override
+    void fromJSON(JSONObject jo)  {
+        this.applicationId=jo.getInt("APPLICATION_id");
+        String startTimeString=jo.getString("start_time");
+        this.startTime=Timestamp.valueOf(startTimeString);
+        if(jo.has("end_time")){
+            String endTimeString=jo.getString("end_time");
+            this.endTime=Timestamp.valueOf(endTimeString);
+        }
+        else  this.endTime=null;
+    }
+    
 
 
 	

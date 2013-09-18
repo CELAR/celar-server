@@ -3,6 +3,7 @@ package database.entities;
 import database.ResizingActionsTable;
 import database.Tables;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
@@ -75,6 +76,16 @@ public class ResizingAction extends DBIDEntity{
 		this.moduleId=Integer.parseInt(fields.get("MODULE_id"));
 		this.componentId=Integer.parseInt(fields.get("COMPONENT_id"));
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    void fromJSON(JSONObject jo)  {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 
 	

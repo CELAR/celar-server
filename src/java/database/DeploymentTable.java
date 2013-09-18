@@ -1,7 +1,9 @@
 package database;
 
+import database.entities.Application;
 import database.entities.Deployment;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 public class DeploymentTable extends IDTable {
@@ -57,5 +59,22 @@ public class DeploymentTable extends IDTable {
 	public Deployment getDeployment(int id){
 		return new Deployment(id);
 	}
+        
+       
+        /**
+         * Retrieves all the Applications for the user with the given id
+         * @param appId 
+         */
+        public  List<Deployment> getApplicationDeployments(int appId) {  
+            List<Deployment> results=new java.util.LinkedList();
+            String field="id";
+            String testField="APPLICATION_id";            
+            List<String> IDs=doSelectEquals(field, testField, appId).get(field);
+            //for each of the ids create the module
+            for(String id : IDs){
+                results.add(new Deployment(Integer.parseInt(id)));
+            }
+            return  results;
+        }
 
 }

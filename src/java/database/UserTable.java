@@ -1,6 +1,7 @@
 package database;
 
 import database.entities.User;
+import java.util.List;
 import java.util.Map;
 
 public class UserTable extends IDTable {
@@ -46,6 +47,18 @@ public class UserTable extends IDTable {
 		else return -1;
 	}
 
+        /**
+         *Returns a list of all users in the table
+         */
+        public List<User> getAllUsers(){
+             List<User> results=new java.util.LinkedList();
+            List<String> IDs=doSelect("id","TRUE").get("id");
+            //for each of the ids create the user
+            for(String id : IDs){
+                results.add(new User(Integer.parseInt(id)));
+            }
+            return  results;
+        }
 	
 
 }

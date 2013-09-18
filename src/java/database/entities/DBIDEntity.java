@@ -5,8 +5,8 @@
 package database.entities;
 
 import database.IDTable;
-import database.Table;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
@@ -35,6 +35,11 @@ public abstract class DBIDEntity extends DBEntity {
 		fromMap(fields);
 		modified=false;
 	}
+        
+       public  DBIDEntity(JSONObject jo, IDTable table) {
+           super(jo, table);
+           this.table=table;
+        }
 
 	public void delete(){
 		this.table.delete(id);
@@ -45,6 +50,10 @@ public abstract class DBIDEntity extends DBEntity {
         
         public int getId(){
             return this.id;
+        }
+        
+        public boolean exists(){
+            return id==-1?false:true;
         }
 
 }

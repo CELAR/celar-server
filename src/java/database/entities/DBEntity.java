@@ -6,6 +6,7 @@ package database.entities;
 
 import database.Table;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *Abstract DataBase Entity
@@ -37,6 +38,12 @@ public abstract class DBEntity {
 		fromMap(fields);
 		modified=false;
 	}
+        
+        public  DBEntity(JSONObject jo, Table table) {
+            modified=true;
+            fromJSON(jo);
+            this.table=table;
+        }
 
 
 
@@ -59,6 +66,14 @@ public abstract class DBEntity {
 	 */
 	abstract public boolean store();
         
+    /**
+     * Converts the Entity to a JSON representation
+     * @return a String in JSON format
+     */
+    abstract public JSONObject toJSONObject();
 
+    abstract void fromJSON(JSONObject jo);
+    
+    
 	
 }

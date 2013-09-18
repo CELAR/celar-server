@@ -2,6 +2,8 @@ package database;
 
 import database.entities.Resource;
 import java.sql.Timestamp;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class ResourcesTable extends IDTable {
@@ -63,5 +65,22 @@ public class ResourcesTable extends IDTable {
 	public Resource getResource(int id){
 		return new Resource(id);
 	}
+        
+                /**
+         * Retrieves all the components for the module with the given id
+         * @param moduleId
+         */
+        public List<Resource> getComponentResources(int ComponentId, Timestamp ts) {  
+            List<Resource> results=new LinkedList();
+            String field="id";
+            String testField="COMPONENT_id";
+            String condition="COMPONENT_id='"+ComponentId+"' AND start_time<='"+ts+"' AND (end_time>='"+ts+"' OR end_time IS NULL)";
+            List<String> IDs=doSelect(field, condition).get(field);
+            //for each of the ids create the component
+            for(String id : IDs){
+                results.add(new Resource(Integer.parseInt(id)));
+            }
+            return  results;
+        }
 
 }

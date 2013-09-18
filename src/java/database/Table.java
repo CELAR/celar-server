@@ -1,10 +1,8 @@
 package database;
 
-import static database.DBConnectable.DB_NAME;
-import static database.DBConnectable.DRIVER;
+
 import static database.DBConnectable.USER;
 import static database.Table.DEBUG;
-import database.entities.Module;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 
@@ -28,10 +24,10 @@ import org.apache.commons.lang3.StringEscapeUtils;
  * @author Giannis Giannakopoulos
  *
  */
-public abstract class Table implements DBConnectable{
+public abstract class Table extends DBConnectable{
 
 	public static boolean DEBUG=false;
-	protected Connection connection;
+	
 
 	public Table(){super();}
 	
@@ -43,46 +39,7 @@ public abstract class Table implements DBConnectable{
 		if(connect)this.openConnection();
 	}
 
-	/**
-	 * Opens the connection with the database.
-	 * 
-	 * <b>Note:</b> SLOW procedure, use with care!
-	 */
-	@Override
-	public void openConnection() {
-		try {
-			Class.forName(DRIVER);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		if (DEBUG) {
-			System.out.println("Driver registered");
-		}
-		try {
-			this.connection = DriverManager
-				.getConnection("jdbc:mysql://localhost/"
-				+DB_NAME+"?"
-				+ "user="+USER);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		if (DEBUG) {
-			System.out.println("Connection created");
-		}
-	}
-	
-	/**
-	 * Closes the connection with the database.
-	 */
-	@Override
-	public void closeConnection(){
-		try {
-			this.connection.close();
-			if(DEBUG)	System.out.println("Connection closed");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+
 	
 	/**
 	 * Method implemented by any sublaclass. This method will return the name of the table
@@ -99,8 +56,8 @@ public abstract class Table implements DBConnectable{
 	 * <b>Attention</b>: This method expects that the values are already formatted and compatible to SQL (e.g., strings
 	 * need ' characters and integers do not).  
 	 * 
-	 * @param object
-	 * @return
+	 * @param tuppples
+	 * @return SQL string for the insert function
 	 */
 	protected String insertSQL(Map<String, String> tupples){
 		String values="";
@@ -206,7 +163,7 @@ public abstract class Table implements DBConnectable{
         
     public ResultSet executeQuery(String query) {
         try {
-            System.out.println(query);
+            if(DEBUG) System.out.println(query);
             Statement statement;
             statement = this.connection.createStatement();
             ResultSet set = statement.executeQuery(query);

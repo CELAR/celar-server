@@ -4,6 +4,7 @@ import database.MetricsTable;
 import database.Tables;
 import java.sql.Timestamp;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
@@ -69,6 +70,16 @@ public class Metric extends DBIDEntity{
 		this.componentId=Integer.parseInt(fields.get("COMPONENT_id"));
 		this.timestamp= Timestamp.valueOf(fields.get("timestamp"));
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    void fromJSON(JSONObject jo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 
 	

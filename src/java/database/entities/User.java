@@ -1,9 +1,9 @@
 package database.entities;
 
-import database.IDTable;
 import database.UserTable;
 import java.util.Map;
 import database.Tables;
+import org.json.JSONObject;
 
 /**
  *
@@ -42,6 +42,14 @@ public class User extends DBIDEntity{
 	public User(int id){
 		super(id, Tables.usertable);
 	}
+        
+         /**
+         * creates an unstored User from a json object
+         * @param jo
+         */
+        public User(JSONObject jo) {
+            super(jo, Tables.usertable);
+        }
 	
 
 	/**
@@ -70,6 +78,19 @@ public class User extends DBIDEntity{
 		this.id=Integer.parseInt(fields.get("id"));
 		this.name=fields.get("name");
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json= new JSONObject();
+        json.put("id", id);
+        json.put("name", name);       
+        return json;
+    }
+
+    @Override
+    void fromJSON(JSONObject jo)  {
+        this.name=jo.getString("name");
+    }
 
 
 

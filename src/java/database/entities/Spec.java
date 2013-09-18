@@ -2,6 +2,7 @@ package database.entities;
 
 import database.SpecsTable;import database.Tables;
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  *
@@ -38,6 +39,14 @@ public class Spec extends DBIDEntity{
 		super(id, Tables.specsTable);
 	}
 	
+        
+        /**
+         * creates an unstored Spec from a json object
+         * @param jo
+         */
+        public Spec(JSONObject jo) {
+            super(jo, Tables.specsTable);
+        }
 
 
 	/**
@@ -67,6 +76,21 @@ public class Spec extends DBIDEntity{
 		this.providedResourceId=Integer.parseInt(fields.get("PROVIDED_RESOURCE_id"));
 		this.description=fields.get("description");
 	}
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        json.put("id", id);
+        json.put("PROVIDED_RESOURCE_id",providedResourceId);
+        json.put("description", ""+description);
+        return json;
+    }
+
+    @Override
+    void fromJSON(JSONObject jo) {
+        this.description=jo.getString("description");
+        this.providedResourceId=jo.getInt("PROVIDED_RESOURCE_id");
+    }
 
 
 	

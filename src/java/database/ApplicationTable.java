@@ -2,6 +2,7 @@ package database;
 
 import database.entities.Application;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 public class ApplicationTable extends IDTable {
@@ -70,5 +71,21 @@ public class ApplicationTable extends IDTable {
 		return new Application(id);
 	}
 
+        
+                /**
+         * Retrieves all the Applications for the user with the given id
+         * @param userId 
+         */
+        public  List<Application> getUserApplications(int userId) {  
+            List<Application> results=new java.util.LinkedList();
+            String field="id";
+            String testField="USER_id";            
+            List<String> IDs=doSelectEquals(field, testField, userId).get(field);
+            //for each of the ids create the module
+            for(String id : IDs){
+                results.add(new Application(Integer.parseInt(id)));
+            }
+            return  results;
+        }
 
 }
