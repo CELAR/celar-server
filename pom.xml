@@ -6,5 +6,6 @@
   <packaging>pom</packaging>
   <modules>
   	<module>celar-server-api</module>
+  	<module>celar-db</module>
   </modules>
 </project>
