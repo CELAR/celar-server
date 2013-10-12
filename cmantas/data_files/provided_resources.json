@@ -1,0 +1,18 @@
+{"provided_resources": [
+    {
+        "id": 1,
+        "description": "tiny",
+        "type": "VM",
+        "specs": [{
+            "id": 1,
+            "PROVIDED_RESOURCE_id": 1,
+            "description": "dual core machine"
+        }]
+    },
+    {
+        "id": 2,
+        "description": "big",
+        "type": "VM",
+        "specs": []
+    }
+]}
