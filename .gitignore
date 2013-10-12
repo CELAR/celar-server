@@ -1,2 +1,4 @@
-/nbproject/private/
-/build/
+.classpath 
+.project 
+.settings/
+target
