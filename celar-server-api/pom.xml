@@ -19,6 +19,17 @@
 					<source>1.7</source>
 				</configuration>
 			</plugin>
+			   <plugin>
+		<groupId>org.apache.tomcat.maven</groupId>
+		<artifactId>tomcat7-maven-plugin</artifactId>
+		<version>2.1</version>
+		<configuration>
+			<url>http://83.212.124.172:8080/manager/text/</url>
+			<username>tomcat</username>
+			<password>tomcat</password>
+		</configuration>
+	</plugin>
+			
 		</plugins>
 	</build>
 	<dependencies>
