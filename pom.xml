@@ -4,8 +4,16 @@
   <artifactId>celar-server</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+
+  <parent>
+    <groupId>eu.celar</groupId>
+    <artifactId>distribution</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
   <modules>
   	<module>celar-server-api</module>
   	<module>celar-db</module>
   </modules>
+
 </project>
