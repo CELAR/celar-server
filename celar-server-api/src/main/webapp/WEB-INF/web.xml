@@ -17,11 +17,15 @@
 		<servlet-class>gr.ntua.cslab.services.application.Describe</servlet-class>
 	</servlet>
 		<servlet>
-		<servlet-name>describe</servlet-name>
-		<servlet-class>gr.ntua.cslab.services.application.Describe</servlet-class>
+		<servlet-name>deploy</servlet-name>
+		<servlet-class>gr.ntua.cslab.services.deployment.Deploy</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>describe</servlet-name>
 		<url-pattern>/application/describe/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>deploy</servlet-name>
+		<url-pattern>/deployment/deploy/*</url-pattern>
 	</servlet-mapping>
 </web-app>

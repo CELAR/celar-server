@@ -36,12 +36,14 @@ public class Deploy extends HttpServlet {
         		+ "<li>Application id (identifies the application)</li></del>"
         		+ "<li>cluster (value cassandra)</li>"
         		+ "</ul>");
-        this.desc.addParameter("Application structure", "TOSCA (xml)");
+//        this.desc.addParameter("applicationid", "Integer");
+//        this.desc.addParameter("conf", "JSON string describing the configuration");
+        this.desc.addParameter("value", "String (expected: cassandra)");
         this.desc.setExample("How can you deploy a cassandra cluster:<br/>"
         		+ "Call this uri from your client with the GET argument ?cluster=cassandra.<br/>"
         		+ "After that a new deployment will be initiated on LAL with 1 ycsb client, 1 seednode and 2 cassandra nodes.<br/>"
         		+ "This call returns a JSON message responding to the STDOUT and STDERR of the executed slipstream command. (it will change eventually)<br/>"
-        		+ "http://83.212.117.112/celar-orchestrator/deployment/deploy/?cluster=cassandra");
+        		+ "http://83.212.124.172:8080/celar-server-api/deployment/deploy/?cluster=cassandra");
     }
 
 	/**
