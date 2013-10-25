@@ -15,8 +15,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 			   <plugin>
@@ -24,7 +24,7 @@
 		<artifactId>tomcat7-maven-plugin</artifactId>
 		<version>2.1</version>
 		<configuration>
-			<url>http://83.212.124.172:8080/manager/text/</url>
+			<url>http://83.212.116.50:8080/manager/text/</url>
 			<username>tomcat</username>
 			<password>tomcat</password>
 		</configuration>
