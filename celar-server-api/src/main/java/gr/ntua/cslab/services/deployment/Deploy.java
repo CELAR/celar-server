@@ -43,8 +43,8 @@ public class Deploy extends HttpServlet {
         		+ "Call this uri from your client with the GET argument ?cluster=cassandra.<br/>"
         		+ "After that a new deployment will be initiated on LAL with 1 ycsb client, 1 seednode and 2 cassandra nodes.<br/>"
         		+ "This call returns a JSON message responding to the STDOUT and STDERR of the executed slipstream command. (it will change eventually)<br/>"
-        		+ "http://83.212.116.50:8080/celar-server-api/deployment/deploy/?multi=5<br/>"
-        		+ "http://83.212.116.50:8080/celar-server-api/deployment/deploy/?multi=2");
+        		+ "http://83.212.116.50:8080/celar-server-api/deployment/deploy/?casmulti=2&ycsbmulti=2<br/>"
+        		+ "http://83.212.116.50:8080/celar-server-api/deployment/deploy/?casmulti=5&ycsbmulti=1<br/>");
     }
 
 	/**
@@ -55,9 +55,12 @@ public class Deploy extends HttpServlet {
 			response.getOutputStream().println(this.desc.toHTML());
 			return;
 		}
-		int multi = new Integer(request.getParameter("multi"));
+		int casmulti = new Integer(request.getParameter("casmulti"));
+		int ycsbmulti= new Integer(request.getParameter("ycsbmulti"));
 		
-		Command com = new Command("ss-execute -u sixsq -p siXsQsiXsQ --endpoint https://83.212.116.50 Cassandra/cassandra --parameters=CassandraNode:multiplicity="+multi);
+		Command com = new Command("ss-execute -u sixsq -p siXsQsiXsQ --endpoint https://83.212.116.50 Cassandra/cassandra "+
+												"--parameters=CassandraNode:multiplicity="+casmulti+","+
+																"YCSBClient:multiplicity="+ycsbmulti);
 		com.waitFor();
 		response.getOutputStream().println("{ \"deploy\": "+com.getOutputsAsJSONString()+"}");
 	}
