@@ -32,14 +32,14 @@ border-left:1px solid black;
 <% String uri="/celar-server-api/application/describe/";%>
 <td>1</td>
 <td><a href="<%=uri%>?info">Describe Application</a></td>
-<td>PENDING</td>
+<td>DONE</td>
 <td><%=uri%></td>
 </tr>
 <tr>
 <% uri="/celar-server-api/deployment/deploy/";%>
 <td>2</td>
 <td><a href="<%=uri%>?info">Deploy Application</a></td>
-<td>PENDING</td>
+<td>DONE</td>
 <td><%=uri%></td>
 </tr>
 </table>
