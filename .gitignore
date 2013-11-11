@@ -2,3 +2,4 @@
 .project
 .settings
 /target
+/celar-server-api/nb-configuration.xml
