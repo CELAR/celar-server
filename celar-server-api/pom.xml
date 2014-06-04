@@ -19,17 +19,132 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+            
+            
             <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.1</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.1-alpha-4</version>
+                <executions>
+                    <execution>
+                        <id>generate-rpm</id>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <url>http://83.212.116.50:8080/manager/text/</url>
-                    <username>tomcat</username>
-                    <password>tomcat</password>
+                    <!--<license>GPL (c) 2005, SWWDC</license>-->
+                    <!--<distribution>Trash 2005</distribution>-->
+                    <group>Application/Collectors</group>
+                    <packager>SWWDC</packager>
+                    <prefix>/usr/local</prefix>
+                    <changelogFile>src/changelog</changelogFile>
+                    <name>foofotos</name>
+<!--                    <defineStatements>
+                       <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                    </defineStatements>-->
+                    <mappings>
+                        <mapping>
+                            <directory>/usr/local/lib/celar-server-api/</directory>
+                            <filemode>440</filemode>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>target/${project.build.finalName}.${project.packaging}</location>
+                                </source>
+                            </sources>
+                        </mapping>
+<!--                        <mapping>
+                            <directory>/usr/local/doc/landfill</directory>
+                            <documentation>true</documentation>
+                            <filemode>444</filemode>
+                            <username>dumper</username>
+                            <groupname>dumpgroup</groupname>
+                            <sources>
+                                <source>
+                                    <location>target/site</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/local/lib</directory>
+                            <filemode>750</filemode>
+                            <username>dumper</username>
+                            <groupname>dumpgroup</groupname>
+                            <dependency>
+                                <includes>
+                                    <include>jmock:jmock</include>
+                                    <include>javax.servlet:servlet-api:2.4</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>junit:junit</exclude>
+                                </excludes>
+                            </dependency>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/local/bin</directory>
+                            <filemode>750</filemode>
+                            <username>dumper</username>
+                            <groupname>dumpgroup</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/bin</location>
+                                </source>
+                                <softlinkSource>
+                                    <location>/usr/local/bin/new.sh</location>
+                                    <destination>old.sh</destination>
+                                </softlinkSource>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/local/oldbin</directory>
+                            <filemode>750</filemode>
+                            <username>dumper</username>
+                            <groupname>dumpgroup</groupname>
+                            <sources>
+                                <softlinkSource>
+                                    <location>/usr/local/bin</location>
+                                </softlinkSource>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/local/conf/landfill</directory>
+                            <configuration>true</configuration>
+                            <filemode>640</filemode>
+                            <username>dumper</username>
+                            <groupname>dumpgroup</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/conf</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>/usr/local/log/landfill</directory>
+                            <filemode>750</filemode>
+                            <username>dumper</username>
+                            <groupname>dumpgroup</groupname>
+                        </mapping>-->
+                    </mappings>
+                    
+                    
+                    <preinstallScriptlet>
+                        <script>echo "installing now"</script>
+                    </preinstallScriptlet>
+                    <postinstallScriptlet>
+                        <scriptFile>src/main/scripts/rpm/postInstall.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </postinstallScriptlet>
+                    <preremoveScriptlet>
+                        <scriptFile>src/main/scripts/rpm/preRemove.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </preremoveScriptlet>
                 </configuration>
             </plugin>
-			
+            
+
         </plugins>
     </build>
     <dependencies>
