@@ -36,16 +36,17 @@
                 <configuration>
                     <!--<license>GPL (c) 2005, SWWDC</license>-->
                     <!--<distribution>Trash 2005</distribution>-->
-                    <group>Application/Collectors</group>
-                    <packager>SWWDC</packager>
-                    <prefix>/usr/local</prefix>
-                    <changelogFile>src/changelog</changelogFile>
+                    <group>Application</group>
+		    <packager>ggian@cslab</packager>
+		    <!--<prefix>/usr/local</prefix>
+		    <changelogFile>src/changelog</changelogFile>-->
 <!--                    <defineStatements>
                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
-                    </defineStatements>-->
+
+		    </defineStatements>-->
                     <mappings>
                         <mapping>
-                            <directory>/usr/local/lib/celar-server-api/</directory>
+                            <directory>/tmp/celar-server-api-rpm/</directory>
                             <filemode>440</filemode>
                             <username>root</username>
                             <groupname>root</groupname>
@@ -70,6 +71,11 @@
                         <scriptFile>src/main/scripts/rpm/preRemove.sh</scriptFile>
                         <fileEncoding>utf-8</fileEncoding>
                     </preremoveScriptlet>
+                    <postremoveScriptlet>
+                        <scriptFile>src/main/scripts/rpm/postRemove.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </postremoveScriptlet>
+ 
                 </configuration>
             </plugin>
             
