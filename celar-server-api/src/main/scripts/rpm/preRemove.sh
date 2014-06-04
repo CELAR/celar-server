@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "preRemove scri[t"
+echo "preRemove script"
