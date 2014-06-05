@@ -1,3 +1,0 @@
-celar-db
-============
-CELAR DataBase
