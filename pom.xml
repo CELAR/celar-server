@@ -12,7 +12,7 @@
 
   <modules>
   	<module>celar-server-api</module>
-  	<module>celar-db</module>
+  	<!--<module>celar-db</module>-->
   </modules>
 
 </project>
