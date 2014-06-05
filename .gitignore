@@ -1,6 +1,5 @@
 .classpath
 .project
 .settings
-/target
-/celar-server-api/nb-configuration.xml
-/celar-db/nbproject/
+nbproject
+target
