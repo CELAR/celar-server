@@ -15,6 +15,8 @@
   <modules>
   	<module>celar-server-api</module>
   	<module>celar-db</module>
+    <module>slipstream-client</module>
+    <module>tosca-parser</module>
   </modules>
 
 </project>
