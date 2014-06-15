@@ -1,3 +1,10 @@
 CELAR Server code
 =================
-CELAR Manager, Provisioner Server, CELAR DataBase
+Main repo for the CELAR Server component.
+
+Main modules:
+*	CELAR Server API
+*	CELAR DB
+*	SlipStream client
+*	TOSCA-SS transformer
+
