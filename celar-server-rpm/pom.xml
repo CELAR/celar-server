@@ -23,35 +23,133 @@
                 <version>2.8</version>
                 <executions>
                     <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
+                        <id>copy-jar</id>
                         <configuration>
+                            <outputDirectory>${project.build.directory}/</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>gr.ntua.cslab</groupId>
                                     <artifactId>celar-server-daemon</artifactId>
+                                    <type>jar</type>
                                     <version>${project.version}</version>
-                                    <!--<type>jar</type>-->
-                                    <overWrite>false</overWrite>
-                                    <!--<outputDirectory>${project.build.directory}/lib/</outputDirectory>-->
-                                    <!--<destFileName>lib</destFileName>-->
+                                    <destFileName>celar-server.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
-<!--                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>-->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <id>copy-dependencies</id>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib/</outputDirectory>
+                            <excludeArtifactIds>celar-server-daemon</excludeArtifactIds>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>gr.ntua.cslab</groupId>
+                                    <artifactId>celar-server-daemon</artifactId>
+                                    <type>jar</type>
+                                    <version>${project.version}</version>
+                                    <destFileName>celar-server.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <id>copy-resources</id>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/conf/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../celar-server-daemon/src/main/resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <id>copy-scripts</id>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/scripts/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../celar-server-daemon/src/main/scripts</directory>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-
-
-            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>${package.os}</classifier>
+                    <release>${BUILD_NUMBER}.${package.os}</release>
+                    <summary>CELAR Server</summary>
+                    <name>celar-server</name>                        
+                    <group>Application</group>
+                    <vendor>CELAR</vendor>
+                    <packager>ggian@cslab</packager>
+                    <copyright>Apache License, Version 2.0</copyright>
+                    <url>http://celarcloud.eu</url>                    
+                    <needarch>noarch</needarch>
+                    <description>CELAR Server</description>
+                    <mappings>
+                        <mapping>
+                            <directory>${celar.install.dir}/celar-server/</directory>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>target/celar-server.jar</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+<!--                    <postinstallScriptlet>
+                    </postinstallScriptlet>
+                    <postremoveScriptlet>
+                    </postremoveScriptlet>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-rpm</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attached-rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>celar-server-daemon</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
