@@ -3,8 +3,12 @@ CELAR Server code
 Main repo for the CELAR Server component.
 
 Main modules:
-*	CELAR Server API
 *	CELAR DB
 *	SlipStream client
-*	TOSCA-SS transformer
+*	TOSCA Parser
+*	CELAR Server Daemon
+*	CELAR Server RPM
+
+Deprecated module:
+*	CELAR Server API (replaced by CELAR Server Daemon)
 
