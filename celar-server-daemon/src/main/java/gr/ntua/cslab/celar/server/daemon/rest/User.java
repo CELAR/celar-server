@@ -1,12 +1,13 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import gr.ntua.cslab.celar.server.daemon.rest.beans.user.AuthenticationRequest;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.user.AuthenticationResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+//import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+//import javax.ws.rs.core.Response;
 
 /**
  *
@@ -16,11 +17,11 @@ import javax.ws.rs.core.Response;
 public class User {
     
     @POST
-//    @Consumes({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
+//    @Consumes(MediaType.APPLICATION_XML)
 //    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     @Path("authenticate/")
-    public void authenticateUser() {
-        throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).build());
+    public AuthenticationResponse authenticateUser(AuthenticationRequest request) {
+        return new AuthenticationResponse("Logged in", "OK", true);
     }
     
 }
