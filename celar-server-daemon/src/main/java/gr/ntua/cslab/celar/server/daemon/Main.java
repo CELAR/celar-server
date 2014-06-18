@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -98,7 +99,8 @@ public class Main {
     }
 
     private static void configureLogger() {
-
+        InputStream logPropertiesStream = Main.class.getClassLoader().getResourceAsStream("log4j.properties");
+        PropertyConfigurator.configure(logPropertiesStream);
     }
 
     private static void addShutdownHook() {
