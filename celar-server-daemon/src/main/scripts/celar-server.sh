@@ -12,7 +12,7 @@ CONF_DIR=$CELAR_SERVER_HOME/conf
 
 CLASSPATH=$CONF_DIR
 CLASSPATH=$CLASSPATH:$(echo $LIB_DIR/*.jar | tr ' ' ':')
-CLASSPATH=$CLASSPATH:$CELAR_SERVER_HOME_DIR/celar-server.jar
+CLASSPATH=$CLASSPATH:$CELAR_SERVER_HOME/celar-server.jar
 PIDFILE=/tmp/celar-server.pid
 
 start() {
