@@ -98,12 +98,12 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
                 <configuration>
                     <classifier>${package.os}</classifier>
-                    <release>${BUILD_NUMBER}.${package.os}</release>
+                                        <release>${BUILD_NUMBER}.${package.os}</release>
                     <summary>CELAR Server</summary>
                     <name>celar-server</name>                        
                     <group>Application</group>
@@ -125,12 +125,12 @@
                             </sources>
                         </mapping>
                     </mappings>
-<!--                    <postinstallScriptlet>
+                    <postinstallScriptlet>
                     </postinstallScriptlet>
                     <postremoveScriptlet>
-                    </postremoveScriptlet>-->
+                    </postremoveScriptlet>
                 </configuration>
-                <executions>
+                       <executions>
                     <execution>
                         <id>attach-rpm</id>
                         <phase>package</phase>
@@ -139,7 +139,70 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>-->
+            
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-rpm</id>
+                        <goals>
+                            <goal>attached-rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <group>Application</group>
+                    <packager>ggian@cslab</packager>
+                    
+                    <mappings>
+                        <mapping>
+                            <directory>${celar.install.dir}/celar-server/</directory>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>target/celar-server.jar</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>${celar.install.dir}/celar-server/lib/</directory>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>target/lib/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>${celar.install.dir}/celar-server/conf/</directory>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>target/conf/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>${celar.install.dir}/celar-server/scripts/</directory>
+                            <username>root</username>
+                            <groupname>root</groupname>
+                            <sources>
+                                <source>
+                                    <location>target/scripts/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                    <postinstallScriptlet></postinstallScriptlet>
+                    <postremoveScriptlet></postremoveScriptlet>
+                </configuration>
             </plugin>
+
         </plugins>
     </build>
     <dependencies>
