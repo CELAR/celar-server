@@ -97,6 +97,7 @@ public class Main {
 //        ServerStaticComponents.server = new Server();
         ServletContextHandler context = new ServletContextHandler(ServerStaticComponents.server, "/", ServletContextHandler.SESSIONS);
         context.addServlet(holder, "/*");
+        Logger.getLogger(Main.class.getName()).info("Server configured");
     }
 
     private static void configureLogger() {
@@ -104,6 +105,7 @@ public class Main {
         SLF4JBridgeHandler.install();
         InputStream logPropertiesStream = Main.class.getClassLoader().getResourceAsStream("log4j.properties");
         PropertyConfigurator.configure(logPropertiesStream);
+        Logger.getLogger(Main.class.getName()).info("Logger configured");
     }
 
     private static void addShutdownHook() {
@@ -111,6 +113,7 @@ public class Main {
             @Override
             public void run() {
                 try {
+                    Logger.getLogger(Main.class.getName()).info("Server is shutting down");
                     ServerStaticComponents.server.stop();
                 } catch (Exception ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -121,12 +124,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        loadProperties();
         configureLogger();
+        loadProperties();
         addShutdownHook();
         configureServer();
 
         ServerStaticComponents.server.start();
+        Logger.getLogger(Main.class.getName()).info("Server is started");
 
     }
 }
