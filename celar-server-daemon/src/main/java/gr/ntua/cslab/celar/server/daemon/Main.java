@@ -18,6 +18,7 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
  * Executor class, used as an endpoint to the jar package from the outside
@@ -99,6 +100,8 @@ public class Main {
     }
 
     private static void configureLogger() {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
         InputStream logPropertiesStream = Main.class.getClassLoader().getResourceAsStream("log4j.properties");
         PropertyConfigurator.configure(logPropertiesStream);
     }
