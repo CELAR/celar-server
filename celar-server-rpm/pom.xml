@@ -98,49 +98,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>rpm-maven-plugin</artifactId>
-                <configuration>
-                    <classifier>${package.os}</classifier>
-                                        <release>${BUILD_NUMBER}.${package.os}</release>
-                    <summary>CELAR Server</summary>
-                    <name>celar-server</name>                        
-                    <group>Application</group>
-                    <vendor>CELAR</vendor>
-                    <packager>ggian@cslab</packager>
-                    <copyright>Apache License, Version 2.0</copyright>
-                    <url>http://celarcloud.eu</url>                    
-                    <needarch>noarch</needarch>
-                    <description>CELAR Server</description>
-                    <mappings>
-                        <mapping>
-                            <directory>${celar.install.dir}/celar-server/</directory>
-                            <username>root</username>
-                            <groupname>root</groupname>
-                            <sources>
-                                <source>
-                                    <location>target/celar-server.jar</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                    </mappings>
-                    <postinstallScriptlet>
-                    </postinstallScriptlet>
-                    <postremoveScriptlet>
-                    </postremoveScriptlet>
-                </configuration>
-                       <executions>
-                    <execution>
-                        <id>attach-rpm</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attached-rpm</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
-            
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
@@ -188,18 +145,23 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directory>${celar.install.dir}/celar-server/scripts/</directory>
+                            <directory>/etc/init.d/</directory>
                             <username>root</username>
                             <groupname>root</groupname>
+                            <filemode>744</filemode>
                             <sources>
                                 <source>
-                                    <location>target/scripts/</location>
+                                    <location>target/scripts/celar-server</location>
                                 </source>
                             </sources>
                         </mapping>
                     </mappings>
-                    <postinstallScriptlet></postinstallScriptlet>
-                    <postremoveScriptlet></postremoveScriptlet>
+                    <postinstallScriptlet>
+                        <scriptFile>target/scripts/install.sh</scriptFile>
+                    </postinstallScriptlet>
+                    <preremoveScriptlet>
+                        <scriptFile>target/scripts/uninstall.sh</scriptFile>
+                    </preremoveScriptlet>
                 </configuration>
             </plugin>
 
