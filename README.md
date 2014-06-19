@@ -9,6 +9,3 @@ Main modules:
 *	CELAR Server Daemon
 *	CELAR Server RPM
 
-Deprecated module:
-*	CELAR Server API (replaced by CELAR Server Daemon)
-
