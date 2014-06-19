@@ -15,6 +15,7 @@
         deployed in a CentOS machine.
     </description>
     <build>
+        <scriptSourceDirectory>${basedir}/scripts/</scriptSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -157,10 +158,10 @@
                         </mapping>
                     </mappings>
                     <postinstallScriptlet>
-                        <scriptFile>target/scripts/install.sh</scriptFile>
+                        <scriptFile>scripts/postInstall.sh</scriptFile>
                     </postinstallScriptlet>
                     <preremoveScriptlet>
-                        <scriptFile>target/scripts/uninstall.sh</scriptFile>
+                        <scriptFile>scripts/preRemove.sh</scriptFile>
                     </preremoveScriptlet>
                 </configuration>
             </plugin>
