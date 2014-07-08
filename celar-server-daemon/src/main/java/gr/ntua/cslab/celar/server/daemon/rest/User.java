@@ -14,8 +14,6 @@ import javax.ws.rs.Path;
 public class User {
     
     @POST
-//    @Consumes(MediaType.APPLICATION_XML)
-//    @Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})
     @Path("authenticate/")
     public AuthenticationResponse authenticateUser(AuthenticationRequest request) {
         return new AuthenticationResponse("Logged in", "OK", true);
