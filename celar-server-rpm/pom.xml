@@ -146,7 +146,7 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directory>/etc/init.d/</directory>
+                            <directory>${celar.install.dir}/celar-server/bin/</directory>
                             <username>root</username>
                             <groupname>root</groupname>
                             <filemode>744</filemode>

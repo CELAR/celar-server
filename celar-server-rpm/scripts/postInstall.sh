@@ -1,10 +1,9 @@
 #!/bin/bash
 
 RANDOM_PASSWORD=$(cat /dev/urandom | tr -dc 0-9a-zA-Z | head -c 16)
-#KEYSTORE_PATH=/opt/celar/celar-server/keystore.jks
-CONF_FILE=~/celar-server.properties
-
-KEYSTORE_PATH=~/keystore.jks
+CELAR_SERVER_HOME=/opt/celar/celar-server
+KEYSTORE_PATH=$CELAR_SERVER_HOME/keystore.jks
+CONF_FILE=$CELAR_SERVER_HOME/conf/celar-server.properties
 
 create_keystore(){
 keytool -genkey \
@@ -30,8 +29,13 @@ sed -i "s/# server.ssl.keystore.password = /server.ssl.keystore.password = $RAND
 sed -i "s/# server.ssl.port = 8443/server.ssl.port = 8443/" $CONF_FILE
 }
 
+create_service(){
+	ln -sv $CELAR_SERVER_HOME/bin/celar-server /etc/init.d/
+}
 create_keystore;
 
 configure_server;
+
+create_service
 
 service celar-server start;
