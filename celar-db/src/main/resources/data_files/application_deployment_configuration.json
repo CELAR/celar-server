@@ -1,0 +1,40 @@
+{"application": {
+    "id": 1,
+    "description": "test_application",
+    "submitted": "2013-12-18 14:08:16.0",
+    "modules": [
+        {
+            "APPLICATION_id": "1",
+            "id": 1,
+            "name": "Cassandra store",
+            "components": [{
+                "id": "1",
+                "resources": [
+                    {
+                        "id": 1,
+                        "COMPONENT_id": 1,
+                        "DEPLOYMENT_id": 1,
+                        "PROVIDED_RESOURCE_id": 1,
+                        "start_time": "2013-12-18 14:08:16.0"
+                    },
+                    {
+                        "id": 2,
+                        "COMPONENT_id": 1,
+                        "DEPLOYMENT_id": 1,
+                        "PROVIDED_RESOURCE_id": 2,
+                        "start_time": "2013-12-18 14:08:16.0"
+                    }
+                ],
+                "PROVIDED_RESOURCE_id": 1,
+                "MODULE_id": 1
+            }]
+        },
+        {
+            "APPLICATION_id": "1",
+            "id": 2,
+            "name": "Appache Webserver",
+            "components": []
+        }
+    ],
+    "USER_id": "2"
+}}

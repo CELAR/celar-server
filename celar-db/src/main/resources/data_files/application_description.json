@@ -1,0 +1,23 @@
+{"application": {
+    "USER_name": "chris",
+    "description": "test_application",
+    "modules": [
+        {
+            "name": "Cassandra store",
+            "components": [
+                {
+		            "description": "seed node",
+                    "resource_type":"VM"
+                },
+                {
+                    "description":"regular node",
+                    "resource_type":"VM"
+                }
+            ]
+        },
+        {
+            "name": "Appache Webserver",
+            "components": []
+        }
+    ]
+}}
