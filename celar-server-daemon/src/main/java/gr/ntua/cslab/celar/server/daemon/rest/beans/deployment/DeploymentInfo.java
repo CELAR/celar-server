@@ -16,15 +16,17 @@ public class DeploymentInfo {
     private int id;
     private long startTime, endTime;
     private DeploymentStatus status;
+    private String applicationId;
 
     public DeploymentInfo() {
     }
 
-    public DeploymentInfo(int id, long startTime, long endTime, DeploymentStatus status) {
+    public DeploymentInfo(int id, String applicationId, long startTime, long endTime, DeploymentStatus status) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
+        this.applicationId = applicationId;
     }
 
     public int getId() {
@@ -58,5 +60,14 @@ public class DeploymentInfo {
     public void setStatus(DeploymentStatus status) {
         this.status = status;
     }
+
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
+    }
+    
     
 }

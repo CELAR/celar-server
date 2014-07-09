@@ -30,28 +30,30 @@ public class Application {
     }
     
     @GET
-    @Path("search/properties/")
+    @Path("search/")
     public List<ApplicationInfo> searchApplicationsByProperty(
-            @DefaultValue("0") @QueryParam("submitted") long submitted,
+            @DefaultValue("0") @QueryParam("submitted_start") long submittedStart,
+            @DefaultValue("0") @QueryParam("submitted_end") long submittedEnd,
             @DefaultValue("Null") @QueryParam("description") String description,
-            @DefaultValue("0") @QueryParam("user_id") int userid) {
-        List<ApplicationInfo> list = new LinkedList<>();
-        list.add(new ApplicationInfo("ID1", submitted+100, description, "1.0.0"));
-        list.add(new ApplicationInfo("ID2", submitted+200, description, "1.2.0"));
-        list.add(new ApplicationInfo("ID3", submitted+300, description, "0.2.0"));
-        return list;
-    }
-    
-    @GET
-    @Path("search/topology/")
-    public List<ApplicationInfo> searchApplicationsByTopology(
+            @DefaultValue("0") @QueryParam("user_id") int userid, 
             @DefaultValue("Null") @QueryParam("module_name") String moduleName,
-            @DefaultValue("Null") @QueryParam("component_description") String description,
+            @DefaultValue("Null") @QueryParam("component_description") String componentDescription,
             @DefaultValue("Null") @QueryParam("provided_resource_id") String providedResourceId) {
         List<ApplicationInfo> list = new LinkedList<>();
-        list.add(new ApplicationInfo("ID1", new Date().getTime()+10000, description, "1.0.0"));
-        list.add(new ApplicationInfo("ID2", new Date().getTime()+50000, description, "1.2.0"));
-        list.add(new ApplicationInfo("ID3", new Date().getTime()+100000, description, "0.2.0"));
+        list.add(new ApplicationInfo("ID1", submittedStart+100, description, "1.0.0"));
+        list.add(new ApplicationInfo("ID2", submittedStart+200, description, "1.2.0"));
+        list.add(new ApplicationInfo("ID3", submittedStart+1000, description, "0.2.0"));
         return list;
+    }    
+    
+    @GET
+    @Path("{id}/description/")
+    public ApplicationInfo getApplicationDescription(@PathParam("id") String id) {
+        ApplicationInfo info = new ApplicationInfo();
+        info.setId(id);
+        info.setDescription("This xml will be replaced by a TOSCA (or CSAR??) file...");
+        info.setSubmitted(new Date().getTime());
+        info.setVersion("1.1.0");
+        return info;
     }
 }
