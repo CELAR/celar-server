@@ -14,13 +14,16 @@ import java.util.logging.Logger;
 import org.json.JSONObject;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
  * @author cmantas
  */
+@Ignore 
 public class ApplicationTest {
     
     public ApplicationTest() {

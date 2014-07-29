@@ -2,7 +2,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.junit.Ignore;
  
+@Ignore 
 public class MiscTesting {
     
     //the prop file location

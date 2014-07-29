@@ -6,20 +6,22 @@
 
 package gr.ntua.cslab.db_entities.parsers;
 
-import gr.ntua.cslab.db_entities.parsers.ResourceParsers;
 import gr.ntua.cslab.db_entities.DBException;
 import gr.ntua.cslab.db_entities.ProvidedResource;
 import gr.ntua.cslab.db_entities.ResourceType;
 import gr.ntua.cslab.db_entities.Spec;
+import gr.ntua.cslab.db_entities.parsers.ResourceParsers;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
  * @author cmantas
  */
+@Ignore 
 public class ResourceParsersTest {
     
     public ResourceParsersTest() {

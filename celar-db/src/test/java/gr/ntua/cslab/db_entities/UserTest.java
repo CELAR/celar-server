@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -19,6 +20,7 @@ import org.junit.runners.MethodSorters;
  *
  * @author cmantas
  */
+@Ignore 
 // important that the tests run in this order
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserTest {

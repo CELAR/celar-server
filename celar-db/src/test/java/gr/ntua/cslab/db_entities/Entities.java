@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.json.JSONObject;
 import static org.junit.Assert.fail;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -22,6 +23,7 @@ import org.junit.runners.MethodSorters;
  *
  * @author cmantas
  */
+@Ignore 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Entities {
 

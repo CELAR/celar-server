@@ -6,17 +6,19 @@
 
 package gr.ntua.cslab.db_entities;
 
-import gr.ntua.cslab.db_entities.ResourceType;
 import gr.ntua.cslab.db_entities.DBException;
-import org.junit.Test;
+import gr.ntua.cslab.db_entities.ResourceType;
 import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 /**
  *
  * @author cmantas
  */
+@Ignore 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ResourceTypeTest {
     
