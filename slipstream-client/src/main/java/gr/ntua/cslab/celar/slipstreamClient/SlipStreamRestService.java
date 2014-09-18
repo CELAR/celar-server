@@ -1,4 +1,4 @@
-package gr.ntua.cslab.celar.application;
+package gr.ntua.cslab.celar.slipstreamClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
