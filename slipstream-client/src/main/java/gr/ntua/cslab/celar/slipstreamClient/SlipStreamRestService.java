@@ -29,7 +29,7 @@ import com.sixsq.slipstream.util.SerializationUtil;
 //import com.sixsq.slipstream.util.SerializationUtil;
 
 public class SlipStreamRestService {
-	private static String user="ioannis", password="a1s2d3f4", url="https://109.231.121.23/";
+	private static String user="ioannis", password="", url="https://109.231.121.23/";
 
 	public static Module getModule(String name) throws Exception{
 
@@ -172,7 +172,8 @@ public class SlipStreamRestService {
 			String description = "Port";
 			String value = "8080";
 
-			ModuleParameter parameter = new ModuleParameter(parameterName, value, description, ParameterCategory.Output);
+			ModuleParameter parameter = new ModuleParameter(parameterName, value, description);
+			parameter.setCategory("Output");
 			parameter.setDefaultValue("8080");
 			module.setParameter(parameter);
 			
@@ -181,7 +182,8 @@ public class SlipStreamRestService {
 			description = "ram";
 			value = "2048";
 
-			parameter = new ModuleParameter(parameterName, value, description, ParameterCategory.Cloud);
+			parameter = new ModuleParameter(parameterName, value, description);
+			parameter.setCategory("Flexiant");
 			parameter.setDefaultValue("2048");
 			module.setParameter(parameter);
 			
@@ -191,18 +193,20 @@ public class SlipStreamRestService {
 			value = "1";
 			//ParameterCategory category = new 
 
-			parameter = new ModuleParameter(parameterName, value, description, ParameterCategory.Cloud);
+			parameter = new ModuleParameter(parameterName, value, description);
+			parameter.setCategory("Flexiant");
 			parameter.setDefaultValue("1");
 			module.setParameter(parameter);
 			
 			
-			System.out.println(putModule(module));
+			System.out.println(SerializationUtil.toXmlString(module));
+			/*System.out.println(putModule(module));
 			Module m = (Module)SerializationUtil.fromXml(SerializationUtil.toXmlString(module), ImageModule.class);
 			//String xml = SerializationUtil.toXmlString(m);
 			System.out.println(m.getName()+" !!!!!!!!!!!!!bjkliuuil");
 			
 			Module m1 = getModule(name);
-			
+			*/
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
