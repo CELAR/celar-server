@@ -1,4 +1,4 @@
-package gr.ntua.cslab.celar.SlipstreamClient;
+package gr.ntua.cslab.celar.application;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
