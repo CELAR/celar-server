@@ -33,7 +33,6 @@ public class SlipStreamSSServiceTest {
 		ProjectModule project = new ProjectModule(projectName);
 		Authz auth = new Authz(ssservise.getUser(), project);
 		project.setAuthz(auth);
-		System.out.println(SerializationUtil.toXmlString(project));
 		ssservise.putModule(project);
 		
 		//add ImageModule apache
@@ -55,7 +54,8 @@ public class SlipStreamSSServiceTest {
 		Target t1 = new Target(Target.EXECUTE_TARGET, "#!/bin/sh -xe \n"
 				+ "apt-get update -y \n"
 				+ "apt-get install -y apache2 \n"
-				+ "echo 'Hello from Apache deployed by SlipStream!' > /var/www/data.txt \n"
+				+ "clientnum=$(ss-get client:multiplicity) \n"
+				+ "echo \"Clients: $clientnum\" > /var/www/data.txt \n"
 				+ "service apache2 stop \n"
 				+ "port=$(ss-get port) \n"
 				+ "sed -i -e 's/^Listen.*$/Listen '$port'/' /etc/apache2/ports.conf \n"
@@ -64,6 +64,15 @@ public class SlipStreamSSServiceTest {
 				+ "service apache2 start \n"
 				+ "ss-set ready true \n");
 		targets.add(t1);
+		
+		Target t2 = new Target(Target.ONVMADD_TARGET, "#!/bin/sh -xe \n"
+				+ "clientnum=$(ss-get client:multiplicity) \n"
+				+ "echo \"Clients: $clientnum\" > /var/www/data.txt \n");
+		targets.add(t2);
+		Target t3 = new Target(Target.ONVMREMOVE_TARGET, "#!/bin/sh -xe \n"
+				+ "clientnum=$(ss-get client:multiplicity) \n"
+				+ "echo \"Clients: $clientnum\" > /var/www/data.txt \n");
+		targets.add(t3);
 		
 		module.setTargets(targets);
 		String parameterName = "port";
@@ -121,7 +130,7 @@ public class SlipStreamSSServiceTest {
 				+ "ss-get --timeout 360 apache:ready \n"
 				+ "ENDPOINT=http://${web_server_ip}:${web_server_port}/data.txt \n"
 				+ "wget -t 2 -O /tmp/data.txt ${ENDPOINT} \n"
-				+ "[ \"$?\" = \"0\" ] & ss-set statecustom \"OK: $(cat /tmp/data.txt)\" || ss-abort \"Could not get the test file: ${ENDPOINT}\" \n"
+				+ "[ \"$?\" = \"0\" ] & ss-set statecustom \"$(cat /tmp/data.txt)\" || ss-abort \"Could not get the test file: ${ENDPOINT}\" \n"
 				+ "cp /tmp/data.txt $SLIPSTREAM_REPORT_DIR \n");
 		targets.add(t);
 	
@@ -133,7 +142,7 @@ public class SlipStreamSSServiceTest {
 				+ "# Execute the test \n"
 				+ "ENDPOINT=http://${web_server_ip}:${web_server_port}/data.txt \n"
 				+ "wget -t 2 -O /tmp/data.txt ${ENDPOINT} \n"
-				+ "[ \"$?\" = \"0\" ] & ss-set statecustom \"OK: $(cat /tmp/data.txt)\" || ss-abort \"Could not get the test file: ${ENDPOINT}\" \n");
+				+ "[ \"$?\" = \"0\" ] & ss-set statecustom \"$(cat /tmp/data.txt)\" || ss-abort \"Could not get the test file: ${ENDPOINT}\" \n");
 		targets.add(t1);
 		
 		module1.setTargets(targets);
@@ -168,7 +177,7 @@ public class SlipStreamSSServiceTest {
 		
 		HashMap<String, Node> nodes = new HashMap<String, Node>();
 		nodes.put("apache", new Node("apache", module));
-		nodes.put("testclient", new Node("testclient", module1));
+		nodes.put("client", new Node("client", module1));
 		deployment.setNodes(nodes );
 	
 		ssservise.putModule(deployment);
@@ -183,7 +192,7 @@ public class SlipStreamSSServiceTest {
 		HashMap<String,String> parameters = new HashMap<String, String>();
 		parameters.put("apache:multiplicity", "1");
 		parameters.put("apache:Flexiant.cpu", "2");
-		parameters.put("testclient:multiplicity", "1");
+		parameters.put("client:multiplicity", "1");
 		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample1/apacheExample", parameters);
 		if(deploymnetId==null)
 			System.exit(0);
@@ -191,8 +200,8 @@ public class SlipStreamSSServiceTest {
 		ssservise.waitForReadyState(deploymnetId);
 		Thread.sleep(30000);
 		
-		String type = "testclient";
-		//String deploymnetId = "c9171e2b-95a4-4ffb-bfac-f59ca013a79c";
+		String type = "client";
+		//String deploymnetId = "b1803152-c3fb-44c7-aea0-f8cff38248d5";
 		ssservise.addVM(deploymnetId, type, 2);
 		Thread.sleep(30000);
 		ssservise.waitForReadyState(deploymnetId);
