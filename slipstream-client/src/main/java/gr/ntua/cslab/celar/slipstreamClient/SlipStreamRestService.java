@@ -29,7 +29,7 @@ import com.sixsq.slipstream.util.SerializationUtil;
 //import com.sixsq.slipstream.util.SerializationUtil;
 
 public class SlipStreamRestService {
-	private static String user="ioannis", password="", url="https://109.231.121.23/";
+	private static String user="ioannis", password="a1s2d3f4", url="https://109.231.121.23/";
 
 	public static Module getModule(String name) throws Exception{
 
@@ -204,9 +204,9 @@ public class SlipStreamRestService {
 			Module m = (Module)SerializationUtil.fromXml(SerializationUtil.toXmlString(module), ImageModule.class);
 			//String xml = SerializationUtil.toXmlString(m);
 			System.out.println(m.getName()+" !!!!!!!!!!!!!bjkliuuil");
-			
-			Module m1 = getModule(name);
 			*/
+			//Module m1 = getModule(name);
+			
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
