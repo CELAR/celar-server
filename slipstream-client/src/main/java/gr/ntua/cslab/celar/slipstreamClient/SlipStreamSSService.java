@@ -51,7 +51,7 @@ public class SlipStreamSSService {
 	
 	
 	public boolean putModule(Module module) throws IOException, InterruptedException{
-
+		System.out.println("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
 		BufferedWriter writer = null;
 		String xmlfile = "/Users/nikospapailiou/test.xml";
@@ -88,6 +88,7 @@ public class SlipStreamSSService {
 	}
 	
 	public boolean terminateApplication(String deploymentID) throws IOException, InterruptedException{
+		System.out.println("Terminating deployment: "+deploymentID);
 		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-X", "DELETE", "-k"};
 		executeCommand(command);
 		return true;
@@ -103,6 +104,7 @@ public class SlipStreamSSService {
 			params+=e.getKey()+"="+e.getValue();
 			i++;
 		}
+		System.out.println("Launching application: "+name+" with parameters: "+params);
 		String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
 		String ret = executeCommand(command);
 		if(ret.equals("")){
@@ -128,20 +130,22 @@ public class SlipStreamSSService {
 	}	
 	
 
-	public void addVM(String deploymnetId, String type) throws Exception {
-		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n=1", "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
-		executeCommand(command);
+	public String addVM(String deploymnetId, String type, Integer number) throws Exception {
+		System.out.println("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
+		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
+		return executeCommand(command);
 	}
 
-	public void removeVM(String deploymnetId, String type, String id) throws Exception {
-		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+id, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+	public void removeVM(String deploymnetId, String type, String ids) throws Exception {
+		System.out.println("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
+		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
 		executeCommand(command);
 	}
 
 	public void waitForReadyState(String deploymnetId) throws Exception {
 		while(true){
 			String state = getDeploymentState(deploymnetId);
-			System.out.println(state);
+			System.out.println("Current State: "+state);
 			if(state.equals("Ready"))
 				break;
 			Thread.sleep(1000);
@@ -164,11 +168,11 @@ public class SlipStreamSSService {
 	}
 	
 	public String executeCommand(String[] command) throws IOException, InterruptedException {
-		System.out.print("Executing command: ");
+		/*System.out.print("Executing command: ");
 		for (int i = 0; i < command.length; i++) {
 			System.out.print(command[i]+" ");
 		}
-		System.out.println();
+		System.out.println();*/
 		StringBuffer output = new StringBuffer();
 		Process p = Runtime.getRuntime().exec(command);
 		p.waitFor();

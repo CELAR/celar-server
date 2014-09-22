@@ -177,7 +177,8 @@ public class SlipStreamSSServiceTest {
 	public static void main(String[] args) throws Exception {
 		SlipStreamSSService ssservise = new SlipStreamSSService("*", "*", "*");
 		
-		//testPutApplication(ssservise);
+		
+		testPutApplication(ssservise);
 		
 		HashMap<String,String> parameters = new HashMap<String, String>();
 		parameters.put("apache:multiplicity", "1");
@@ -192,10 +193,10 @@ public class SlipStreamSSServiceTest {
 		
 		String type = "testclient";
 		//String deploymnetId = "c9171e2b-95a4-4ffb-bfac-f59ca013a79c";
-		ssservise.addVM(deploymnetId, type);
+		ssservise.addVM(deploymnetId, type, 2);
 		Thread.sleep(30000);
 		ssservise.waitForReadyState(deploymnetId);
-		ssservise.removeVM(deploymnetId, type, "2");
+		ssservise.removeVM(deploymnetId, type, "2,3");
 		Thread.sleep(30000);
 		ssservise.waitForReadyState(deploymnetId);
 		
