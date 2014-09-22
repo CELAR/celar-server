@@ -178,25 +178,26 @@ public class SlipStreamSSServiceTest {
 		SlipStreamSSService ssservise = new SlipStreamSSService("*", "*", "*");
 		
 		//testPutApplication(ssservise);
-		//
-		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample1/apacheExample");
+		
+		HashMap<String,String> parameters = new HashMap<String, String>();
+		parameters.put("apache:multiplicity", "1");
+		parameters.put("apache:Flexiant.cpu", "2");
+		parameters.put("testclient:multiplicity", "1");
+		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample1/apacheExample", parameters);
+		if(deploymnetId==null)
+			System.exit(0);
 		System.out.println(deploymnetId);
-		while(true){
-			String state = ssservise.getDeploymentState(deploymnetId);
-			System.out.println(state);
-			if(state.equals("Ready"))
-				break;
-			Thread.sleep(1000);
-		}
+		ssservise.waitForReadyState(deploymnetId);
+		Thread.sleep(30000);
+		
 		String type = "testclient";
+		//String deploymnetId = "c9171e2b-95a4-4ffb-bfac-f59ca013a79c";
 		ssservise.addVM(deploymnetId, type);
-		while(true){
-			String state = ssservise.getDeploymentState(deploymnetId);
-			System.out.println(state);
-			if(state.equals("Ready"))
-				break;
-			Thread.sleep(1000);
-		}
+		Thread.sleep(30000);
+		ssservise.waitForReadyState(deploymnetId);
+		ssservise.removeVM(deploymnetId, type, "2");
+		Thread.sleep(30000);
+		ssservise.waitForReadyState(deploymnetId);
 		
 		ssservise.terminateApplication(deploymnetId);
 		System.out.println(ssservise.getDeploymentState(deploymnetId));

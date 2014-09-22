@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -91,9 +93,21 @@ public class SlipStreamSSService {
 		return true;
 	}
 	
-	public String launchApplication(String name) throws IOException, InterruptedException{
-		String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", "apache:multiplicity=1,testclient:multiplicity=1",  name};
+	public String launchApplication(String name, Map<String,String> deploymentParameters) throws IOException, InterruptedException{
+		String params = "";
+		int i =0;
+		for(Entry<String, String> e : deploymentParameters.entrySet()){
+			if(i>0){
+				params+=",";
+			}
+			params+=e.getKey()+"="+e.getValue();
+			i++;
+		}
+		String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
 		String ret = executeCommand(command);
+		if(ret.equals("")){
+			return null;
+		}
 		String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
 		return deploymentId;
 	}
@@ -117,6 +131,21 @@ public class SlipStreamSSService {
 	public void addVM(String deploymnetId, String type) throws Exception {
 		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n=1", "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
 		executeCommand(command);
+	}
+
+	public void removeVM(String deploymnetId, String type, String id) throws Exception {
+		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+id, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+		executeCommand(command);
+	}
+
+	public void waitForReadyState(String deploymnetId) throws Exception {
+		while(true){
+			String state = getDeploymentState(deploymnetId);
+			System.out.println(state);
+			if(state.equals("Ready"))
+				break;
+			Thread.sleep(1000);
+		}
 	}
 	
 	public String executeCommand(String command) throws IOException, InterruptedException {
@@ -183,6 +212,8 @@ public class SlipStreamSSService {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+
 
 
 }
