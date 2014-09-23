@@ -114,6 +114,9 @@
                     <group>Application</group>
                     <packager>ggian@cslab</packager>
                     
+                    <requires>
+                        <require>java-1.7.0-openjdk.x86_64</require>
+                    </requires>
                     <mappings>
                         <mapping>
                             <directory>${celar.install.dir}/celar-server/</directory>
