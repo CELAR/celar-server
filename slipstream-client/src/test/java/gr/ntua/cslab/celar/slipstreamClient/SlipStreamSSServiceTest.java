@@ -184,7 +184,7 @@ public class SlipStreamSSServiceTest {
 	}
 
 	public static void main(String[] args) throws Exception {
-		SlipStreamSSService ssservise = new SlipStreamSSService("*", "*", "*");
+		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", "a1s2d3f4", "https://109.231.121.23");
 		
 		
 		testPutApplication(ssservise);
