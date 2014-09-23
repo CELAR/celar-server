@@ -10,11 +10,15 @@ import eu.celar.tosca.DocumentRoot;
 import eu.celar.tosca.ToscaPackage;
 import eu.celar.tosca.elasticity.Tosca_Elasticity_ExtensionsPackage;
 import eu.celar.tosca.util.ToscaResourceFactoryImpl;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +47,7 @@ public class Tools {
    */
     
     
-    public static DocumentRoot loadFromFile(final String toscaFile) {
+    public static DocumentRoot loadFromFile(final String toscaFile) throws IOException {
         logger.setLevel(Level.OFF);
         // Create a ResourceSet
         ResourceSet resourceSet = new ResourceSetImpl();
@@ -61,11 +65,7 @@ public class Tools {
         resourceSet.getPackageRegistry().put(ToscaPackage.eNS_URI, ToscaPackage.eINSTANCE);
         resourceSet.getPackageRegistry().put(Tosca_Elasticity_ExtensionsPackage.eNS_URI, Tosca_Elasticity_ExtensionsPackage.eINSTANCE);
         Resource resource = resourceSet.createResource(URI.createFileURI(toscaFile));
-        try {
-            resource.load(options);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        resource.load(options);
 
         DocumentRoot toscaRoot = (DocumentRoot) resource.getContents().get(0);
 
@@ -77,9 +77,8 @@ public class Tools {
      * Extracts the .csar archive in the given folder
      * @param csar
      * @param outputFolder
-     * @throws IOException 
      */
-    public static void extractCsar(File csar, final String outputFolder ) throws IOException {    
+    public static void extractCsar(File csar, final String outputFolder ){    
     byte[] buffer = new byte[ 1024 ];
     try {
       // create output directory is not exists
@@ -92,34 +91,86 @@ public class Tools {
       ZipInputStream zis = new ZipInputStream( new FileInputStream( csar ) );
       // get the zipped file list entry
       ZipEntry ze = zis.getNextEntry();
+      
       while( ze != null ) {
-        String fileName = ze.getName();
-        File newFile = new File( outputFolder + File.separator + fileName );
-        logger.info("Extracting file: " + newFile.getAbsoluteFile() ); //$NON-NLS-1$
-        new File( newFile.getParent() ).mkdirs();
-        FileOutputStream fos = new FileOutputStream( newFile );
-        int len;
-        while( ( len = zis.read( buffer ) ) > 0 ) {
-          fos.write( buffer, 0, len );
+        //directories are created only for the necessary files
+        if (!ze.isDirectory()){
+            String fileName = ze.getName();
+            File newFile = new File( outputFolder + File.separator + fileName );
+            logger.debug("Extracting file: " + newFile.getAbsoluteFile() ); //$NON-NLS-1$
+            //this is where dirs are actually created
+            new File( newFile.getParent() ).mkdirs();
+            FileOutputStream fos = new FileOutputStream( newFile );
+            int len;
+            while( ( len = zis.read( buffer ) ) > 0 ) {
+              fos.write( buffer, 0, len );
+            }
+            fos.close();
         }
-        fos.close();
         ze = zis.getNextEntry();
       }
       zis.closeEntry();
       zis.close();
-      logger.info( "Done" ); //$NON-NLS-1$
     } catch( IOException ex ) {
       ex.printStackTrace();
     }
   }
     
-    public String readFromFile(String filename) throws IOException{
-        String content = new String(Files.readAllBytes(Paths.get("duke.java")));
+    public static Path extractCsar(String csarFileName) throws IOException {
+        File csar = new File(csarFileName);
+        if(!csar.isFile()){
+            logger.error("File '"+ csarFileName +"' does not exist!");
+            throw new IOException("File "+ csarFileName +" does not exist!");
+        }
+        //Path basedir = FileSystems.getDefault().getPath("C:/tutorial/tmp/");
+        String tmp_dir_prefix = "extracted_csar_";
+        Path tmp = Files.createTempDirectory(tmp_dir_prefix);
+        System.out.println(tmp);
+        extractCsar(csar, tmp.toString());
+        return tmp;
+    }
+
+  
+  static void recursiveDelete(File file) {
+        //to end the recursive loop
+        if (!file.exists()) return;
+        //if directory, go inside and call recursively
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                //call recursively
+                recursiveDelete(f);
+            }
+        }
+        file.delete();
+    }
+
+    static String findToscaPath(Path tempDir) throws IOException {
+        String path=null;
+        File meta = new File (tempDir.toString()+File.separator+"TOSCA-Metadata"+File.separator+"TOSCA.meta");
+        
+        if(!meta.isFile()){
+            logger.error("missing 'TOSCA.meta' file ");
+            throw new IOException("could not find TOSCA.meta file");
+        }
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(meta))) {
+            for (String line; (line = br.readLine()) != null;) {
+                line = line.trim();
+                if(line.toLowerCase().startsWith("name")){
+                    return line.substring(5).trim();
+                }
+            }
+        }
+        return path;
+    }
+    
+    public static String readFromFile(String filename) throws IOException{
+        String content = new String(Files.readAllBytes(Paths.get(filename)));
         return content;
     }
     
   
-  public static void main(String args[]){
-      
+  public static void main(String args[]) throws Exception{
+      CSARParser tc = new CSARParser("aaa");
   }
 }

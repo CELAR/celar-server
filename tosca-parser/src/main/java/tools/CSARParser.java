@@ -6,6 +6,14 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package tools;
@@ -20,8 +28,13 @@ import eu.celar.tosca.TNodeTypeImplementation;
 import eu.celar.tosca.TRelationshipTemplate;
 import eu.celar.tosca.TServiceTemplate;
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -31,36 +44,34 @@ import org.eclipse.emf.ecore.xml.type.impl.AnyTypeImpl;
  *
  * @author cmantas
  */
-public class TConsumer {
+public class CSARParser {
     
-    public  Logger logger = Logger.getLogger(TConsumer.class);
+    public  Logger logger = Logger.getLogger(CSARParser.class);
     
      List<String> modules = new java.util.LinkedList();
      Map<String, List<String> > moduleComponents = new java.util.TreeMap();
      Map<String, Map<String, String>> componentsProperties = new java.util.TreeMap();
+     private List<Array> ModuleDependencies;
+     private List<Array> ComponentDependencies;
+     private Path tempDir=null;
     
     
+    public CSARParser(){}
     
-    
-    
-    public static void main(String[] args) throws Exception{
-      
-        // extract the csar archive
-//        String filepath = "app.csar";
-//        String extractPath = "playground";
-//        Tools.extractCsar(new File(filepath), extractPath);
- //      File toscaFile = handler.getDefinitionFiles()[0];
-        
-        DocumentRoot tosca = Tools.loadFromFile( "src/main/resources/myApp_v0.0.5.tosca" );
-        //System.out.println(tosca.getDefinitions().getNodeTypeImplementation());
-            
-        
-        TConsumer tc = new TConsumer();
-        tc.handleRoot(tosca);
-        //System.out.println(modules);
-          
-  
+    public CSARParser(String csarFileName) throws Exception{
+        tempDir = Tools.extractCsar(csarFileName);
+        String toscaPath = Tools.findToscaPath(tempDir);
+        logger.debug("path of tosca file is: "+toscaPath);
+        //load the tosca from file
+        DocumentRoot tosca = Tools.loadFromFile(tempDir+File.separator+toscaPath);
+        //parse the tosca xml
+        handleRoot(tosca);
+
+        //delete the temp dir
+        Tools.recursiveDelete(tempDir.toFile());
     }
+    
+
     
     
     
@@ -97,7 +108,7 @@ public class TConsumer {
     
     
     private  void handleModuleDependency(TRelationshipTemplate rel) {
-          logger.debug("handlin dependency: "+rel);
+          logger.debug("Handling dependency: "+rel.getName());
 //          logger.debug("from"+rel.getSourceElement().getRef());
 //          logger.debug("to "+rel.getTargetElement().getRef());
           
@@ -204,13 +215,41 @@ public class TConsumer {
 
         //assuming one artifact refference per artifact template
         TArtifactReference ar = a.getArtifactReferences().getArtifactReference().get(0);
-        String path = ar.getReference();
-        logger.debug("ScriptPath: "+path);
-        componentProps.put(scriptName, path);
+        String scriptPath = ar.getReference();
+        logger.debug("ScriptPath: "+scriptPath);
+        String scriptContents = null;
+        try {
+            scriptContents = Tools.readFromFile(tempDir+File.separator+scriptPath);
+        } catch (IOException ex) {
+            logger.error("Could not find script file: "+scriptPath);
+        }
+        //
+        componentProps.put(scriptName, scriptContents);
         
     }
 
     
+    
+    
+    
+        public static void main(String[] args) throws Exception{
+      
+        // extract the csar archive
+//        String filepath = "app.csar";
+//        String extractPath = "playground";
+//        Tools.extractCsar(new File(filepath), extractPath);
+ //      File toscaFile = handler.getDefinitionFiles()[0];
+        
+        DocumentRoot tosca = Tools.loadFromFile( "src/main/resources/myApp_v0.0.5.tosca" );
+        //System.out.println(tosca.getDefinitions().getNodeTypeImplementation());
+            
+        
+        CSARParser tc = new CSARParser();
+        tc.handleRoot(tosca);
+        //System.out.println(modules);
+          
+  
+    }
     
     
     
