@@ -1,4 +1,8 @@
-#!/bin/sh -xe
+#!/bin/bash
+ip=$(ss-get hostname)
+hostname=$(hostname)
+echo $ip $hostname >> /etc/hosts
+
 wget http://javadl.sun.com/webapps/download/AutoDL?BundleId=78697 -O jre.tar.gz
 tar xfz jre.tar.gz
 jre=`ls | grep jre1.7`
@@ -71,7 +75,8 @@ apache-cassandra-1.2.6/bin/cassandra
 sleep 60
 ss-set ready true
 
-wget https://github.com/downloads/brianfrankcooper/YCSB/ycsb-0.1.4.tar.gz
+#wget https://github.com/downloads/brianfrankcooper/YCSB/ycsb-0.1.4.tar.gz
+curl -O https://cloud.github.com/downloads/brianfrankcooper/YCSB/ycsb-0.1.4.tar.gz
 tar xfz ycsb-0.1.4.tar.gz
 
 #mkdir /local/usertable
@@ -93,7 +98,7 @@ do
    ss-get --timeout 3600 cassandraNode.$i:ready
 done
 
-echo -e "create keyspace usertable \n   with placement_strategy = 'org.apache.cassandra.locator.SimpleStrategy' \n   and strategy_options = {replication_factor:1}; \nuse usertable; \ncreate column family data; \nshow keyspaces;\n" > schema.cql
+echo -e "create keyspace usertable \n with placement_strategy = 'org.apache.cassandra.locator.SimpleStrategy' \n and strategy_options = {replication_factor:1}; \nuse usertable; \ncreate column family data; \nshow keyspaces;\n" > schema.cql
 
 ./apache-cassandra-1.2.6/bin/cassandra-cli -h $master -p 9160 -f schema.cql
 

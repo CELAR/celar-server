@@ -1,4 +1,8 @@
 #!/bin/bash 
+ip=$(ss-get hostname)
+hostname=$(hostname)
+echo $ip $hostname >> /etc/hosts
+
 apt-get update
 apt-get install wget -y
 wget http://javadl.sun.com/webapps/download/AutoDL?BundleId=78697 -O jre.tar.gz
@@ -16,7 +20,7 @@ export JAVA_HOME=/usr/lib/jvm/$jre
 echo export JAVA_HOME=/usr/lib/jvm/$jre >> /root/.bashrc
 
 export DEBIAN_FRONTEND=noninteractive; 
-$apt-get update -y
+apt-get update -y
 #apt-get install -y openjdk-6-jre
 
 #install ganglia
@@ -32,6 +36,7 @@ tar xfz apache-cassandra-1.2.6-bin.tar.gz
 
 currentNodeIP=`ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`
 master=$(ss-get --timeout 360 cassandraSeedNode.1:hostname)
+echo $master seednode >> /etc/hosts
 
 sed -i "s/deaf = no/deaf = yes/g" /etc/ganglia/gmond.conf
 sed -i "s/host_dmax = 0/host_dmax = 86400/g" /etc/ganglia/gmond.conf
