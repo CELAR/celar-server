@@ -1,0 +1,7 @@
+TOSCA-Meta-Version: 1.0
+CSAR-Version: 1.0
+Created-By: c-Eclipse
+
+Name: Definitions/myApp_v0.0.6.tosca
+Version: 1.0
+Content-Type: application/vnd.oasis.tosca.definitions

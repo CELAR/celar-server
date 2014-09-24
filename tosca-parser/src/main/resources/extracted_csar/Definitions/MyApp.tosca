@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions  xmlns:ns1="http://www.example.com/tosca/Types/CELAR" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+
+<!-- Test Application tosca structure proposal v0.0.1 -->
+
+<!--  Missing: Application (root) information
+      * Description (could be just a name)
+      * uniqueID (optional)
+      * major version
+      * minor version
+-->
+
+
+  <!-- Services->Modules -->
+
+  <tosca:ServiceTemplate id="Cassandra">
+      <!-- Missing: Module Dependencies -->
+
+    <tosca:TopologyTemplate>
+
+      <!--  Nodes -> Components -->
+
+      <tosca:NodeTemplate id="CassandraSeedNode" type="VM" minInstances="1" maxInstances="3" >
+        <!-- Missing: Component Dependencies -->
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="VMI" name="ami-b9334f89"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+
+      <tosca:NodeTemplate id="Cassandra_Node" type="VM" maxInstances="50">  <!-- ...similar to seedNode...--> </tosca:NodeTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+
+  <tosca:ServiceTemplate id="Web Server"> <!-- ... --> </tosca:ServiceTemplate>
+
+
+  <!-- node Type implementation -->
+  <tosca:NodeTypeImplementation nodeType="ns1:CassandraSeedNode" name="CassandraSeedNodeImplementation">
+    <tosca:ImplementationArtifacts>
+      <!-- Missing: Provided Resources (eg. VM Flavor) -->
+      <tosca:ImplementationArtifact artifactType="ns1:ScriptArtifact" interfaceName="lifecycle"
+            operationName="install" artifactRef="Cassandra_SeedNode_install">
+      </tosca:ImplementationArtifact>
+    </tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+
+  <!-- ...similar node type implementation for cassandra node, YCSB Client nodes...-->
+
+  <tosca:ArtifactTemplate type="ns1:ScriptArtifact" id="Cassandra_SeedNode_install">
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="Scripts/Cassandra_SeedNode.sh"></tosca:ArtifactReference>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+
+  <!-- ...similar ArtifactTemplates for the rest of the nodes... -->
+
+</tosca:Definitions>
