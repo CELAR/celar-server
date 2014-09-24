@@ -8,7 +8,7 @@ import com.sixsq.slipstream.persistence.ProjectModule;
 
 public class CassandraTest {
 	public static void main(String[] args) throws Exception {
-		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", "a1s2d3f4", "https://109.231.121.23");
+		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", "*", "https://109.231.121.23");
 
 		/*String projectName = "examples/CELAR/Cassandra";
 		ProjectModule project = new ProjectModule(projectName);

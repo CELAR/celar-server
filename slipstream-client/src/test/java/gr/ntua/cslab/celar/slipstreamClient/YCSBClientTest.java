@@ -45,20 +45,12 @@ public class YCSBClientTest {
 		targets.add(t1);
 		
 		module.setTargets(targets);
-	
-		String parameterName = "ready";
-		String description = "Server ready";
-	
-		ModuleParameter parameter = new ModuleParameter(parameterName, "", description);
-		parameter.setCategory("Output");
-		module.setParameter(parameter);
 		
-		
-		parameterName = "Flexiant.ram";
-		description = "ram";
+		String parameterName = "Flexiant.ram";
+		String description = "ram";
 		String value = "2048";
 	
-		parameter = new ModuleParameter(parameterName, value, description);
+		ModuleParameter parameter = new ModuleParameter(parameterName, value, description);
 		parameter.setCategory("Flexiant");
 		parameter.setDefaultValue("2048");
 		module.setParameter(parameter);
