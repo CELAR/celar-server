@@ -30,14 +30,14 @@ public class SlipStreamSSServiceTest {
 	public static void testPutApplication(SlipStreamSSService ssservise) throws Exception {
 	
 		//create project directory
-		String projectName = "examples/CELAR/apacheExample2";
+		String projectName = "examples/CELAR/apacheExample3";
 		ProjectModule project = new ProjectModule(projectName);
 		Authz auth = new Authz(ssservise.getUser(), project);
 		project.setAuthz(auth);
 		ssservise.putModule(project);
 		
 		//add ImageModule apache
-		String name = "examples/CELAR/apacheExample2/apache";
+		String name = "examples/CELAR/apacheExample3/apache";
 		ImageModule module = new ImageModule(name);
 		module.setModuleReference("module/examples/images/ubuntu-12.04");
 		module.setLoginUser("ubuntu");
@@ -115,7 +115,7 @@ public class SlipStreamSSServiceTest {
 		
 		
 		//add ImageModule client
-		String name1 = "examples/CELAR/apacheExample2/client";
+		String name1 = "examples/CELAR/apacheExample3/client";
 		ImageModule module1 = new ImageModule(name1);
 		module1.setModuleReference("module/examples/images/ubuntu-12.04");
 		module1.setLoginUser("ubuntu");
@@ -169,7 +169,7 @@ public class SlipStreamSSServiceTest {
 		ssservise.putModule(module1);
 	
 		//add DeploymentModule 
-		String name2 = "examples/CELAR/apacheExample2/apacheExample";
+		String name2 = "examples/CELAR/apacheExample3/apacheExample";
 		DeploymentModule deployment = new DeploymentModule(name2);
 		auth = new Authz(ssservise.getUser(), deployment);
 		deployment.setAuthz(auth);
@@ -188,13 +188,13 @@ public class SlipStreamSSServiceTest {
 		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", "a1s2d3f4", "https://109.231.121.23");
 		
 		
-		testPutApplication(ssservise);
+//		testPutApplication(ssservise);
 		
-//		HashMap<String,String> parameters = new HashMap<String, String>();
-//		parameters.put("apache:multiplicity", "1");
-//		parameters.put("apache:Flexiant.cpu", "2");
-//		parameters.put("client:multiplicity", "1");
-//		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample2/apacheExample", parameters);
+		HashMap<String,String> parameters = new HashMap<String, String>();
+		parameters.put("apache:multiplicity", "1");
+		parameters.put("apache:Flexiant.cpu", "2");
+		parameters.put("client:multiplicity", "1");
+		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample3/apacheExample", parameters);
 //		if(deploymnetId==null)
 //			System.exit(0);
 //		System.out.println(deploymnetId);
