@@ -32,13 +32,12 @@ public class Tools {
     
     
     static Logger logger = Logger.getLogger( Tools.class.getName() );
+    
     /**
      * Loads a tosca xml from a file
    * @param toscaFile
    * @return The TOSCA document root or NULL if empty
    */
-    
-    
     public static DocumentRoot loadFromFile(final String toscaFile) throws IOException {
         logger.debug("Loading from csar file: "+toscaFile);
         // Create a ResourceSet

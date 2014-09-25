@@ -132,7 +132,6 @@ public class CSARParser implements Parser{
     private  void handleComponent(TNodeTemplate component) {
         String componentName = component.getType().toString();        
         logger.debug("Handling component:" + componentName);
-        
         String componentId = component.getId();
         replaceReffs(componentDependencies, componentId, componentName);
         
@@ -177,7 +176,6 @@ public class CSARParser implements Parser{
             return;
         }
         for (ImplementationArtifactType ia : ni.getImplementationArtifacts().getImplementationArtifact()) {
-            logger.debug("arrtifact:" + ia);
             String opName = ia.getOperationName();
             String artifactRef = ia.getArtifactRef().toString();
             props.put(opName+"Script", artifactRef);
@@ -191,7 +189,7 @@ public class CSARParser implements Parser{
         boolean found = false;
         for (Map.Entry<String, Map<String, String>> componentPropsEntry : componentsProperties.entrySet()) {
             for (Map.Entry<String, String> propertiesEntry : componentPropsEntry.getValue().entrySet()) {
-                if (propertiesEntry.getValue().equals(artifactId)) {
+                if (propertiesEntry.getValue()!=null && propertiesEntry.getValue().equals(artifactId)) {
                     scriptName=propertiesEntry.getKey();
                     componentProps = componentPropsEntry.getValue();
                     found = true;
@@ -296,19 +294,14 @@ public class CSARParser implements Parser{
 //        String extractPath = "playground";
 //        Tools.extractCsar(new File(filepath), extractPath);
         //      File toscaFile = handler.getDefinitionFiles()[0];
-        DocumentRoot tosca = Tools.loadFromFile("src/main/resources/extracted_csar/Definitions/myApp_v0.0.6.tosca");
+        DocumentRoot tosca = Tools.loadFromFile("src/main/resources/extracted_csar/Definitions/myApp_v0.0.6_npapa.tosca");
 //            
 //        
         CSARParser tc = new CSARParser();
         tc.handleRoot(tosca);
         System.out.println(tc.componentsProperties);
         
-        for(String[] d: tc.componentDependencies ){
-            System.out.println(d[0]+"-->"+d[1]);
-        }
-        for(String[] d: tc.moduleDependencies ){
-            System.out.println(d[0]+"-->"+d[1]);
-        }
+        
 
     }
 

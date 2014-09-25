@@ -11,13 +11,13 @@
     	<!-- Module Cassandra (composite) -->
       <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="G973642945" type="substituteNode"/>
       <!-- Module Web service (composite) -->
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="_web_service_id_" type="substituteNode"/>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="_ycsb_client_it_" type="substituteNode"/>
 
 
       <!--  Dependencies between Modules -->
       <tosca:RelationshipTemplate id="R_some_node_id" type="Depends_On" name="??_some_name_??">
         <tosca:SourceElement ref="G973642945"/>
-        <tosca:TargetElement ref="_web_service_id_"/>
+        <tosca:TargetElement ref="_ycsb_client_it_"/>
       </tosca:RelationshipTemplate>
 
     </tosca:TopologyTemplate>
@@ -61,18 +61,18 @@
     </tosca:TopologyTemplate>
   </tosca:ServiceTemplate>
 
-  <!-- Module: Web Service -->
-  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="_web_service_id_" name="Web Service" substitutableNodeType="substituteNode">
+  <!-- Module: YCSB Client -->
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="_ycsb_client_it_" name="YCSB Client" substitutableNodeType="substituteNode">
 
     <tosca:TopologyTemplate>
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1629420738" type="webserver" maxInstances="3" minInstances="1" name="Web_Server" initInstances="1">
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1629420738" maxInstances="3" minInstances="1" type="YCSB_node" initInstances="1">
         <tosca:Properties>
           <elasticity:NodeProperties>
             <elasticity:Flavor>vcpus:4 ram:2048 disk:20</elasticity:Flavor>
           </elasticity:NodeProperties>
         </tosca:Properties>
         <tosca:DeploymentArtifacts>
-          <tosca:DeploymentArtifact artifactRef="Web_ServerImage" artifactType="VMI" name="Ubuntu 10.04.4 LTS"/>
+          <tosca:DeploymentArtifact artifactRef="YCSB_image" artifactType="VMI" name="Ubuntu 10.04.4 LTS"/>
         </tosca:DeploymentArtifacts>
       </tosca:NodeTemplate>
     </tosca:TopologyTemplate>
@@ -99,7 +99,39 @@
 
   <tosca:ArtifactTemplate type="ScriptArtifact" id="Cassandra_SeedNode_execute">
   	<tosca:ArtifactReferences>
-  		<tosca:ArtifactReference reference="Scripts/Cassandra_SeedNode.sh"></tosca:ArtifactReference>
+  		<tosca:ArtifactReference reference="Scripts/seedNode.sh"></tosca:ArtifactReference>
+  	</tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+
+    <tosca:NodeTypeImplementation nodeType="Cassandra_Node" name="CassandraNodeImplementation">
+  	<tosca:ImplementationArtifacts>
+  		<tosca:ImplementationArtifact
+  			artifactType="ScriptArtifact" interfaceName="lifecycle"
+  			operationName="execute" artifactRef="Cassandra_Node_execute">
+  		</tosca:ImplementationArtifact>
+  	</tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+
+
+  <tosca:ArtifactTemplate type="ScriptArtifact" id="Cassandra_Node_execute">
+  	<tosca:ArtifactReferences>
+  		<tosca:ArtifactReference reference="Scripts/node.sh"></tosca:ArtifactReference>
+  	</tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+
+    <tosca:NodeTypeImplementation nodeType="YCSB_node" name="YCSBNodeImplementation">
+  	<tosca:ImplementationArtifacts>
+  		<tosca:ImplementationArtifact
+  			artifactType="ScriptArtifact" interfaceName="lifecycle"
+  			operationName="execute" artifactRef="YCSB_Node_execute">
+  		</tosca:ImplementationArtifact>
+  	</tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+
+
+  <tosca:ArtifactTemplate type="ScriptArtifact" id="YCSB_Node_execute">
+  	<tosca:ArtifactReferences>
+  		<tosca:ArtifactReference reference="Scripts/ycsbClient.sh"></tosca:ArtifactReference>
   	</tosca:ArtifactReferences>
   </tosca:ArtifactTemplate>
 

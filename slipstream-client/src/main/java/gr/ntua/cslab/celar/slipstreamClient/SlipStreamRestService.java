@@ -52,7 +52,7 @@ public class SlipStreamRestService {
 
 		String xml = SerializationUtil.toXmlString(module);
 		BufferedWriter writer = null;
-		String xmlfile = "/Users/nikospapailiou/test.xml";
+		String xmlfile = "/tmp/test.xml";
 		
 		try
 		{
