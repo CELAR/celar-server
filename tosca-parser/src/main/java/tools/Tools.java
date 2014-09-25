@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package tools;
 
 import eu.celar.tosca.DocumentRoot;
@@ -16,7 +10,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -48,7 +40,7 @@ public class Tools {
     
     
     public static DocumentRoot loadFromFile(final String toscaFile) throws IOException {
-        logger.setLevel(Level.OFF);
+        logger.debug("Loading from csar file: "+toscaFile);
         // Create a ResourceSet
         ResourceSet resourceSet = new ResourceSetImpl();
         XMLMapImpl baseToscaMap = new XMLMapImpl();
@@ -65,6 +57,10 @@ public class Tools {
         resourceSet.getPackageRegistry().put(ToscaPackage.eNS_URI, ToscaPackage.eINSTANCE);
         resourceSet.getPackageRegistry().put(Tosca_Elasticity_ExtensionsPackage.eNS_URI, Tosca_Elasticity_ExtensionsPackage.eINSTANCE);
         Resource resource = resourceSet.createResource(URI.createFileURI(toscaFile));
+        if(resource==null){
+            logger.error("Could not load file: "+toscaFile);
+            throw new IOException("Could not load file: "+toscaFile);
+        }
         resource.load(options);
 
         DocumentRoot toscaRoot = (DocumentRoot) resource.getContents().get(0);
@@ -144,8 +140,8 @@ public class Tools {
         file.delete();
     }
 
-    static String findToscaPath(Path tempDir) throws IOException {
-        String path=null;
+    static Map<String, String> getToscaMeta(Path tempDir) throws IOException {
+        Map<String, String> props = new java.util.TreeMap<>();
         File meta = new File (tempDir.toString()+File.separator+"TOSCA-Metadata"+File.separator+"TOSCA.meta");
         
         if(!meta.isFile()){
@@ -156,12 +152,14 @@ public class Tools {
         try (BufferedReader br = new BufferedReader(new FileReader(meta))) {
             for (String line; (line = br.readLine()) != null;) {
                 line = line.trim();
-                if(line.toLowerCase().startsWith("name")){
-                    return line.substring(5).trim();
-                }
+                int c = line.indexOf(':');
+                if(c==-1) continue;
+                String key = line.substring(0, c).trim();
+                String value = line.substring(c + 1).trim();
+                props.put(key, value);
             }
         }
-        return path;
+        return props;
     }
     
     public static String readFromFile(String filename) throws IOException{

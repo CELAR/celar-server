@@ -2,10 +2,10 @@
 <tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:sybl="http://www.example.org/SYBL" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" id="hi">
 
 
-   <!--  toplevel (Application)  -->
-  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="app1" name="myApp_v0.0.3">
-    <tosca:TopologyTemplate>
+   <!-- ========  toplevel (Application)  -->
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="app1" name="myApp_v0.0.6">
 
+    <tosca:TopologyTemplate>
       <!-- all Nodes of the top level entity are composite -->
 
     	<!-- Module Cassandra (composite) -->
@@ -21,12 +21,8 @@
       </tosca:RelationshipTemplate>
 
     </tosca:TopologyTemplate>
-
-      
-    
-
-
   </tosca:ServiceTemplate>
+
 
   <!--  second level (Modules)  -->
 
@@ -35,7 +31,7 @@
     <tosca:TopologyTemplate>
 
       <!-- Component: SeedNode -->
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C192761248" type="dbserver" maxInstances="1" minInstances="1" name="Cassandra_Seed" initInstances="1">
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C192761248" type="Cassandra_Seed" maxInstances="1" minInstances="1"  initInstances="1">
         <tosca:Properties>
           <elasticity:NodeProperties>
             <elasticity:Flavor>vcpus:2 ram:2048 disk:40</elasticity:Flavor>
@@ -47,7 +43,7 @@
       </tosca:NodeTemplate>
 
       <!-- Component: cassandra node -->
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C417283410" type="dbserver" maxInstances="5" minInstances="1" name="Cassandra_Node" initInstances="1">
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C417283410" type="Cassandra_Node" maxInstances="5" minInstances="1" initInstances="1">
         <tosca:Properties>
           <elasticity:NodeProperties>
             <elasticity:Flavor>vcpus:1 ram:2048 disk:20</elasticity:Flavor>
@@ -81,11 +77,32 @@
       </tosca:NodeTemplate>
     </tosca:TopologyTemplate>
 
-    <!--   MISSING: dependencies betweeen Modules -->
+
 
   </tosca:ServiceTemplate>
 
-  <!-- available opps: Execute, Report, onVMAdd, onVMRemove -->
+
+<!-- Node implementations come before artifacts -->
+
+
+  <tosca:NodeTypeImplementation nodeType="Cassandra_Seed" name="CassandraSeedNodeImplementation">
+  	<tosca:ImplementationArtifacts>
+  		
+  		<!-- available opps: Execute, Report, onVMAdd, onVMRemove -->
+  		<tosca:ImplementationArtifact
+  			artifactType="ScriptArtifact" interfaceName="lifecycle"
+  			operationName="execute" artifactRef="Cassandra_SeedNode_execute">
+  		</tosca:ImplementationArtifact>
+  	</tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+
+
+  <tosca:ArtifactTemplate type="ScriptArtifact" id="Cassandra_SeedNode_execute">
+  	<tosca:ArtifactReferences>
+  		<tosca:ArtifactReference reference="Scripts/Cassandra_SeedNode.sh"></tosca:ArtifactReference>
+  	</tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+
 
 
 </tosca:Definitions>
