@@ -54,7 +54,7 @@ public class SlipStreamSSService {
 		System.out.println("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
 		BufferedWriter writer = null;
-		String xmlfile = "/home/cmantas/test.xml";
+		String xmlfile = "/tmp/test.xml";
 		
 		try
 		{
