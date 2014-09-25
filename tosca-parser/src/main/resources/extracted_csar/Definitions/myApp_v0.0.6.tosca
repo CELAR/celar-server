@@ -65,7 +65,7 @@
   <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="_web_service_id_" name="Web Service" substitutableNodeType="substituteNode">
 
     <tosca:TopologyTemplate>
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1629420738" type="webserver" maxInstances="3" minInstances="1" name="Web_Server" initInstances="1" x="595" y="195">
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1629420738" type="webserver" maxInstances="3" minInstances="1" name="Web_Server" initInstances="1">
         <tosca:Properties>
           <elasticity:NodeProperties>
             <elasticity:Flavor>vcpus:4 ram:2048 disk:20</elasticity:Flavor>
