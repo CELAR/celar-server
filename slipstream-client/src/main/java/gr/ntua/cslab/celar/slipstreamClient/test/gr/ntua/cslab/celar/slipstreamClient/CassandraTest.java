@@ -1,4 +1,4 @@
-package gr.ntua.cslab.celar.slipstreamClient;
+package gr.ntua.cslab.celar.slipstreamClient.test.gr.ntua.cslab.celar.slipstreamClient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +8,7 @@ import com.sixsq.slipstream.persistence.Authz;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.Module;
 import com.sixsq.slipstream.persistence.ProjectModule;
+import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
 public class CassandraTest {
 	public static void main(String[] args) throws Exception {

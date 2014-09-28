@@ -1,16 +1,16 @@
-package gr.ntua.cslab.celar.slipstreamClient;
+package gr.ntua.cslab.celar.slipstreamClient.test.gr.ntua.cslab.celar.slipstreamClient;
 
 import static com.sixsq.slipstream.action.OneShotAction.State.ACTIVE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
+//import org.junit.Test;
 
 import com.sixsq.slipstream.action.OneShotAction;
 import com.sixsq.slipstream.exceptions.ValidationException;
@@ -24,6 +24,7 @@ import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.Target;
 import com.sixsq.slipstream.util.SerializationUtil;
+import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
 
 public class SlipStreamSSServiceTest {
