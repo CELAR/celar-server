@@ -1,4 +1,4 @@
-package gr.ntua.cslab.celar.slipstreamClient.test.gr.ntua.cslab.celar.slipstreamClient;
+package gr.ntua.cslab.celar.slipstreamClient;
 
 import static com.sixsq.slipstream.action.OneShotAction.State.ACTIVE;
 //import static org.junit.Assert.assertEquals;
