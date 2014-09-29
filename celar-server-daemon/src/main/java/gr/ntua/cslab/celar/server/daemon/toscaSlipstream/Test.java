@@ -20,7 +20,7 @@ import com.sixsq.slipstream.persistence.Target;
 
 public class Test {
 	public static void main(String[] args) throws Exception {
-		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "a1s2d3f4", "https://83.212.122.157");
+		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "*", "https://83.212.122.157");
 		
 		
         //create a Parser instance
