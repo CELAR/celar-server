@@ -18,12 +18,15 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sixsq.slipstream.persistence.Authz;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.Module;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.ParameterCategory;
+import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.Target;
+import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.util.SerializationUtil;
 
 //import com.sixsq.slipstream.persistence.ImageModule;
@@ -48,11 +51,7 @@ public class SlipStreamSSService {
 		}
 		return null;
 	}*/
-	
-	
-	public boolean putModule(Module module) throws IOException, InterruptedException{
-		System.out.println("Putting "+module.getClass() +" module: "+ module.getName());
-		String xml = SerializationUtil.toXmlString(module);
+	private String writeXML(String xml) throws IOException{
 		BufferedWriter writer = null;
 		String xmlfile = "/tmp/test.xml";
 		
@@ -74,11 +73,31 @@ public class SlipStreamSSService {
 		    }
 		    catch ( IOException e)
 		    {
+		    	throw e;
 		    }
 		}
+		return xmlfile;
+	}
+	
+	public boolean putUser(User user) throws Exception{
+		System.out.println("Putting user: "+ user.getName());
+		String xml = SerializationUtil.toXmlString(user);
+		System.out.println(xml);
+		String xmlfile = writeXML(xml);
+		String[] command = new String[] {"ss-user-put", "-u", this.user, "-p", password, "--endpoint", url, xmlfile};
+		String ret = executeCommand(command);
+		System.out.println(ret);
+		if(ret.equals(""))
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean putModule(Module module) throws IOException, InterruptedException{
+		System.out.println("Putting "+module.getClass() +" module: "+ module.getName());
+		String xml = SerializationUtil.toXmlString(module);
+		String xmlfile = writeXML(xml);
 		String[] command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
-				
-		
 		String ret = executeCommand(command);
 		System.out.println(ret);
 		if(ret.equals(""))
@@ -152,6 +171,15 @@ public class SlipStreamSSService {
 		}
 	}
 	
+
+	public String createApplication(String appName, String appVersion) throws Exception {
+		ProjectModule project = new ProjectModule(appName+appVersion);
+		Authz auth = new Authz(getUser(), project);
+		project.setAuthz(auth);
+		putModule(project);
+		return appName+appVersion;
+	}
+	
 	public String executeCommand(String command) throws IOException, InterruptedException {
 		 
 		StringBuffer output = new StringBuffer();
@@ -216,6 +244,7 @@ public class SlipStreamSSService {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
 
 
 
