@@ -1,4 +1,4 @@
-package gr.ntua.cslab.server.daemon.toscaSlipstream;
+package gr.ntua.cslab.celar.server.daemon.toscaSlipstream;
 
 import static org.junit.Assert.fail;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
