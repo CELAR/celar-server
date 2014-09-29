@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="VSSdef" name="VideoStreamSerice" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12">
+  <tosca:ServiceTemplate id="VideoStreamService" name="3-Tier Video Streaming Service">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate id="002" type="appserver" name="Application_Server">
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="KeyPair" name="celar.pub"/>
+          <tosca:DeploymentArtifact artifactType="VMI" name="ami-b9334f89"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate id="003" type="dbserver" name="NoSQL_Database">
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactType="KeyPair" name="celar.pub"/>
+          <tosca:DeploymentArtifact artifactType="VMI" name="ami-5594e365"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+</tosca:Definitions>

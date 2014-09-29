@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:sybl="http://www.example.org/SYBL" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" id="hi">
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="hello" name="myApp_v0.0.5">
+    <tosca:BoundaryDefinitions xsi:type="elasticity:TBoundaryDefinitionsExtension">
+      <tosca:Properties>
+        <elasticity:ServiceProperties>
+          <elasticity:Version>1.0</elasticity:Version>
+        </elasticity:ServiceProperties>
+      </tosca:Properties>
+    </tosca:BoundaryDefinitions>
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="G267529191" type="substituteNode"/>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="G1415750045" type="substituteNode"/>
+	  <tosca:RelationshipTemplate id="R911320963" type="Depends_On" name="Web_Service_Cassandra">
+        <tosca:SourceElement ref="G1415750045"/>
+        <tosca:TargetElement ref="G267529191"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="G267529191" name="Cassandra" substitutableNodeType="substituteNode">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1806537302" type="dbserver" maxInstances="-1" minInstances="-1" name="CassandraSeed" initInstances="1">
+        <tosca:Properties>
+          <elasticity:NodeProperties>
+            <elasticity:Flavor>vcpus:2 ram:4096 disk:40</elasticity:Flavor>
+          </elasticity:NodeProperties>
+        </tosca:Properties>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactRef="CassandraSeedImage" artifactType="VMI" name="Ubuntu 12.04.1 LTS"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C953255194" type="dbserver" maxInstances="5" minInstances="1" name="CassandraNode" initInstances="1">
+        <tosca:Properties>
+          <elasticity:NodeProperties>
+            <elasticity:Flavor>vcpus:1 ram:1024 disk:20</elasticity:Flavor>
+          </elasticity:NodeProperties>
+        </tosca:Properties>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactRef="CassandraNodeImage" artifactType="VMI" name="Ubuntu 12.04.1 LTS"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate id="R1908109689" type="Depends_On" name="CassandraSeed_CassandraNode">
+        <tosca:SourceElement ref="C1806537302"/>
+        <tosca:TargetElement ref="C953255194"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="G1415750045" name="Web_Service" substitutableNodeType="substituteNode">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1702474538" type="appserver" maxInstances="-1" minInstances="-1" name="WebServer" initInstances="1">
+        <tosca:Properties>
+          <elasticity:NodeProperties>
+            <elasticity:Flavor>vcpus:1 ram:1024 disk:10</elasticity:Flavor>
+          </elasticity:NodeProperties>
+        </tosca:Properties>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactRef="WebServerImage" artifactType="VMI" name="Ubuntu 12.04.1 LTS"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+  <tosca:ArtifactTemplate id="WebServerImage">
+    <tosca:Properties>
+      <elasticity:ImageArtifactProperties>
+        <elasticity:Description>not_specified</elasticity:Description>
+      </elasticity:ImageArtifactProperties>
+    </tosca:Properties>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate id="CassandraNodeImage">
+    <tosca:Properties>
+      <elasticity:ImageArtifactProperties>
+        <elasticity:Description>not_specified</elasticity:Description>
+      </elasticity:ImageArtifactProperties>
+    </tosca:Properties>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate id="CassandraSeedImage">
+    <tosca:Properties>
+      <elasticity:ImageArtifactProperties>
+        <elasticity:Description>not_specified</elasticity:Description>
+      </elasticity:ImageArtifactProperties>
+    </tosca:Properties>
+  </tosca:ArtifactTemplate>
+</tosca:Definitions>
