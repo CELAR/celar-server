@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,30 @@ public class DBTools extends DBConnectable{
      */
     static{
         openConnection();
-    }        
+    }
+    
+    
+    public static class Constrain{
+        String field, operator, value;
+        
+        public Constrain(String field, String operator, String Value) {
+            this.field = field;
+            this.operator = operator;
+            this.value = Value;
+        }
+
+        public Constrain(String field, String Value) {
+            this.field = field;
+            this.value = Value;
+            this.operator = "=";
+        }
+        
+        @Override
+        public String toString(){
+            String rv = "\""+field+"\" "+operator+" '"+value+"'";
+            return rv;
+        }
+    }
         
     
     static ResultSet execute_all(String query, boolean isUpdate) throws DBException {
@@ -191,6 +215,29 @@ public class DBTools extends DBConnectable{
      */
     public static List<Map<String, String>> doSelectByField(String tablename, String field, String value) throws DBException {
         return doSelect(tablename, "\""+field + "\" ='" + value + "'");
+    }
+    
+    
+    /***
+     * Selects from the table or tuples that satisfy either all of the constrains, if or is false,
+     * or any of the constrains if or is true
+     * @param tablename
+     * @param constrains a list of constrains to satisfy
+     * @param or whether the joining of constrains will be OR (if false it is AND)
+     * @return a List of mappings of ColumnNames--> Values
+     * @throws DBException 
+     */
+    public static List<Map<String, String>> doSelect(String tablename, List<Constrain> constrains, boolean or) throws DBException{
+        String where="";        
+        Iterator<Constrain> ci = constrains.iterator();        
+        while(ci.hasNext()){
+            Constrain c = ci.next();
+            where += c;
+            if(ci.hasNext()){ 
+                if(or) where+=" OR ";
+                else where+=" AND ";}
+        }
+        return doSelect(tablename, where);
     }
 
     /**

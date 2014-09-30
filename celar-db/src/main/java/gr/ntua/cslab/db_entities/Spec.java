@@ -5,6 +5,7 @@
  */
 package gr.ntua.cslab.db_entities;
 
+import gr.ntua.cslab.db_entities.DBTools.Constrain;
 import java.util.List;
 import java.util.Map;
 
@@ -94,4 +95,45 @@ public class Spec extends DBIDEntity {
         }
         return rv;
     }
+    
+    
+    private static List intersect(List A, List B) {
+        List rtnList = new java.util.LinkedList<>();
+        for (Object dto : A) {
+            if (B.contains(dto)) {
+                rtnList.add(dto);
+            }
+        }
+        return rtnList;
+    }
+
+    
+    public static List<Integer> getProvidedResourceIDsByProperty(String property, String value){
+        List<Constrain> lc= new java.util.LinkedList();
+        Constrain prop = new Constrain("property", property);
+        lc.add(prop);
+        Constrain val = new Constrain("value", value);
+        lc.add(val);
+        Spec dummy = new Spec();
+        List<Integer> rv = new java.util.LinkedList();
+        for(Object e: dummy.getByConstrains(lc, false)){
+            rv.add(((Spec) e).providedResourceId);
+        }
+        return rv;
+    }
+    
+    public static List<Integer> getProvidedResourceIDsByFlavor(int cores, int ram, int disk){
+       List<Integer> byCores =  getProvidedResourceIDsByProperty("cores", ""+cores);
+        System.out.println(byCores);
+       List<Integer> byRam =  getProvidedResourceIDsByProperty("ram", ""+ram);
+        System.out.println(byRam);
+       List<Integer> byDisk =  getProvidedResourceIDsByProperty("disk", ""+disk);
+        System.out.println(byDisk);
+       List<Integer> rv = intersect(byCores, byRam);
+        System.out.println(rv);
+       rv = intersect(rv, byDisk);
+        System.out.println(rv);
+       return rv;
+    }
+    
 }

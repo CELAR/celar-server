@@ -98,4 +98,6 @@ public class Module extends DBIDEntity{
         }
         return rv;
     }
+    
+    public String getName(){ return this.name;}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:sybl="http://www.example.org/SYBL" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" id="hi">
+<tosca:Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema" xmlns:elasticity="http://www.example.org/NewXMLSchema" xmlns:sybl="http://www.example.org/SYBL" xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" id="hi">
   <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="hello" name="myApp_v0.0.5">
     <tosca:BoundaryDefinitions xsi:type="elasticity:TBoundaryDefinitionsExtension">
       <tosca:Properties>

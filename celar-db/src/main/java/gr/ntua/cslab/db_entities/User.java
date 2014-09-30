@@ -88,7 +88,8 @@ public class User extends DBIDEntity{
         User dummy = new User();
         List<User> list = dummy.getByField("name", name);
         if(list.isEmpty()){
-            throw new DBException(DBException.NO_SUCH_ENTRY, "No Users found with name: "+name);
+           // throw new DBException(DBException.NO_SUCH_ENTRY, "No Users found with name: "+name);
+            return null;
         }
         return list.get(0);
 

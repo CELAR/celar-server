@@ -4,10 +4,10 @@
  */
 package gr.ntua.cslab.db_entities;
 
-import java.util.Iterator;
+import gr.ntua.cslab.db_entities.DBTools.Constrain;
 import java.util.List;
 import java.util.Map;
-import static org.apache.log4j.Level.*;
+import java.util.LinkedList;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -167,13 +167,13 @@ public abstract class DBEntity {
     }
 
     
-    private static <T extends DBEntity> List<T> getByField(Class myClass, String field, String value) {
+    private static <T extends DBEntity> List<T> getByConstrains(Class myClass, List<Constrain> lc, boolean or) {
         List<T> results = new java.util.LinkedList();
         try {
             T dummy = (T) myClass.newInstance();
             List<Map<String, String>> mapsFromDB;
-            if (field != null) {
-                mapsFromDB = DBTools.doSelectByField(dummy.getTableName(), field, value);
+            if (lc != null && !lc.isEmpty()) {
+                mapsFromDB = DBTools.doSelect(dummy.getTableName(), lc, or);
             } else {
                 mapsFromDB = DBTools.doSelect(dummy.getTableName(), "TRUE");
             }
@@ -195,7 +195,26 @@ public abstract class DBEntity {
         }
         return results;
     }
+    
+    
+    private static <T extends DBEntity> List<T> getByField(Class myClass, String field, String value){
+        List<Constrain> cl = new LinkedList();
+        if(field!=null)  cl.add(new Constrain(field, value));
+        return getByConstrains(myClass, cl, false);
+    }
 
+    
+    /***
+     * Gets a list of Entities that satisfy the given Constrains (either with OR or AND joining)
+     * @param <T> the generic type of Entities that the method returns
+     * @param constrainList a list  of constrains
+     * @param or whether the constrains will be joined with OR or AND
+     * @return 
+     */
+    public <T extends DBEntity> List<T> getByConstrains(List<Constrain> constrainList, boolean or) {
+        return getByConstrains(this.getClass(), constrainList, or);
+    }
+    
     /**
      * Gets a list of Entities that have the given value under the given fields
      * @param <T> the generic type of Entities that the method returns
