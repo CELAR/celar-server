@@ -20,7 +20,7 @@ import com.sixsq.slipstream.persistence.Target;
 
 public class Test {
 	public static void main(String[] args) throws Exception {
-		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "*", "https://83.212.122.157");
+		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", "a1s2d3f4", "https://109.231.121.23");
 		
 		
         //create a Parser instance
@@ -52,21 +52,30 @@ public class Test {
                 //component properties
             	Set<Target> targets = new HashSet<Target>();
                 for(Entry prop: tc.getComponentProperties(component).entrySet()){
-                    System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
+                    //System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
                     if(prop.getKey().toString().equals("VMI")){
-                        imModule.setModuleReference("images/ubuntu-12.04");
+                        imModule.setModuleReference("examples/images/ubuntu-12.04");
                     }
                     else if(prop.getKey().toString().equals("executeScript")){
+                    	System.out.println("script");
                 		Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
                 		targets.add(t);
                 	
                     }
                 }
+                imModule.setTargets(targets);
                 
         		String parameterName = "ready";
         		String description = "Server ready";
         	
         		ModuleParameter parameter = new ModuleParameter(parameterName, "", description);
+        		parameter.setCategory("Output");
+        		imModule.setParameter(parameter);
+        		
+        		parameterName = "loaded";
+        		description = "Data loaded";
+        	
+        		parameter = new ModuleParameter(parameterName, "", description);
         		parameter.setCategory("Output");
         		imModule.setParameter(parameter);
         		
@@ -82,11 +91,11 @@ public class Test {
         		
         		parameterName = "Flexiant.cpu";
         		description = "cpu";
-        		value = "1";
+        		value = "2";
         	
         		parameter = new ModuleParameter(parameterName, value, description);
         		parameter.setCategory("Flexiant");
-        		parameter.setDefaultValue("1");
+        		parameter.setDefaultValue("2");
         		imModule.setParameter(parameter);
         		
         		parameterName = "okeanos.instance.type";
