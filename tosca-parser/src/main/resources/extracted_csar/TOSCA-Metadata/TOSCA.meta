@@ -2,6 +2,5 @@ TOSCA-Meta-Version: 1.0
 CSAR-Version: 1.0
 Created-By: c-Eclipse
 
-Name: Definitions/myApp_v0.0.6_npapa.tosca
-Version: 1.0
+Name: Definitions/myApp_v0.0.7.tosca
 Content-Type: application/vnd.oasis.tosca.definitions

@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=tosca-elasticity.jar -DgroupId=eu.celar -DartifactId=tosca -Dversion=1.0.0 -Dpackaging=jar

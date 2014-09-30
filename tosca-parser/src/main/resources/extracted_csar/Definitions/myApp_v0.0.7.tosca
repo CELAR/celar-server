@@ -3,21 +3,41 @@
 
 
    <!-- ========  toplevel (Application)  -->
-  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="app1" name="myApp_v0.0.6">
+  <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="app1" name="myApp_v0.0.7">
+
+  	<!-- Version -->
+    <tosca:BoundaryDefinitions xsi:type="elasticity:TBoundaryDefinitionsExtension">
+      <tosca:Properties>
+        <elasticity:ServiceProperties>
+          <elasticity:Version>1.0</elasticity:Version>
+        </elasticity:ServiceProperties>
+      </tosca:Properties>
+    </tosca:BoundaryDefinitions>
 
     <tosca:TopologyTemplate>
       <!-- all Nodes of the top level entity are composite -->
 
     	<!-- Module Cassandra (composite) -->
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="G973642945" type="substituteNode"/>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="G973642945" type="substituteNode_Cassandra"/>
       <!-- Module Web service (composite) -->
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="_web_service_id_" type="substituteNode"/>
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="_web_service_id_" type="substituteNode_WebService"/>
 
+      <!-- simple Component YCSB node -->
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1629420738" maxInstances="3" minInstances="1" type="YCSB_node" initInstances="1">
+        <tosca:Properties>
+          <elasticity:NodeProperties>
+            <elasticity:Flavor>vcpus:4 ram:2048 disk:20</elasticity:Flavor>
+          </elasticity:NodeProperties>
+        </tosca:Properties>
+        <tosca:DeploymentArtifacts>
+          <tosca:DeploymentArtifact artifactRef="YCSB_image" artifactType="VMI" name="Ubuntu 10.04.4 LTS"/>
+        </tosca:DeploymentArtifacts>
+      </tosca:NodeTemplate>
 
       <!--  Dependencies between Modules -->
       <tosca:RelationshipTemplate id="R_some_node_id" type="Depends_On" name="??_some_name_??">
-        <tosca:SourceElement ref="G973642945"/>
-        <tosca:TargetElement ref="_web_service_id_"/>
+        <tosca:TargetElement ref="G973642945"/>
+        <tosca:SourceElement ref="_web_service_id_"/>
       </tosca:RelationshipTemplate>
 
     </tosca:TopologyTemplate>
@@ -55,8 +75,8 @@
       </tosca:NodeTemplate>
       <!--  Dependencies between Components -->
       <tosca:RelationshipTemplate id="R741953087" type="Depends_On" name="CassandraSeed_Node">
-        <tosca:SourceElement ref="C192761248"/>
-        <tosca:TargetElement ref="C417283410"/>
+        <tosca:TargetElement ref="C192761248"/>
+        <tosca:SourceElement ref="C417283410"/>
       </tosca:RelationshipTemplate>
     </tosca:TopologyTemplate>
   </tosca:ServiceTemplate>
@@ -65,8 +85,9 @@
   <tosca:ServiceTemplate xsi:type="elasticity:TServiceTemplateExtension" id="_web_service_id_" name="Web Service" substitutableNodeType="substituteNode">
 
     <tosca:TopologyTemplate>
-      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1629420738" type="webserver" maxInstances="3" minInstances="1" name="Web_Server" initInstances="1" x="595" y="195">
+      <tosca:NodeTemplate xsi:type="elasticity:TNodeTemplateExtension" id="C1629420738" type="webserver" maxInstances="3" minInstances="1" name="Web_Server" initInstances="1">
         <tosca:Properties>
+        	<!-- -->
           <elasticity:NodeProperties>
             <elasticity:Flavor>vcpus:4 ram:2048 disk:20</elasticity:Flavor>
           </elasticity:NodeProperties>
