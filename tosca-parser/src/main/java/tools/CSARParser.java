@@ -62,9 +62,9 @@ public class CSARParser implements Parser{
         //find the version
         //parse the tosca xml
         handleRoot(tosca);
-
         //delete the temp dir
         Tools.recursiveDelete(tempDir.toFile());
+        logger.info("Parsed the csar file");
     }
     
 
@@ -189,9 +189,7 @@ public class CSARParser implements Parser{
         
         //get flavor
         //NodePropertiesTypeImpl o = (NodePropertiesTypeImpl) component.getProperties().eContents().get(0);
-        System.out.println(component.getProperties());
         for(EObject o:component.getProperties().eContents()){
-            System.out.println(o);
             NodePropertiesTypeImpl on = (NodePropertiesTypeImpl) o;
             String flavorString = on.getFlavor();
             componentProperties.put("flavor", ""+flavorString);  

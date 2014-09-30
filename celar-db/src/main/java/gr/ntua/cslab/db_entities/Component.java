@@ -67,6 +67,21 @@ public class Component extends DBIDEntity{
         super(id);
     }
 
+    /**
+     * Retrieves the resource type by its name and creates a Component with that 
+     * resource type and the given module and description
+     * @param m
+     * @param description
+     * @param resourceTypeName
+     * @throws DBException 
+     */
+    public Component(Module m, String description, String resourceTypeName) throws DBException {
+        ResourceType rt = ResourceType.getByName(resourceTypeName);
+        this.resourceTypeId = rt.getId();
+        this.description=description;
+        this.moduleId = m.id;
+    }
+
     @Override
     protected void fromMap(Map<String, String> fields) {
         if(fields.containsKey("id"))

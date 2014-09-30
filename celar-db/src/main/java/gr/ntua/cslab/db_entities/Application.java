@@ -92,6 +92,17 @@ public class Application extends DBEntity {
     public Application(String description, User user) {
         this(0,0,0, description, new Timestamp(System.currentTimeMillis()), user);
     }
+    
+    /**
+     * Creates an application based on its versions, description, and father User. 
+     * @param majorVersion
+     * @param minorVersion
+     * @param description
+     * @param user 
+     */
+    public Application(int majorVersion, int minorVersion, String description, User user) {
+        this(0,majorVersion,minorVersion, description, new Timestamp(System.currentTimeMillis()), user);
+    }
 
     @Override
     protected void fromMap(Map<String, String> fields) {

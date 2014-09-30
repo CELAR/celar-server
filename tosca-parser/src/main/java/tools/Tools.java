@@ -120,7 +120,7 @@ public class Tools {
         //Path basedir = FileSystems.getDefault().getPath("C:/tutorial/tmp/");
         String tmp_dir_prefix = "extracted_csar_";
         Path tmp = Files.createTempDirectory(tmp_dir_prefix);
-        System.out.println(tmp);
+        logger.debug("Temp csar extract dir: "+tmp);
         extractCsar(csar, tmp.toString());
         return tmp;
     }
