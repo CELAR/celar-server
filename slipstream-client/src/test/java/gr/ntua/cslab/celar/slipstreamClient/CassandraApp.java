@@ -1,4 +1,4 @@
-package gr.ntua.cslab.celar.slipstreamClient.test.gr.ntua.cslab.celar.slipstreamClient;
+package gr.ntua.cslab.celar.slipstreamClient;
 
 import java.util.HashMap;
 

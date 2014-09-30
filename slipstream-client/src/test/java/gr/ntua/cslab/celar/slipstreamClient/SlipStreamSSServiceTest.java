@@ -1,4 +1,4 @@
-package gr.ntua.cslab.celar.slipstreamClient.test.gr.ntua.cslab.celar.slipstreamClient;
+package gr.ntua.cslab.celar.slipstreamClient;
 
 import static com.sixsq.slipstream.action.OneShotAction.State.ACTIVE;
 //import static org.junit.Assert.assertEquals;
@@ -19,6 +19,8 @@ import com.sixsq.slipstream.persistence.DeploymentModule;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
+import com.sixsq.slipstream.persistence.ServiceConfiguration;
+import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.Target;
 import com.sixsq.slipstream.util.SerializationUtil;
@@ -29,15 +31,27 @@ public class SlipStreamSSServiceTest {
 
 	public static void testPutApplication(SlipStreamSSService ssservise) throws Exception {
 	
+		User user = new User("dfs");
+		ServiceConfiguration conf = new ServiceConfiguration();
+		user.addSystemParametersIntoUser(conf);
+		
 		//create project directory
+<<<<<<< HEAD:slipstream-client/src/main/java/gr/ntua/cslab/celar/slipstreamClient/test/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		String projectName = "examples/CELAR/apacheExample3";
+=======
+		String projectName = "apacheExample";
+>>>>>>> baed909d014555d83755348cc53c67793b588bef:slipstream-client/src/test/java/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		ProjectModule project = new ProjectModule(projectName);
 		Authz auth = new Authz(ssservise.getUser(), project);
 		project.setAuthz(auth);
 		ssservise.putModule(project);
 		
 		//add ImageModule apache
+<<<<<<< HEAD:slipstream-client/src/main/java/gr/ntua/cslab/celar/slipstreamClient/test/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		String name = "examples/CELAR/apacheExample3/apache";
+=======
+		String name = "apacheExample/apache";
+>>>>>>> baed909d014555d83755348cc53c67793b588bef:slipstream-client/src/test/java/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		ImageModule module = new ImageModule(name);
 		module.setModuleReference("module/examples/images/ubuntu-12.04");
 		module.setLoginUser("ubuntu");
@@ -115,7 +129,11 @@ public class SlipStreamSSServiceTest {
 		
 		
 		//add ImageModule client
+<<<<<<< HEAD:slipstream-client/src/main/java/gr/ntua/cslab/celar/slipstreamClient/test/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		String name1 = "examples/CELAR/apacheExample3/client";
+=======
+		String name1 = "apacheExample/client";
+>>>>>>> baed909d014555d83755348cc53c67793b588bef:slipstream-client/src/test/java/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		ImageModule module1 = new ImageModule(name1);
 		module1.setModuleReference("module/examples/images/ubuntu-12.04");
 		module1.setLoginUser("ubuntu");
@@ -169,7 +187,11 @@ public class SlipStreamSSServiceTest {
 		ssservise.putModule(module1);
 	
 		//add DeploymentModule 
+<<<<<<< HEAD:slipstream-client/src/main/java/gr/ntua/cslab/celar/slipstreamClient/test/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		String name2 = "examples/CELAR/apacheExample3/apacheExample";
+=======
+		String name2 = "apacheExample/apacheExample";
+>>>>>>> baed909d014555d83755348cc53c67793b588bef:slipstream-client/src/test/java/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		DeploymentModule deployment = new DeploymentModule(name2);
 		auth = new Authz(ssservise.getUser(), deployment);
 		deployment.setAuthz(auth);
@@ -185,16 +207,25 @@ public class SlipStreamSSServiceTest {
 	}
 
 	public static void main(String[] args) throws Exception {
-		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", "a1s2d3f4", "https://109.231.121.23");
+		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "a1s2d3f4", "https://83.212.122.157");
 		
 		
+<<<<<<< HEAD:slipstream-client/src/main/java/gr/ntua/cslab/celar/slipstreamClient/test/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 //		testPutApplication(ssservise);
+=======
+		//testPutApplication(ssservise);
+>>>>>>> baed909d014555d83755348cc53c67793b588bef:slipstream-client/src/test/java/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		
 		HashMap<String,String> parameters = new HashMap<String, String>();
 		parameters.put("apache:multiplicity", "1");
 		parameters.put("apache:Flexiant.cpu", "2");
+<<<<<<< HEAD:slipstream-client/src/main/java/gr/ntua/cslab/celar/slipstreamClient/test/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 		parameters.put("client:multiplicity", "1");
 		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample3/apacheExample", parameters);
+=======
+//		parameters.put("client:multiplicity", "1");
+//		String deploymnetId = ssservise.launchApplication("apacheExample/apacheExample", parameters);
+>>>>>>> baed909d014555d83755348cc53c67793b588bef:slipstream-client/src/test/java/gr/ntua/cslab/celar/slipstreamClient/SlipStreamSSServiceTest.java
 //		if(deploymnetId==null)
 //			System.exit(0);
 //		System.out.println(deploymnetId);

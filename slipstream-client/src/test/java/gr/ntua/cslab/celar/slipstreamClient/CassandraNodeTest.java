@@ -1,10 +1,12 @@
-package gr.ntua.cslab.celar.slipstreamClient.test.gr.ntua.cslab.celar.slipstreamClient;
+package gr.ntua.cslab.celar.slipstreamClient;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.sixsq.slipstream.exceptions.ConfigurationException;
+import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sixsq.slipstream.persistence.Authz;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.Module;
@@ -12,22 +14,22 @@ import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Target;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
-public class YCSBClientTest {
+public class CassandraNodeTest {
 
 	public static ImageModule putModule(SlipStreamSSService ssservise) throws Exception {
 
-		String name = "examples/CELAR/Cassandra/ycsbClient";
+		String name = "examples/CELAR/Cassandra/cassandraNode";
 		ImageModule module = new ImageModule(name);
 		module.setModuleReference("module/examples/images/ubuntu-12.04");
 		module.setLoginUser("ubuntu");
 		module.setPlatform("ubuntu");
-		module.setDescription("YCSB client");
+		module.setDescription("Cassandra node");
 		Authz auth = new Authz(ssservise.getUser(), module);
 		module.setAuthz(auth);
 		
 
 		Set<Target> targets = new HashSet<Target>();
-	    BufferedReader br = new BufferedReader(new FileReader("src/main/resources/ycsbClient.sh"));
+	    BufferedReader br = new BufferedReader(new FileReader("src/main/resources/node.sh"));
 	    String script = "";
 	    try {
 	        StringBuilder sb = new StringBuilder();
@@ -46,19 +48,27 @@ public class YCSBClientTest {
 		targets.add(t1);
 		
 		module.setTargets(targets);
+	
+		String parameterName = "ready";
+		String description = "Server ready";
+	
+		ModuleParameter parameter = new ModuleParameter(parameterName, "", description);
+		parameter.setCategory("Output");
+		module.setParameter(parameter);
 		
-		String parameterName = "Flexiant.ram";
-		String description = "ram";
+		
+		parameterName = "Flexiant.ram";
+		description = "ram";
 		String value = "2048";
 	
-		ModuleParameter parameter = new ModuleParameter(parameterName, value, description);
+		parameter = new ModuleParameter(parameterName, value, description);
 		parameter.setCategory("Flexiant");
 		parameter.setDefaultValue("2048");
 		module.setParameter(parameter);
 		
 		parameterName = "Flexiant.cpu";
 		description = "cpu";
-		value = "1";
+		value = "2";
 	
 		parameter = new ModuleParameter(parameterName, value, description);
 		parameter.setCategory("Flexiant");
@@ -68,4 +78,5 @@ public class YCSBClientTest {
 		ssservise.putModule(module);
 		return module;
 	}
+
 }
