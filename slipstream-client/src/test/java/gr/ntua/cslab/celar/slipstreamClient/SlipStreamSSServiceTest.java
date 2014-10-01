@@ -28,7 +28,7 @@ import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
 
 public class SlipStreamSSServiceTest {
-
+/*
 	public static void testPutApplication(SlipStreamSSService ssservise) throws Exception {
 	
 		User user = new User("dfs");
@@ -247,5 +247,5 @@ public class SlipStreamSSServiceTest {
 		System.exit(0);
 		
 	}
-
+*/
 }
