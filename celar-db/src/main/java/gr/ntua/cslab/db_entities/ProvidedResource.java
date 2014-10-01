@@ -105,4 +105,13 @@ public class ProvidedResource  extends DBIDEntity{
         }
         return rv;
     }
+    
+    public static List<ProvidedResource> getByFlavorInfo(int cores, int ram, int disk) throws DBException{
+        List<ProvidedResource> rv = new java.util.LinkedList();
+        for (Integer id: Spec.getProvidedResourceIDsByFlavor(cores, ram, disk)){
+            rv.add(new ProvidedResource(id));
+        }
+        return rv;
+    }
+    
 }

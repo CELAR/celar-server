@@ -6,6 +6,7 @@ import gr.ntua.cslab.db_entities.ComponentDependency;
 import gr.ntua.cslab.db_entities.DBException;
 import gr.ntua.cslab.db_entities.Module;
 import gr.ntua.cslab.db_entities.ModuleDependency;
+import gr.ntua.cslab.db_entities.ProvidedResource;
 import gr.ntua.cslab.db_entities.User;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ToscaHandler {
     List<ModuleDependency> moduleDependencies = new LinkedList();
     List<ComponentDependency> componentDependencies = new LinkedList();
     Map<Module, List<Component>> moduleComponents= new java.util.HashMap<>(5);
+    List<ProvidedResource> povidedResources = new java.util.LinkedList<>();
     
     
     public ToscaHandler(String csarFilePath) throws Exception{
@@ -136,6 +138,10 @@ public class ToscaHandler {
             for (String componentName : parser.getModuleComponents(moduleName)) {              
                 //handle each component
                 Component c= handleComponent(m, componentName, "VM_IMAGE");
+                
+                //handle each provided resource
+                handleComponentResources(parser.getComponentProperties(componentName));
+                
             }
         }
         
@@ -164,6 +170,21 @@ public class ToscaHandler {
 
     void storeConfiguration() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void handleComponentResources(Map<String, String> componentProperties) throws Exception {
+        
+        //retreive the characteristics of the flavor
+        int vcpus=1, ram=1024, disk=20;
+        for(String s: componentProperties.get("flavor").split("\\s+")){
+            int val = Integer.parseInt(s.substring(s.indexOf(":")+1));
+            if (s.startsWith("vcpus")) vcpus=val;
+            else if (s.startsWith("ram")) ram=val;
+            else if (s.startsWith("disk")) vcpus=val;
+        }
+        
+        //retreive the flavor by its characteristics
+        logger.info(""+vcpus+" "+ram+" "+disk);
     }
 
 
