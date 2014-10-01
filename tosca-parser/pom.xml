@@ -20,8 +20,8 @@
       <groupId>eu.celar</groupId>
       <artifactId>tosca</artifactId>
       <version>1.0.0</version>
-<!--      <scope>system</scope>
-      <systemPath>${basedir}/src/main/resources/tosca-1.0.0.jar</systemPath>-->
+      <scope>system</scope>
+      <systemPath>${basedir}/src/main/resources/tosca-elasticity.jar</systemPath>
     </dependency>
     <dependency>
         <groupId>log4j</groupId>
