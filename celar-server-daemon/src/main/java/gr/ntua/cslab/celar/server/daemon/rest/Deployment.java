@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import java.util.Date;
@@ -21,7 +22,7 @@ public class Deployment {
     @GET
     @Path("{id}/")
     public DeploymentInfo getDeployment(@PathParam("id") int id) {
-        return new DeploymentInfo(id, "APP_ID_1", new Date().getTime()-10000l, new Date().getTime()+10000l, DeploymentStatus.ERROR);
+        return new DeploymentInfo(id, new ApplicationInfo(), new Date().getTime()-10000l, new Date().getTime()+10000l, DeploymentStatus.ERROR);
     }
     
     @GET
@@ -32,9 +33,9 @@ public class Deployment {
             @DefaultValue("ERROR") @QueryParam("status") DeploymentStatus status,
             @DefaultValue("-1") @QueryParam("application_id") int applicationId) {
         List<DeploymentInfo> list = new LinkedList<>();
-        list.add(new DeploymentInfo(1, "APP_ID_1", startTime, endTime, status));
-        list.add(new DeploymentInfo(2, "APP_ID_1", startTime, endTime, status));
-        list.add(new DeploymentInfo(3, "APP_ID_1", startTime, endTime, status));
+        list.add(new DeploymentInfo(1, new ApplicationInfo(), startTime, endTime, status));
+        list.add(new DeploymentInfo(2, new ApplicationInfo(), startTime, endTime, status));
+        list.add(new DeploymentInfo(3, new ApplicationInfo(), startTime, endTime, status));
         return list;
     }
 }

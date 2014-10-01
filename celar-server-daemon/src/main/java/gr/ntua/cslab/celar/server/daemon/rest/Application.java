@@ -231,7 +231,7 @@ public class Application {
         info.setSubmitted(System.currentTimeMillis());
         info.setVersion("1.0");
         info.setDescription("No description for now dude!");
-        info.setSlipstreamName(ssApplicationName);
+        info.setSlipstreamName(appName);
         
         ApplicationCache.insertApplication(info);
 
