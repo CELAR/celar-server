@@ -48,7 +48,7 @@ import tools.Parser;
  */
 @Path("/application/")
 public class Application {
-    
+
     // IS calls
     @GET
     @Path("{id}/")
@@ -60,24 +60,24 @@ public class Application {
         info.setVersion("1.1.0");
         return info;
     }
-    
+
     @GET
     @Path("search/")
     public List<ApplicationInfo> searchApplicationsByProperty(
             @DefaultValue("0") @QueryParam("submitted_start") long submittedStart,
             @DefaultValue("0") @QueryParam("submitted_end") long submittedEnd,
             @DefaultValue("Null") @QueryParam("description") String description,
-            @DefaultValue("0") @QueryParam("user_id") int userid, 
+            @DefaultValue("0") @QueryParam("user_id") int userid,
             @DefaultValue("Null") @QueryParam("module_name") String moduleName,
             @DefaultValue("Null") @QueryParam("component_description") String componentDescription,
             @DefaultValue("Null") @QueryParam("provided_resource_id") String providedResourceId) {
         List<ApplicationInfo> list = new LinkedList<>();
-        list.add(new ApplicationInfo("ID1", submittedStart+100, description, "1.0.0"));
-        list.add(new ApplicationInfo("ID2", submittedStart+200, description, "1.2.0"));
-        list.add(new ApplicationInfo("ID3", submittedStart+1000, description, "0.2.0"));
+        list.add(new ApplicationInfo("ID1", submittedStart + 100, description, "1.0.0"));
+        list.add(new ApplicationInfo("ID2", submittedStart + 200, description, "1.2.0"));
+        list.add(new ApplicationInfo("ID3", submittedStart + 1000, description, "0.2.0"));
         return list;
-    }    
-    
+    }
+
     @GET
     @Path("{id}/description/")
     public ApplicationInfo getApplicationDescription(@PathParam("id") String id) {
@@ -88,35 +88,35 @@ public class Application {
         info.setVersion("1.1.0");
         return info;
     }
-    
+
     @POST
     @Path("describe/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public ApplicationInfo describe(@Context HttpServletRequest request, InputStream input) throws IOException, Exception {
-        
+
         // fetching csar file and store it to local fs
-        String filename = "/tmp/csar/"+System.currentTimeMillis()+".csar";
+        String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
         byte[] buffer = new byte[1024];
         OutputStream file = new FileOutputStream(filename);
-        int count, sum=0;
-        while(input.available()>0) {
-            count=input.read(buffer);
-            sum+=count;
+        int count, sum = 0;
+        while (input.available() > 0) {
+            count = input.read(buffer);
+            sum += count;
             file.write(buffer, 0, count);
         }
         input.close();
-        
-        
+
         InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
         Properties properties = new Properties();
-        if(propsInput!=null)
+        if (propsInput != null) {
             properties.load(propsInput);
-        else
+        } else {
             throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
+        }
         System.out.println(properties);
-        String  username=properties.getProperty("slipstream.username"),
-                password=properties.getProperty("slipstream.password"),
-                slipstreamHost=properties.getProperty("slipstream.url");
+        String username = properties.getProperty("slipstream.username"),
+                password = properties.getProperty("slipstream.password"),
+                slipstreamHost = properties.getProperty("slipstream.url");
         // start slipstream description
         SlipStreamSSService ssservise = new SlipStreamSSService(username, password, slipstreamHost);
 
@@ -124,7 +124,7 @@ public class Application {
         Parser tc = new CSARParser(filename);
 
         //application name and version
-        String ssApplicationName = System.currentTimeMillis()+"-"+tc.getAppName();
+        String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
         System.out.println("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
         String appName = ssservise.createApplication(ssApplicationName, tc.getAppVersion());
         HashMap<String, Node> nodes = new HashMap<String, Node>();
@@ -224,31 +224,51 @@ public class Application {
         deployment.setAuthz(auth);
         System.out.println(nodes);
         deployment.setNodes(nodes);
-        
-        
+
         ApplicationInfo info = new ApplicationInfo();
         info.setId(UUID.randomUUID().toString());
         info.setSubmitted(System.currentTimeMillis());
         info.setVersion("1.0");
         info.setDescription("No description for now dude!");
         info.setSlipstreamName(appName);
-        
+
         ApplicationCache.insertApplication(info);
 
         return info;
     }
-    
+
     @POST
     @Path("{id}/deploy/")
-    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId){
-         ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
+    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId) throws IOException, InterruptedException {
+        ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
+
+        InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
+        Properties properties = new Properties();
+        if (propsInput != null) {
+            properties.load(propsInput);
+        } else {
+            throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
+        }
+        System.out.println(properties);
+        String username = properties.getProperty("slipstream.username"),
+                password = properties.getProperty("slipstream.password"),
+                slipstreamHost = properties.getProperty("slipstream.url");
+
+        SlipStreamSSService sservice = new SlipStreamSSService(username, password, slipstreamHost);
+        
+        Map<String, String> params = new HashMap<>();
+        sservice.launchApplication(app.getSlipstreamName(), params);
          
          
-         DeploymentInfo deployment = new DeploymentInfo();
-         deployment.setApplication(app);
-         deployment.setStartTime(System.currentTimeMillis());
-         deployment.setEndTime(-1);
-         deployment.setStatus(DeploymentStatus.BOOTSTRAPPING);
-         return new DeploymentInfo();
+         
+         
+         
+         
+        DeploymentInfo deployment = new DeploymentInfo();
+        deployment.setApplication(app);
+        deployment.setStartTime(System.currentTimeMillis());
+        deployment.setEndTime(-1);
+        deployment.setStatus(DeploymentStatus.BOOTSTRAPPING);
+        return deployment;
     }
 }
