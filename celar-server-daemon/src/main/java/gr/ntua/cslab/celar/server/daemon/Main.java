@@ -1,6 +1,7 @@
 package gr.ntua.cslab.celar.server.daemon;
 
 import com.sun.jersey.spi.container.servlet.ServletContainer;
+import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import java.io.IOException;
 import java.io.InputStream;
@@ -98,6 +99,8 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServerStaticComponents.server, "/", ServletContextHandler.SESSIONS);
         context.addServlet(holder, "/*");
         Logger.getLogger(Main.class.getName()).info("Server configured");
+        
+        ApplicationCache.allocateCache();
     }
 
     private static void configureLogger() {
