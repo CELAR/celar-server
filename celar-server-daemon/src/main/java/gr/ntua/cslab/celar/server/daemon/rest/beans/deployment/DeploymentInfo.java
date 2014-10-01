@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.rest.beans.deployment;
 
+import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -16,17 +17,17 @@ public class DeploymentInfo {
     private int id;
     private long startTime, endTime;
     private DeploymentStatus status;
-    private String applicationId;
+    private ApplicationInfo application;
 
     public DeploymentInfo() {
     }
 
-    public DeploymentInfo(int id, String applicationId, long startTime, long endTime, DeploymentStatus status) {
+    public DeploymentInfo(int id, ApplicationInfo applicationInfo, long startTime, long endTime, DeploymentStatus status) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
-        this.applicationId = applicationId;
+        this.application = applicationInfo;
     }
 
     public int getId() {
@@ -61,13 +62,12 @@ public class DeploymentInfo {
         this.status = status;
     }
 
-    public String getApplicationId() {
-        return applicationId;
+    public ApplicationInfo getApplication() {
+        return application;
     }
 
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
+    public void setApplication(ApplicationInfo application) {
+        this.application = application;
     }
-    
     
 }

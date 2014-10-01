@@ -9,6 +9,7 @@ package gr.ntua.cslab.celar.server.daemon.rest.beans.application;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -22,6 +23,9 @@ public class ApplicationInfo {
     private long submitted;
     private String description;
     private String version;
+    
+    @XmlTransient
+    private String slipstreamName;
 
     public ApplicationInfo() {
     }
@@ -65,7 +69,13 @@ public class ApplicationInfo {
     public void setVersion(String version) {
         this.version = version;
     }
-    
-    
+
+    public String getSlipstreamName() {
+        return slipstreamName;
+    }
+
+    public void setSlipstreamName(String slipstreamName) {
+        this.slipstreamName = slipstreamName;
+    }
     
 }

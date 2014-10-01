@@ -82,7 +82,6 @@ public class SlipStreamSSService {
 	public boolean putUser(User user) throws Exception{
 		System.out.println("Putting user: "+ user.getName());
 		String xml = SerializationUtil.toXmlString(user);
-		System.out.println(xml);
 		String xmlfile = writeXML(xml);
 		String[] command = new String[] {"ss-user-put", "-u", this.user, "-p", password, "--endpoint", url, xmlfile};
 		String ret = executeCommand(command);
@@ -96,6 +95,7 @@ public class SlipStreamSSService {
 	public boolean putModule(Module module) throws IOException, InterruptedException{
 		System.out.println("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
+		System.out.println(xml);
 		String xmlfile = writeXML(xml);
 		String[] command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
 		String ret = executeCommand(command);
@@ -173,11 +173,11 @@ public class SlipStreamSSService {
 	
 
 	public String createApplication(String appName, String appVersion) throws Exception {
-		ProjectModule project = new ProjectModule(appName+appVersion);
+		ProjectModule project = new ProjectModule(appName);
 		Authz auth = new Authz(getUser(), project);
 		project.setAuthz(auth);
 		putModule(project);
-		return appName+appVersion;
+		return appName;
 	}
 	
 	public String executeCommand(String command) throws IOException, InterruptedException {
