@@ -124,15 +124,10 @@ public class Spec extends DBIDEntity {
     
     public static List<Integer> getProvidedResourceIDsByFlavor(int cores, int ram, int disk){
        List<Integer> byCores =  getProvidedResourceIDsByProperty("cores", ""+cores);
-        System.out.println(byCores);
        List<Integer> byRam =  getProvidedResourceIDsByProperty("ram", ""+ram);
-        System.out.println(byRam);
        List<Integer> byDisk =  getProvidedResourceIDsByProperty("disk", ""+disk);
-        System.out.println(byDisk);
        List<Integer> rv = intersect(byCores, byRam);
-        System.out.println(rv);
        rv = intersect(rv, byDisk);
-        System.out.println(rv);
        return rv;
     }
     

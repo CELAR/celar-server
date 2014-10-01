@@ -8,8 +8,9 @@ package gr.ntua.cslab.db_entities.parsers;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -21,6 +22,7 @@ public class ToscaHandlerTest {
     }
 
     @Test
+    @Ignore
     public void test_00_showoff() {
         try {
             
@@ -30,13 +32,13 @@ public class ToscaHandlerTest {
             //stores the application Description in the database
             tp.storeDescription();
             
-            //stores the application Configuration in the database
-            //unimplemented
-            //tp.storeConfiguration();
-            
+            //stores the application Deployment in the database
+            tp.storeDeployment();
+            tp.removeDeployment();
             //removes the application description from the database
             tp.removeDescription();
         } catch (Exception ex) {
+            ex.printStackTrace();
             fail("failed the showoff test case");
         }
         

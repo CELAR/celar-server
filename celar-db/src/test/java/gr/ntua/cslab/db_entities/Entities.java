@@ -31,9 +31,11 @@ public class Entities {
     ProvidedResource providedResource;
     Spec spec1, spec2;
     User user;
+    Application app;
+    Component component;
 
     @Test
-    public void showOff() {
+    public void test_00_showOff() {
         try {
 
             String username = "ggian";
@@ -84,11 +86,11 @@ public class Entities {
                 System.out.println(spl);
 
             // Create an application structure
-                Application app = new Application("test_application", user);
+                app = new Application("test_application", user);
                 app.store();
                 Module module = new Module("test_module", app);
                 module.store();
-                Component component = new Component(module, "test module", resourceType);
+                component = new Component(module, "test module", resourceType);
                 component.store();
             
             //==========  This creates a structured JSON. Maybe not useful... I dunno.=================    
@@ -120,16 +122,49 @@ public class Entities {
     }
     
     @Test
-    public void testtest(){
-                    System.out.println("hellllooooo");
+    public void test_01_testDeployment(){
+        try {
+            user = new User("name");
+            user.store();
+            app = new Application("test_application", user);
+            app.store();
+            Module module = new Module("test_module", app);
+            module.store();
+            resourceType = new ResourceType("VM_IMAGE");
+            resourceType.store();
+            providedResource = new ProvidedResource("sample_vm_image", resourceType);
+            providedResource.store();
             
-            ClassLoader cl = ClassLoader.getSystemClassLoader();
-
-            URL[] urls = ((URLClassLoader) cl).getURLs();
-
-            for (URL url : urls) {
-                System.out.println(url.getFile());
-            }
+            component = new Component(module, "test module", resourceType);
+            component.store();
+            
+            
+            //==============================
+            Deployment depl = new Deployment(app);
+            depl.store();
+            depl = new Deployment(depl.getId());
+            System.out.println(depl);
+            
+            Resource res = new Resource(depl, component, providedResource);
+            res.store();
+            res = new Resource(res.getId());
+            System.out.println(res);
+            
+            
+            res.delete();            
+            depl.delete();
+            //=====================================
+            providedResource.delete();
+            component.delete();
+            resourceType.delete();
+            module.delete();
+            app.delete();
+            user.delete();
+            
+        } catch (DBException ex) {
+            System.out.println(ex);
+            fail("failed the test deployment");
+        }
     }
 
 }

@@ -63,6 +63,9 @@ public class SQLTools {
         for (Map.Entry<String, String> e : tupples.entrySet()) {
             String value = e.getValue();
             //escape special values
+            if (value.equals("null")) {
+                value="NULL";
+            } 
             if (value.equals("NULL")) {
                 /*do nothing*/;
             } else if (value.equals("NOW()")) {
