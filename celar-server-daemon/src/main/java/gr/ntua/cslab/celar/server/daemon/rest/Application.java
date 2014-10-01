@@ -224,13 +224,15 @@ public class Application {
         deployment.setAuthz(auth);
         System.out.println(nodes);
         deployment.setNodes(nodes);
+        
+        ssservise.putModule(deployment);
 
         ApplicationInfo info = new ApplicationInfo();
         info.setId(UUID.randomUUID().toString());
         info.setSubmitted(System.currentTimeMillis());
         info.setVersion("1.0");
         info.setDescription("No description for now dude!");
-        info.setSlipstreamName(appName);
+        info.setSlipstreamName(name);
 
         ApplicationCache.insertApplication(info);
 
@@ -257,6 +259,7 @@ public class Application {
         SlipStreamSSService sservice = new SlipStreamSSService(username, password, slipstreamHost);
         
         Map<String, String> params = new HashMap<>();
+        params.put("cassandraSeedNode:Flexiant.cpu", "2");
         sservice.launchApplication(app.getSlipstreamName(), params);
          
          
