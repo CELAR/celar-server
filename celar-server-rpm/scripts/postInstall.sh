@@ -38,4 +38,6 @@ configure_server;
 
 create_service
 
+rm $(CELAR_SERVER_HOME)/lib/slf4j-jdk14-1.4.2.jar
+
 service celar-server start;
