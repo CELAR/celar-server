@@ -113,7 +113,7 @@
                 <configuration>
                     <group>Application</group>
                     <packager>ggian@cslab</packager>
-                    
+		    <release>${BUILD_NUMBER}.${package.os}</release>
                     <requires>
                         <require>java-1.7.0-openjdk</require>
                     </requires>
