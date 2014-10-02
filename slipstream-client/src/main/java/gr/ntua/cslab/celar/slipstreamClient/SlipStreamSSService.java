@@ -209,7 +209,9 @@ public class SlipStreamSSService {
 		while ((line = reader.readLine())!= null) {
 			output.append(line + "\n");
 		}
- 
+                
+                System.out.println("Output:\t"+output.toString());
+                
 		return output.toString();
  
 	}
