@@ -115,7 +115,7 @@
                     <packager>ggian@cslab</packager>
                     
                     <requires>
-                        <require>java-1.7.0-openjdk.x86_64</require>
+                        <require>java-1.7.0-openjdk</require>
                     </requires>
                     <mappings>
                         <mapping>
