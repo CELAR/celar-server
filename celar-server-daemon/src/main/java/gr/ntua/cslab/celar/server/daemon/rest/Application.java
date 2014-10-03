@@ -6,15 +6,21 @@ import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
+<<<<<<< HEAD
 import com.sun.jersey.multipart.FormDataParam;
 
+=======
+>>>>>>> 4d09770b583eb7e06bf06b98dfb503aa3ccd6bd8
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
+<<<<<<< HEAD
 
 import java.io.FileNotFoundException;
+=======
+>>>>>>> 4d09770b583eb7e06bf06b98dfb503aa3ccd6bd8
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,9 +34,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+<<<<<<< HEAD
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+=======
+>>>>>>> 4d09770b583eb7e06bf06b98dfb503aa3ccd6bd8
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -228,13 +237,15 @@ public class Application {
         deployment.setAuthz(auth);
         System.out.println(nodes);
         deployment.setNodes(nodes);
+        
+        ssservise.putModule(deployment);
 
         ApplicationInfo info = new ApplicationInfo();
         info.setId(UUID.randomUUID().toString());
         info.setSubmitted(System.currentTimeMillis());
         info.setVersion("1.0");
         info.setDescription("No description for now dude!");
-        info.setSlipstreamName(appName);
+        info.setSlipstreamName(name);
 
         ApplicationCache.insertApplication(info);
 
@@ -261,6 +272,7 @@ public class Application {
         SlipStreamSSService sservice = new SlipStreamSSService(username, password, slipstreamHost);
         
         Map<String, String> params = new HashMap<>();
+        params.put("cassandraSeedNode:Flexiant.cpu", "2");
         sservice.launchApplication(app.getSlipstreamName(), params);
          
          

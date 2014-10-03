@@ -3,6 +3,7 @@ package gr.ntua.cslab.celar.server.daemon;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -126,9 +127,17 @@ public class Main {
 
     }
 
+    private static void creatDirs() {
+        File csarDir = new File("/tmp/csar/");
+        
+        if(!csarDir.exists()) {
+            csarDir.mkdir();
+        }
+    }
     public static void main(String[] args) throws Exception {
         configureLogger();
         loadProperties();
+        creatDirs();
         addShutdownHook();
         configureServer();
 

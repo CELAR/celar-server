@@ -4,9 +4,12 @@ import gr.ntua.cslab.db_entities.Application;
 import gr.ntua.cslab.db_entities.Component;
 import gr.ntua.cslab.db_entities.ComponentDependency;
 import gr.ntua.cslab.db_entities.DBException;
+import gr.ntua.cslab.db_entities.Deployment;
 import gr.ntua.cslab.db_entities.Module;
 import gr.ntua.cslab.db_entities.ModuleDependency;
 import gr.ntua.cslab.db_entities.ProvidedResource;
+import static gr.ntua.cslab.db_entities.ProvidedResource.getByFlavorInfo;
+import gr.ntua.cslab.db_entities.Resource;
 import gr.ntua.cslab.db_entities.User;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import tools.CSARParser;
 import tools.Parser;
-
+import java.util.Map.Entry;
 /**
  *
  * @author cmantas
@@ -28,7 +31,8 @@ public class ToscaHandler {
     List<ModuleDependency> moduleDependencies = new LinkedList();
     List<ComponentDependency> componentDependencies = new LinkedList();
     Map<Module, List<Component>> moduleComponents= new java.util.HashMap<>(5);
-    List<ProvidedResource> povidedResources = new java.util.LinkedList<>();
+    List<Resource> resources = new java.util.LinkedList<>();
+    Deployment deployment;
     
     
     public ToscaHandler(String csarFilePath) throws Exception{
@@ -65,6 +69,14 @@ public class ToscaHandler {
         app.delete();
         
         logger.info("Removed the Application Description for "+app.getDescription());
+    }
+    
+    public void removeDeployment() throws DBException{
+        for (Resource p: resources){
+            p.delete();
+        }
+        deployment.delete();
+        logger.info("Removed the Application Deployment for "+app.getDescription());
     }
     
     
@@ -139,9 +151,6 @@ public class ToscaHandler {
                 //handle each component
                 Component c= handleComponent(m, componentName, "VM_IMAGE");
                 
-                //handle each provided resource
-                handleComponentResources(parser.getComponentProperties(componentName));
-                
             }
         }
         
@@ -156,8 +165,6 @@ public class ToscaHandler {
             }
         }
         
-        //orphan the parser (free mem)
-        parser = null;
         logger.info("Stored the Application Description for "+app.getDescription());
     }
 
@@ -168,23 +175,45 @@ public class ToscaHandler {
         tp.removeDescription();
     }
 
-    void storeConfiguration() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    private void handleComponentResources(Map<String, String> componentProperties) throws Exception {
+
+    public void storeDeployment() throws DBException {
         
-        //retreive the characteristics of the flavor
-        int vcpus=1, ram=1024, disk=20;
-        for(String s: componentProperties.get("flavor").split("\\s+")){
-            int val = Integer.parseInt(s.substring(s.indexOf(":")+1));
-            if (s.startsWith("vcpus")) vcpus=val;
-            else if (s.startsWith("ram")) ram=val;
-            else if (s.startsWith("disk")) vcpus=val;
+        deployment = new Deployment(app);
+        deployment.store();
+        
+        for (Entry<Module, List<Component>> e : moduleComponents.entrySet()) {
+            for (Component component : e.getValue()) {
+                System.out.println(component);
+                Map<String, String> componentProperties = parser.getComponentProperties(component.getDescription());
+                //retreive the characteristics of the flavor
+                int vcpus = 1, ram = 1024, disk = 20;
+                for (String s : componentProperties.get("flavor").split("\\s+")) {
+                    int val = Integer.parseInt(s.substring(s.indexOf(":") + 1));
+                    if (s.startsWith("vcpus")) vcpus = val;
+                    else if (s.startsWith("ram")) ram = val;
+                    else if (s.startsWith("disk"))vcpus = val;
+                }
+
+                int count = 1;
+                if (!componentProperties.containsKey("minInstances")) {
+                    logger.debug("there is no 'minInstances' entry in the component properties, assuming 1");
+                } else {
+                    //retreive the flavor by its characteristics
+                    count = Integer.parseInt(componentProperties.get("minInstances"));
+                }
+
+                //this is the provided resource of this flavor
+                ProvidedResource provRes = getByFlavorInfo(vcpus, ram, disk).get(0);
+                //add the required resources
+                for (int i = 0; i < count; i++) {
+                    Resource res = new Resource(deployment, component, provRes);
+                    resources.add(res);
+                    res.store();
+                }
+
+            }
         }
-        
-        //retreive the flavor by its characteristics
-        logger.info(""+vcpus+" "+ram+" "+disk);
     }
 
 

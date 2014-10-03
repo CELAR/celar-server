@@ -23,7 +23,7 @@ public class CSARParserTest {
         
         try {
             //create a Parser instance
-            Parser tc  = new CSARParser("app_7.csar");
+            Parser tc  = new CSARParser("app_7_npapa.csar");
             
             //application name and version
             System.out.println("Application: "+tc.getAppName()+" v"+tc.getAppVersion());

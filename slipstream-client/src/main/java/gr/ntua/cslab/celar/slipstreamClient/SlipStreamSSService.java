@@ -196,11 +196,11 @@ public class SlipStreamSSService {
 	}
 	
 	public String executeCommand(String[] command) throws IOException, InterruptedException {
-		/*System.out.print("Executing command: ");
+		System.out.print("Executing command: ");
 		for (int i = 0; i < command.length; i++) {
 			System.out.print(command[i]+" ");
 		}
-		System.out.println();*/
+		System.out.println();
 		StringBuffer output = new StringBuffer();
 		Process p = Runtime.getRuntime().exec(command);
 		p.waitFor();
@@ -209,7 +209,9 @@ public class SlipStreamSSService {
 		while ((line = reader.readLine())!= null) {
 			output.append(line + "\n");
 		}
- 
+                
+                System.out.println("Output:\t"+output.toString());
+                
 		return output.toString();
  
 	}

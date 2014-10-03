@@ -89,7 +89,7 @@ public class ProvidedResource  extends DBIDEntity{
     
 
     /**
-     * Returns a List of all the ProvidedResources of this type
+     * Returns a List of all the ProvidedResources of the given type
      * 
      * @param type the ResourceType father of all the ProvidedResources returned
      * @return 
@@ -106,6 +106,14 @@ public class ProvidedResource  extends DBIDEntity{
         return rv;
     }
     
+    /**
+     * Returns a List of all the provided (flavor) resources with the given that flavor parameters
+     * @param cores
+     * @param ram
+     * @param disk
+     * @return
+     * @throws DBException 
+     */
     public static List<ProvidedResource> getByFlavorInfo(int cores, int ram, int disk) throws DBException{
         List<ProvidedResource> rv = new java.util.LinkedList();
         for (Integer id: Spec.getProvidedResourceIDsByFlavor(cores, ram, disk)){
@@ -113,5 +121,14 @@ public class ProvidedResource  extends DBIDEntity{
         }
         return rv;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getResourceTypeId() {
+        return resourceTypeId;
+    }
+    
     
 }
