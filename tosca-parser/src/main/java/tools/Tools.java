@@ -39,11 +39,11 @@ public class Tools {
    * @return The TOSCA document root or NULL if empty
    */
     public static DocumentRoot loadFromFile(final String toscaFile) throws IOException {
-        logger.debug("Loading from csar file: "+toscaFile);
+        logger.debug("Loading from file: "+toscaFile);
         // Create a ResourceSet
         ResourceSet resourceSet = new ResourceSetImpl();
         XMLMapImpl baseToscaMap = new XMLMapImpl();
-        baseToscaMap.setNoNamespacePackage(ToscaPackage.eINSTANCE);
+        //baseToscaMap.setNoNamespacePackage(ToscaPackage.eINSTANCE);
         Map<String, Object> options = new HashMap<String, Object>();
         options.put(XMLResource.OPTION_XML_MAP, baseToscaMap);
         options.put(XMLResource.OPTION_ENCODING, "UTF-8");//$NON-NLS-1$

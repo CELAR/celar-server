@@ -56,7 +56,6 @@ public class CSARParser implements Parser{
         Map<String, String> toscaProps = Tools.getToscaMeta(tempDir);
         String toscaPath = toscaProps.get("Name");
         logger.debug("path of tosca file is: "+toscaPath);
-        logger.debug("version is:"+version);
         //load the tosca from file
         DocumentRoot tosca = Tools.loadFromFile(tempDir+File.separator+toscaPath);
         //find the version
@@ -114,6 +113,7 @@ public class CSARParser implements Parser{
     private void handleApp(TServiceTemplate app){
         name = app.getName();
         version = ((ServicePropertiesType) app.getBoundaryDefinitions().getProperties().getAny().get(0).getValue()).getVersion();
+        logger.debug("Parsing app: "+name+" v"+version);
 
     }
 
@@ -137,27 +137,27 @@ public class CSARParser implements Parser{
         EList<TNodeTemplate> components = module.getTopologyTemplate().getNodeTemplate();
         moduleComponents.put(moduleName, new java.util.LinkedList());
         for (TNodeTemplate component : components) {
-            String componentName = component.getType().toString();
-            moduleComponents.get(moduleName).add(componentName);
-            handleComponent(component);
+            handleComponent(moduleName, component);
         }
 
     }
 
     
     private void handleRootComponent(TNodeTemplate component){
-        String componentName = component.getType().toString();
         //check if not actually a component
-        if(componentName.startsWith("substituteNode")) return;
+        if(component.getType().toString().startsWith("substituteNode")) return;
+        //String componentName = component.getType().toString();
+        String componentName = component.getName();
+        
         logger.debug("Handling root Component: " + componentName);
         //create a "fake" module with the same name as the component
         modules.add(componentName);
         String compId = component.getId();
         replaceReffs(moduleDependencies, compId, componentName);
-        moduleComponents.put(componentName, asList(componentName));
+        moduleComponents.put(componentName, new java.util.LinkedList());
         
         //handle like a regular component
-        handleComponent(component);
+        handleComponent(componentName, component);
         
     }
     
@@ -166,9 +166,11 @@ public class CSARParser implements Parser{
      * @param moduleName
      * @param component 
      */
-    private  void handleComponent(TNodeTemplate component) {
-        String componentName = component.getType().toString();        
+    private  void handleComponent(String moduleName, TNodeTemplate component) {
+        //String componentName = component.getType().toString();
+        String componentName = component.getName();
         logger.debug("Handling component:" + componentName);
+        moduleComponents.get(moduleName).add(componentName);
         String componentId = component.getId();
         replaceReffs(componentDependencies, componentId, componentName);
         
@@ -178,32 +180,33 @@ public class CSARParser implements Parser{
         
         //get min instances
         int minInstances = component.isSetMinInstances()?component.getMinInstances():0;
-        logger.debug("min inst:"+minInstances);
         componentProperties.put("minInstances", ""+minInstances);
         
         //get max instances
         int maxInstances = component.isSetMaxInstances()?((Number) component.getMaxInstances()).intValue(): -1;
         componentProperties.put("maxInstances", ""+maxInstances);        
-        logger.debug("max inst:"+maxInstances);
 
         
         //get flavor
         //NodePropertiesTypeImpl o = (NodePropertiesTypeImpl) component.getProperties().eContents().get(0);
-        for(EObject o:component.getProperties().eContents()){
-            NodePropertiesTypeImpl on = (NodePropertiesTypeImpl) o;
-            String flavorString = on.getFlavor();
-            componentProperties.put("flavor", ""+flavorString);  
-            logger.debug("flavor:"+flavorString);
+        if(component.getProperties()!=null){
+            for(EObject o:component.getProperties().eContents()){
+                NodePropertiesTypeImpl on = (NodePropertiesTypeImpl) o;
+                String flavorString = on.getFlavor();
+                componentProperties.put("flavor", ""+flavorString);  
+                logger.debug("flavor:"+flavorString);
+            }
+        }else{
+            logger.error("No properties defined for component: "+componentName);
         }
         
         
         
         //get artifacts
         for (TDeploymentArtifact da : component.getDeploymentArtifacts().getDeploymentArtifact()){
-            componentProperties.put(da.getArtifactType().toString(), da.getName());
+                componentProperties.put(da.getArtifactType().toString(), da.getName());
         }
         
-        logger.debug("componennt properties: " + componentProperties);
         componentsProperties.put(componentName, componentProperties);
     }
     
@@ -225,40 +228,30 @@ public class CSARParser implements Parser{
 
     private  void handleArtifact(TArtifactTemplate a) {
         String artifactId = a.getId();
+        logger.debug("handling artifact: "+artifactId);
         Map<String, String> componentProps = null;
         String scriptName = null;
-        boolean found = false;
         for (Map.Entry<String, Map<String, String>> componentPropsEntry : componentsProperties.entrySet()) {
             for (Map.Entry<String, String> propertiesEntry : componentPropsEntry.getValue().entrySet()) {
                 if (propertiesEntry.getValue()!=null && propertiesEntry.getValue().equals(artifactId)) {
                     scriptName=propertiesEntry.getKey();
                     componentProps = componentPropsEntry.getValue();
-                    found = true;
-                    break;
-                }
-                if (found) {
-                    break;
+                    //assuming one artifact refference per artifact template
+                    TArtifactReference ar = a.getArtifactReferences().getArtifactReference().get(0);
+                    String scriptPath = ar.getReference();
+                    String scriptContents = null;
+                    try {
+                        scriptContents = Tools.readFromFile(tempDir+File.separator+scriptPath);
+                    } catch (IOException ex) {
+                        logger.error("Could not find script file: "+scriptPath);
+                    }
+                    componentProps.put(scriptName, scriptContents);
                 }
             }
         }
-        //check if you have found script that this artifact concerns
-        if (!found) {
-            logger.error("Orphan artifact: " + artifactId);
-            return;
-        }
 
-        //assuming one artifact refference per artifact template
-        TArtifactReference ar = a.getArtifactReferences().getArtifactReference().get(0);
-        String scriptPath = ar.getReference();
-        logger.debug("ScriptPath: "+scriptPath);
-        String scriptContents = null;
-        try {
-            scriptContents = Tools.readFromFile(tempDir+File.separator+scriptPath);
-        } catch (IOException ex) {
-            logger.error("Could not find script file: "+scriptPath);
-        }
+
         
-        componentProps.put(scriptName, scriptContents);
         
     }
     
@@ -361,14 +354,14 @@ public class CSARParser implements Parser{
 //        String extractPath = "playground";
 //        Tools.extractCsar(new File(filepath), extractPath);
         //      File toscaFile = handler.getDefinitionFiles()[0];
-        DocumentRoot tosca = Tools.loadFromFile("src/main/resources/extracted_csar/Definitions/myApp_v0.0.7.tosca");
+        //DocumentRoot tosca = Tools.loadFromFile("Application.tosca");
 //            
 //        
-        CSARParser tc = new CSARParser();
-        tc.handleRoot(tosca);
+//        CSARParser tc = new CSARParser();
+//        tc.handleRoot(tosca);
         //System.out.println(tc.componentsProperties);
-        System.out.println(tc.getStructure());
-        
+         Parser tc  = new CSARParser("testApp06.csar"); 
+       
 
     }
 
