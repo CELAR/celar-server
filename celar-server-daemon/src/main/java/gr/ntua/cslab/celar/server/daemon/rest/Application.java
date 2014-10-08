@@ -204,14 +204,4 @@ public class Application {
         return deployment;
     }
     
-    @POST
-    @Path("{id}/terminate/")
-    public DeploymentInfo terminateDeployment(@PathParam("id") String deploymentID) throws IOException, InterruptedException, ValidationException {
-    	Main.ssService.terminateApplication(deploymentID);
-
-    	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
-    	deploymentInfo.setStatus("FINISHED");
-    	
-        return deploymentInfo;
-    }
 }

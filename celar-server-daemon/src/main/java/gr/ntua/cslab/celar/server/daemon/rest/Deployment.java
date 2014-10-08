@@ -6,6 +6,7 @@ import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,9 +15,12 @@ import java.util.List;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+
+import com.sixsq.slipstream.exceptions.ValidationException;
 
 /**
  *
@@ -34,7 +38,9 @@ public class Deployment {
     	}
     	else{
     		String status = Main.ssService.getDeploymentState(deploymentID);
+    		HashMap<String, String> ips = Main.ssService.getDeploymentIPs(deploymentID);
     		retInfo.setStatus(status);
+    		retInfo.getApplication().setDescription(ips.toString());
         	return retInfo;
     	}
     }
@@ -50,5 +56,15 @@ public class Deployment {
         return DeploymentCache.searchDeployments(startTime, endTime, status, applicationId);
     }
 
+    @POST
+    @Path("{deploymentID}/terminate/")
+    public DeploymentInfo terminateDeployment(@PathParam("deploymentID") String deploymentID) throws IOException, InterruptedException, ValidationException {
+    	Main.ssService.terminateApplication(deploymentID);
+
+    	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
+    	deploymentInfo.setStatus("FINISHED");
+    	
+        return deploymentInfo;
+    }
 	
 }
