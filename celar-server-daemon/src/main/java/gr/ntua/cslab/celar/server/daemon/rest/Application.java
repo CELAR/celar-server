@@ -116,7 +116,8 @@ public class Application {
         Parser tc = new CSARParser(filename);
 
         //application name and version
-        String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
+        //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
+        String ssApplicationName = tc.getAppName();
         logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
         String appName = Main.ssService.createApplication(ssApplicationName, tc.getAppVersion());
         HashMap<String, Node> nodes = new HashMap<String, Node>();
