@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
+import static gr.ntua.cslab.db_entities.parsers.ApplicationParser.exportApplication;
 
 /**
  *
@@ -22,18 +23,21 @@ public class ToscaHandlerTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void test_00_showoff() {
         try {
             
             //creates the tosca handler object from a scar file path
-            ToscaHandler tp = new ToscaHandler("app_7.csar");
+            ToscaHandler tp = new ToscaHandler("testApp09.csar");
             
             //stores the application Description in the database
             tp.storeDescription();
             
             //stores the application Deployment in the database
             tp.storeDeployment();
+            
+            System.out.println(exportApplication(tp.getApplication()).toString(3));
+            
             tp.removeDeployment();
             //removes the application description from the database
             tp.removeDescription();

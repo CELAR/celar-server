@@ -177,22 +177,22 @@ public class ToscaHandler {
 
 
 
-    public void storeDeployment() throws DBException {
+    public void storeDeployment() throws Exception {
         
         deployment = new Deployment(app);
         deployment.store();
         
         for (Entry<Module, List<Component>> e : moduleComponents.entrySet()) {
             for (Component component : e.getValue()) {
-                System.out.println(component);
                 Map<String, String> componentProperties = parser.getComponentProperties(component.getDescription());
                 //retreive the characteristics of the flavor
                 int vcpus = 1, ram = 1024, disk = 20;
-                for (String s : componentProperties.get("flavor").split("\\s+")) {
+                String flavorString =  componentProperties.get("flavor");
+                for (String s : flavorString.split("\\s+")) {
                     int val = Integer.parseInt(s.substring(s.indexOf(":") + 1));
                     if (s.startsWith("vcpus")) vcpus = val;
                     else if (s.startsWith("ram")) ram = val;
-                    else if (s.startsWith("disk"))vcpus = val;
+                    else if (s.startsWith("disk"))disk = val;
                 }
 
                 int count = 1;
@@ -204,6 +204,8 @@ public class ToscaHandler {
                 }
 
                 //this is the provided resource of this flavor
+                List<ProvidedResource> flavors = getByFlavorInfo(vcpus, ram, disk);
+                if(flavors.isEmpty()) throw new Exception("No flavors matching the requirements ("+flavorString+")");
                 ProvidedResource provRes = getByFlavorInfo(vcpus, ram, disk).get(0);
                 //add the required resources
                 for (int i = 0; i < count; i++) {
@@ -216,6 +218,9 @@ public class ToscaHandler {
         }
     }
 
+    public Application getApplication(){
+        return this.app;
+    }
 
 
 

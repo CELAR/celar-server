@@ -91,7 +91,7 @@ public class ApplicationParserTest {
         Component component = new Component(module, "test module", vm);
         component.store();
         //export the application description to a JSONObject
-        appDescriptionJson = exportApplicationDescription(app, new Timestamp(System.currentTimeMillis()));
+        appDescriptionJson = exportApplicationDescription(app);
         System.out.println(appDescriptionJson.toString(3));
         
         component.delete();

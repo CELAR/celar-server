@@ -81,7 +81,7 @@ public class ResourceType extends DBIDEntity{
     
 
     /**
-     * Gets the resource with the specified String type (assumed unique)
+     * Gets the resource type with the specified String type (assumed unique)
      * 
      * @param type
      * @return 
