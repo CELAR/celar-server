@@ -10,6 +10,7 @@ import com.sixsq.slipstream.persistence.Target;
 
 import gr.ntua.cslab.celar.server.daemon.Main;
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
+import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
@@ -198,7 +199,7 @@ public class Application {
         deployment.setStartTime(System.currentTimeMillis());
         deployment.setEndTime(-1);
         deployment.setStatus(DeploymentStatus.BOOTSTRAPPING);
-        Deployment.addDeployment(deployment);
+        DeploymentCache.addDeployment(deployment);
         return deployment;
     }
     
@@ -207,8 +208,8 @@ public class Application {
     public DeploymentInfo terminateDeployment(@PathParam("id") String deploymentID) throws IOException, InterruptedException, ValidationException {
     	Main.ssService.terminateApplication(deploymentID);
 
-    	DeploymentInfo deploymentInfo = Deployment.getDeployment(deploymentID);
-    	Deployment.removeDeployment(deploymentInfo);
+    	DeploymentInfo deploymentInfo = DeploymentCache.getDeployment(deploymentID);
+    	DeploymentCache.removeDeployment(deploymentInfo);
     	deploymentInfo.setStatus(DeploymentStatus.FINISHED);
     	
         return deploymentInfo;

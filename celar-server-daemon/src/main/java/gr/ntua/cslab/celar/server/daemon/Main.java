@@ -4,6 +4,7 @@ import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
+import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
 import gr.ntua.cslab.celar.server.daemon.rest.Application;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
@@ -112,6 +113,7 @@ public class Main {
         Logger.getLogger(Main.class.getName()).info("Server configured");
         
         ApplicationCache.allocateCache();
+        DeploymentCache.allocateCache();
     }
 
     private static void configureLogger() {
