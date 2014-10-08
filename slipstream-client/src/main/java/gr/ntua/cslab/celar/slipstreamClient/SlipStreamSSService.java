@@ -118,15 +118,10 @@ public class SlipStreamSSService {
 	}
 	
 	public String launchApplication(String name, Map<String,String> deploymentParameters) throws IOException, InterruptedException{
+		String[] command;
 		if(deploymentParameters.size()==0){
 			logger.info("Launching application: "+name+" without parameters");
-			String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", name};
-			String ret = executeCommand(command);
-			if(ret.equals("")){
-				return null;
-			}
-			String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
-			return deploymentId;
+			command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", name};
 		}
 		else{
 			String params = "";
@@ -139,15 +134,17 @@ public class SlipStreamSSService {
 				i++;
 			}
 			logger.info("Launching application: "+name+" with parameters: "+params);
-			String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
-			String ret = executeCommand(command);
-			if(ret.equals("")){
-				return null;
-			}
-			String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
-			deploymentId = deploymentId.replaceAll("(\\r|\\n|\\t)", "");
-			return deploymentId;
+			command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
+			
 		}
+		String ret = executeCommand(command);
+		if(ret.equals("")){
+			return null;
+		}
+		String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
+		deploymentId = deploymentId.replaceAll("(\\r|\\n|\\t)", "");
+		logger.info("deploymentId: "+deploymentId);
+		return deploymentId;
 	}
 	
 	public String getDeploymentState(String deploymentID) throws Exception{
