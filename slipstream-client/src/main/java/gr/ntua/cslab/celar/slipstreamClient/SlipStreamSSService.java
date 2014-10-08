@@ -234,8 +234,9 @@ public class SlipStreamSSService {
 			module.setParameter(p);
 		}
 		putModule(module);
-		baseImageReferences.put(imageName, reference);
-		return reference;
+		String ref = module+"/"+reference;
+		baseImageReferences.put(imageName, ref);
+		return ref;
 	}
 	
 	public String executeCommand(String[] command) throws IOException, InterruptedException {
