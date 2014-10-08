@@ -1,16 +1,19 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sixsq.slipstream.persistence.Authz;
 import com.sixsq.slipstream.persistence.DeploymentModule;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
+
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -36,6 +40,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.ws.WebServiceException;
 
+import org.apache.log4j.Logger;
+
 import tools.CSARParser;
 import tools.Parser;
 
@@ -46,6 +52,7 @@ import tools.Parser;
 @Path("/application/")
 public class Application {
 
+    public  Logger logger = Logger.getLogger(Application.class);
     // IS calls
     @GET
     @Path("{id}/")
@@ -122,35 +129,35 @@ public class Application {
 
         //application name and version
         String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
-        System.out.println("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
+        logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
         String appName = ssservise.createApplication(ssApplicationName, tc.getAppVersion());
         HashMap<String, Node> nodes = new HashMap<String, Node>();
 
         //iterate through modules
         for (String module : tc.getModules()) {
-            System.out.println("\t" + module);
+        	logger.info("\t" + module);
 
             //module dependecies
-            System.out.println("\t\tdepends on: " + tc.getModuleDependencies(module));
+        	logger.info("\t\tdepends on: " + tc.getModuleDependencies(module));
 
             //iterate through components
             for (String component : tc.getModuleComponents(module)) {
-                System.out.println("\t\t" + component);
+            	logger.info("\t\t" + component);
                 ImageModule imModule = new ImageModule(appName + "/" + component);
                 Authz auth = new Authz(ssservise.getUser(), imModule);
                 imModule.setAuthz(auth);
 
                 //component dependencies
-                System.out.println("\t\t\tdepends on: " + tc.getComponentDependencies(component));
+                logger.info("\t\t\tdepends on: " + tc.getComponentDependencies(component));
 
                 //component properties
                 Set<Target> targets = new HashSet<Target>();
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
                     //System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
                     if (prop.getKey().toString().equals("VMI")) {
-                        imModule.setModuleReference("examples/images/ubuntu-12.04");
+                        imModule.setModuleReference(ssservise.getImageReference("ubuntu-12.04"));
                     } else if (prop.getKey().toString().equals("executeScript")) {
-                        System.out.println("script");
+                    	logger.info("script: "+prop.getValue().toString());
                         Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
                         targets.add(t);
 
@@ -158,55 +165,9 @@ public class Application {
                 }
                 imModule.setTargets(targets);
 
-                String parameterName = "ready";
-                String description = "Server ready";
-
-                ModuleParameter parameter = new ModuleParameter(parameterName, "", description);
-                parameter.setCategory("Output");
-                imModule.setParameter(parameter);
-
-                parameterName = "loaded";
-                description = "Data loaded";
-
-                parameter = new ModuleParameter(parameterName, "", description);
-                parameter.setCategory("Output");
-                imModule.setParameter(parameter);
-
-                parameterName = "Flexiant.ram";
-                description = "ram";
-                String value = "2048";
-
-                parameter = new ModuleParameter(parameterName, value, description);
-                parameter.setCategory("Flexiant");
-                parameter.setDefaultValue("2048");
-                imModule.setParameter(parameter);
-
-                parameterName = "Flexiant.cpu";
-                description = "cpu";
-                value = "2";
-
-                parameter = new ModuleParameter(parameterName, value, description);
-                parameter.setCategory("Flexiant");
-                parameter.setDefaultValue("2");
-                imModule.setParameter(parameter);
-
-                parameterName = "okeanos.instance.type";
-                description = "Flavor";
-                value = "C2R2048D10ext_vlmc";
-
-                parameter = new ModuleParameter(parameterName, value, description);
-                parameter.setCategory("okeanos");
-                parameter.setDefaultValue("C2R2048D10ext_vlmc");
-                imModule.setParameter(parameter);
-
-                parameterName = "okeanos.security.groups";
-                description = "Security Groups (comma separated list)";
-                value = "default";
-
-                parameter = new ModuleParameter(parameterName, value, description);
-                parameter.setCategory("okeanos");
-                parameter.setDefaultValue("default");
-                imModule.setParameter(parameter);
+        		for(ModuleParameter p : ssservise.baseParameters){
+        			imModule.setParameter(p);
+        		}
 
                 ssservise.putModule(imModule);
                 nodes.put(imModule.getShortName(), new Node(imModule.getShortName(), imModule));
@@ -219,7 +180,7 @@ public class Application {
         DeploymentModule deployment = new DeploymentModule(name);
         Authz auth = new Authz(ssservise.getUser(), deployment);
         deployment.setAuthz(auth);
-        System.out.println(nodes);
+        logger.info("App Modules: "+nodes);
         deployment.setNodes(nodes);
         
         ssservise.putModule(deployment);
@@ -238,7 +199,7 @@ public class Application {
 
     @POST
     @Path("{id}/deploy/")
-    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId) throws IOException, InterruptedException {
+    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId) throws IOException, InterruptedException, ValidationException {
         ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
 
         InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
@@ -248,7 +209,7 @@ public class Application {
         } else {
             throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
         }
-        System.out.println(properties);
+        logger.info(properties);
         String username = properties.getProperty("slipstream.username"),
                 password = properties.getProperty("slipstream.password"),
                 slipstreamHost = properties.getProperty("slipstream.url");
@@ -256,13 +217,7 @@ public class Application {
         SlipStreamSSService sservice = new SlipStreamSSService(username, password, slipstreamHost);
         
         Map<String, String> params = new HashMap<>();
-        params.put("cassandraSeedNode:Flexiant.cpu", "2");
         sservice.launchApplication(app.getSlipstreamName(), params);
-         
-         
-         
-         
-         
          
         DeploymentInfo deployment = new DeploymentInfo();
         deployment.setApplication(app);

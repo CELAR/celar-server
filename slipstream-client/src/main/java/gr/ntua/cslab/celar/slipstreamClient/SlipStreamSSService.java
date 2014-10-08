@@ -37,9 +37,9 @@ import com.sixsq.slipstream.util.SerializationUtil;
 public class SlipStreamSSService {
 	private String user, password, url;
     public  Logger logger = Logger.getLogger(SlipStreamSSService.class);
-    private HashMap<String,String> baseImageReferences; //imageName-reference
-    private HashMap<String,HashMap<String,String>> baseImages; //imageName-cloud-flavorID
-    private List<ModuleParameter> baseParameters;
+    public HashMap<String,String> baseImageReferences; //imageName-reference
+    public HashMap<String,HashMap<String,String>> baseImages; //imageName-cloud-flavorID
+    public List<ModuleParameter> baseParameters;
 
 
 	/*public Module getModule(String name) throws Exception{
@@ -118,23 +118,35 @@ public class SlipStreamSSService {
 	}
 	
 	public String launchApplication(String name, Map<String,String> deploymentParameters) throws IOException, InterruptedException{
-		String params = "";
-		int i =0;
-		for(Entry<String, String> e : deploymentParameters.entrySet()){
-			if(i>0){
-				params+=",";
+		if(deploymentParameters.size()==0){
+			logger.info("Launching application: "+name+" without parameters");
+			String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", name};
+			String ret = executeCommand(command);
+			if(ret.equals("")){
+				return null;
 			}
-			params+=e.getKey()+"="+e.getValue();
-			i++;
+			String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
+			return deploymentId;
 		}
-		logger.info("Launching application: "+name+" with parameters: "+params);
-		String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
-		String ret = executeCommand(command);
-		if(ret.equals("")){
-			return null;
+		else{
+			String params = "";
+			int i =0;
+			for(Entry<String, String> e : deploymentParameters.entrySet()){
+				if(i>0){
+					params+=",";
+				}
+				params+=e.getKey()+"="+e.getValue();
+				i++;
+			}
+			logger.info("Launching application: "+name+" with parameters: "+params);
+			String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
+			String ret = executeCommand(command);
+			if(ret.equals("")){
+				return null;
+			}
+			String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
+			return deploymentId;
 		}
-		String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
-		return deploymentId;
 	}
 	
 	public String getDeploymentState(String deploymentID) throws Exception{
@@ -186,16 +198,16 @@ public class SlipStreamSSService {
 		return appName;
 	}
 	
-	public String getImageReference(String imageName, SlipStreamSSService ssservise) throws Exception {
+	public String getImageReference(String imageName) throws Exception {
 		String reference = baseImageReferences.get(imageName);
 		if(reference!=null)
 			return reference;
 		
 		String projectName = "images";
 		ProjectModule project = new ProjectModule(projectName);
-		Authz auth = new Authz(ssservise.getUser(), project);
+		Authz auth = new Authz(getUser(), project);
 		project.setAuthz(auth);
-		ssservise.putModule(project);
+		putModule(project);
 		
 		reference ="images/"+imageName;
 		ImageModule module = new ImageModule(reference);
@@ -203,7 +215,7 @@ public class SlipStreamSSService {
 		module.setLoginUser("ubuntu");
 		module.setPlatform("ubuntu");
 		module.setDescription("Baseline Image "+imageName);
-		auth = new Authz(ssservise.getUser(), module);
+		auth = new Authz(getUser(), module);
 		module.setAuthz(auth);
 		HashMap<String, String> imageIds = baseImages.get(imageName);
 		if(imageIds==null){
@@ -221,7 +233,7 @@ public class SlipStreamSSService {
 		for(ModuleParameter p : baseParameters){
 			module.setParameter(p);
 		}
-		ssservise.putModule(module);
+		putModule(module);
 		baseImageReferences.put(imageName, reference);
 		return reference;
 	}
@@ -294,6 +306,21 @@ public class SlipStreamSSService {
         parameter.setCategory("okeanos");
         parameter.setDefaultValue("default");
 		baseParameters.add(parameter);
+		
+		parameterName = "ready";
+        description = "Server ready";
+
+        parameter = new ModuleParameter(parameterName, "", description);
+        parameter.setCategory("Output");
+        baseParameters.add(parameter);
+
+        parameterName = "loaded";
+        description = "Data loaded";
+
+        parameter = new ModuleParameter(parameterName, "", description);
+        parameter.setCategory("Output");
+        baseParameters.add(parameter);
+		
 	}
 
 	public String getUser() {
