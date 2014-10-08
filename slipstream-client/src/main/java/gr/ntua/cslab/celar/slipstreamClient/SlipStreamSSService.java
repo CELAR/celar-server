@@ -234,7 +234,7 @@ public class SlipStreamSSService {
 			module.setParameter(p);
 		}
 		putModule(module);
-		String ref = module+"/"+reference;
+		String ref = "module/"+reference;
 		baseImageReferences.put(imageName, ref);
 		return ref;
 	}
