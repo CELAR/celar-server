@@ -7,25 +7,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.SAXException;
+import org.apache.log4j.Logger;
 
 import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sixsq.slipstream.persistence.Authz;
+import com.sixsq.slipstream.persistence.CloudImageIdentifier;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.Module;
 import com.sixsq.slipstream.persistence.ModuleParameter;
-import com.sixsq.slipstream.persistence.ParameterCategory;
 import com.sixsq.slipstream.persistence.ProjectModule;
-import com.sixsq.slipstream.persistence.Target;
 import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.util.SerializationUtil;
 
@@ -35,6 +36,10 @@ import com.sixsq.slipstream.util.SerializationUtil;
 
 public class SlipStreamSSService {
 	private String user, password, url;
+    public  Logger logger = Logger.getLogger(SlipStreamSSService.class);
+    private HashMap<String,String> baseImageReferences; //imageName-reference
+    private HashMap<String,HashMap<String,String>> baseImages; //imageName-cloud-flavorID
+    private List<ModuleParameter> baseParameters;
 
 
 	/*public Module getModule(String name) throws Exception{
@@ -51,7 +56,9 @@ public class SlipStreamSSService {
 		}
 		return null;
 	}*/
+    
 	private String writeXML(String xml) throws IOException{
+		logger.debug(xml);
 		BufferedWriter writer = null;
 		String xmlfile = "/tmp/test.xml";
 		
@@ -80,12 +87,11 @@ public class SlipStreamSSService {
 	}
 	
 	public boolean putUser(User user) throws Exception{
-		System.out.println("Putting user: "+ user.getName());
+		logger.info("Putting user: "+ user.getName());
 		String xml = SerializationUtil.toXmlString(user);
 		String xmlfile = writeXML(xml);
 		String[] command = new String[] {"ss-user-put", "-u", this.user, "-p", password, "--endpoint", url, xmlfile};
 		String ret = executeCommand(command);
-		System.out.println(ret);
 		if(ret.equals(""))
 			return true;
 		else
@@ -93,13 +99,11 @@ public class SlipStreamSSService {
 	}
 	
 	public boolean putModule(Module module) throws IOException, InterruptedException{
-		System.out.println("Putting "+module.getClass() +" module: "+ module.getName());
+		logger.info("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
-		System.out.println(xml);
 		String xmlfile = writeXML(xml);
 		String[] command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
 		String ret = executeCommand(command);
-		System.out.println(ret);
 		if(ret.equals(""))
 			return true;
 		else
@@ -107,9 +111,9 @@ public class SlipStreamSSService {
 	}
 	
 	public boolean terminateApplication(String deploymentID) throws IOException, InterruptedException{
-		System.out.println("Terminating deployment: "+deploymentID);
+		logger.info("Terminating deployment: "+deploymentID);
 		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-X", "DELETE", "-k"};
-		executeCommand(command);
+		String ret = executeCommand(command);
 		return true;
 	}
 	
@@ -123,7 +127,7 @@ public class SlipStreamSSService {
 			params+=e.getKey()+"="+e.getValue();
 			i++;
 		}
-		System.out.println("Launching application: "+name+" with parameters: "+params);
+		logger.info("Launching application: "+name+" with parameters: "+params);
 		String[] command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
 		String ret = executeCommand(command);
 		if(ret.equals("")){
@@ -134,6 +138,7 @@ public class SlipStreamSSService {
 	}
 	
 	public String getDeploymentState(String deploymentID) throws Exception{
+		logger.info("Getting deployment state for deploymentID: "+deploymentID);
 		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-k"};
 		String ret = executeCommand(command);
 		if(ret.startsWith("<!DOCTYPE html>")){
@@ -150,21 +155,22 @@ public class SlipStreamSSService {
 	
 
 	public String addVM(String deploymnetId, String type, Integer number) throws Exception {
-		System.out.println("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
+		logger.info("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
 		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
 		return executeCommand(command);
 	}
 
 	public void removeVM(String deploymnetId, String type, String ids) throws Exception {
-		System.out.println("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
+		logger.info("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
 		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
 		executeCommand(command);
 	}
 
 	public void waitForReadyState(String deploymnetId) throws Exception {
+		logger.info("Waiting for ready state deploymentID: "+deploymnetId);
 		while(true){
 			String state = getDeploymentState(deploymnetId);
-			System.out.println("Current State: "+state);
+			logger.info("Current State: "+state);
 			if(state.equals("Ready"))
 				break;
 			Thread.sleep(1000);
@@ -180,27 +186,52 @@ public class SlipStreamSSService {
 		return appName;
 	}
 	
-	public String executeCommand(String command) throws IOException, InterruptedException {
-		 
-		StringBuffer output = new StringBuffer();
-		Process p = Runtime.getRuntime().exec(command);
-		p.waitFor();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		String line = "";			
-		while ((line = reader.readLine())!= null) {
-			output.append(line + "\n");
+	public String getImageReference(String imageName, SlipStreamSSService ssservise) throws Exception {
+		String reference = baseImageReferences.get(imageName);
+		if(reference!=null)
+			return reference;
+		
+		String projectName = "images";
+		ProjectModule project = new ProjectModule(projectName);
+		Authz auth = new Authz(ssservise.getUser(), project);
+		project.setAuthz(auth);
+		ssservise.putModule(project);
+		
+		reference ="images/"+imageName;
+		ImageModule module = new ImageModule(reference);
+		module.setIsBase(true);
+		module.setLoginUser("ubuntu");
+		module.setPlatform("ubuntu");
+		module.setDescription("Baseline Image "+imageName);
+		auth = new Authz(ssservise.getUser(), module);
+		module.setAuthz(auth);
+		HashMap<String, String> imageIds = baseImages.get(imageName);
+		if(imageIds==null){
+			logger.error("No imageIDs for image with name: "+imageName);
+			throw new Exception("No imageIDs for image with name: "+imageName);
 		}
- 
-		return output.toString();
- 
+		
+		Set<CloudImageIdentifier> cloudImageIdentifiers = new HashSet<CloudImageIdentifier>();
+		for(Entry<String, String> e : imageIds.entrySet()){
+			CloudImageIdentifier ident = new CloudImageIdentifier(module, e.getKey(), e.getValue());
+			cloudImageIdentifiers.add(ident);
+		}
+		module.setCloudImageIdentifiers(cloudImageIdentifiers );
+		
+		for(ModuleParameter p : baseParameters){
+			module.setParameter(p);
+		}
+		ssservise.putModule(module);
+		baseImageReferences.put(imageName, reference);
+		return reference;
 	}
 	
 	public String executeCommand(String[] command) throws IOException, InterruptedException {
-		System.out.print("Executing command: ");
+		String c="Executing command: ";
 		for (int i = 0; i < command.length; i++) {
-			System.out.print(command[i]+" ");
+			c+=command[i]+" ";
 		}
-		System.out.println();
+		logger.info(c);
 		StringBuffer output = new StringBuffer();
 		Process p = Runtime.getRuntime().exec(command);
 		p.waitFor();
@@ -209,18 +240,60 @@ public class SlipStreamSSService {
 		while ((line = reader.readLine())!= null) {
 			output.append(line + "\n");
 		}
-                
-                System.out.println("Output:\t"+output.toString());
-                
+        logger.info("Command Output: "+output.toString());
 		return output.toString();
  
 	}
 
-	public SlipStreamSSService(String user, String password, String url) {
+	public SlipStreamSSService(String user, String password, String url) throws ValidationException {
 		super();
 		this.user = user;
 		this.password = password;
 		this.url = url;
+		baseImageReferences = new HashMap<String,String>();
+		baseImages = new HashMap<>();
+		HashMap<String,String> temp = new HashMap<String, String>();
+		temp.put("Flexiant", "81aef2d3-0291-38ef-b53a-22fcd5418e60");
+		temp.put("okeanos", "fe31fced-a3cf-49c6-b43b-f58f5235ba45");
+		temp.put("stratuslab", "HZTKYZgX7XzSokCHMB60lS0wsiv");
+		baseImages.put("ubuntu-12.04", temp);
+		
+		baseParameters = new ArrayList<ModuleParameter>();
+		String parameterName = "Flexiant.ram";
+		String description = "ram";
+		String value = "2048";
+	
+		ModuleParameter parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("Flexiant");
+		parameter.setDefaultValue("2048");
+		baseParameters.add(parameter);
+		
+		parameterName = "Flexiant.cpu";
+		description = "cpu";
+		value = "2";
+	
+		parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("Flexiant");
+		parameter.setDefaultValue("2");
+		baseParameters.add(parameter);
+
+        parameterName = "okeanos.instance.type";
+        description = "Flavor";
+        value = "C2R2048D10ext_vlmc";
+
+        parameter = new ModuleParameter(parameterName, value, description);
+        parameter.setCategory("okeanos");
+        parameter.setDefaultValue("C2R2048D10ext_vlmc");
+		baseParameters.add(parameter);
+
+        parameterName = "okeanos.security.groups";
+        description = "Security Groups (comma separated list)";
+        value = "default";
+
+        parameter = new ModuleParameter(parameterName, value, description);
+        parameter.setCategory("okeanos");
+        parameter.setDefaultValue("default");
+		baseParameters.add(parameter);
 	}
 
 	public String getUser() {

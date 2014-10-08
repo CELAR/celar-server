@@ -5,6 +5,10 @@ import static com.sixsq.slipstream.action.OneShotAction.State.ACTIVE;
 //import static org.junit.Assert.assertFalse;
 //import static org.junit.Assert.assertNotNull;
 
+
+
+
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,9 +16,14 @@ import java.util.Set;
 
 //import org.junit.Test;
 
+
+
+
+
 import com.sixsq.slipstream.action.OneShotAction;
 import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sixsq.slipstream.persistence.Authz;
+import com.sixsq.slipstream.persistence.CloudImageIdentifier;
 import com.sixsq.slipstream.persistence.DeploymentModule;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.ModuleParameter;
@@ -24,6 +33,7 @@ import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.Target;
 import com.sixsq.slipstream.util.SerializationUtil;
+
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
 
@@ -190,17 +200,88 @@ public class SlipStreamSSServiceTest {
 		ssservise.putModule(deployment);
 	}
 
+
+	private static void testPutImage(String image, SlipStreamSSService ssservise) throws Exception {
+
+		String projectName = "images1";
+		ProjectModule project = new ProjectModule(projectName);
+		Authz auth = new Authz(ssservise.getUser(), project);
+		project.setAuthz(auth);
+		ssservise.putModule(project);
+		
+		ImageModule module = new ImageModule(image);
+		module.setIsBase(true);
+		module.setLoginUser("ubuntu");
+		module.setPlatform("ubuntu");
+		module.setDescription("Baseline Image");
+		auth = new Authz(ssservise.getUser(), module);
+		module.setAuthz(auth);
+		
+		Set<CloudImageIdentifier> cloudImageIdentifiers = new HashSet<CloudImageIdentifier>();
+		CloudImageIdentifier ident = new CloudImageIdentifier(module, "Flexiant", "81aef2d3-0291-38ef-b53a-22fcd5418e60");
+		cloudImageIdentifiers.add(ident);
+		
+		ident = new CloudImageIdentifier(module, "stratuslab", "HZTKYZgX7XzSokCHMB60lS0wsiv");
+		cloudImageIdentifiers.add(ident);
+		
+		ident = new CloudImageIdentifier(module, "okeanos", "fe31fced-a3cf-49c6-b43b-f58f5235ba45");
+		cloudImageIdentifiers.add(ident);
+
+		module.setCloudImageIdentifiers(cloudImageIdentifiers );
+		
+		String parameterName = "Flexiant.ram";
+		String description = "ram";
+		String value = "2048";
+	
+		ModuleParameter parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("Flexiant");
+		parameter.setDefaultValue("2048");
+		module.setParameter(parameter);
+		
+		parameterName = "Flexiant.cpu";
+		description = "cpu";
+		value = "2";
+	
+		parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("Flexiant");
+		parameter.setDefaultValue("2");
+		module.setParameter(parameter);
+
+        parameterName = "okeanos.instance.type";
+        description = "Flavor";
+        value = "C2R2048D10ext_vlmc";
+
+        parameter = new ModuleParameter(parameterName, value, description);
+        parameter.setCategory("okeanos");
+        parameter.setDefaultValue("C2R2048D10ext_vlmc");
+        module.setParameter(parameter);
+
+        parameterName = "okeanos.security.groups";
+        description = "Security Groups (comma separated list)";
+        value = "default";
+
+        parameter = new ModuleParameter(parameterName, value, description);
+        parameter.setCategory("okeanos");
+        parameter.setDefaultValue("default");
+        module.setParameter(parameter);
+        
+		ssservise.putModule(module);
+	}
+	
 	public static void main(String[] args) throws Exception {
 		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "a1s2d3f4", "https://83.212.122.157");
 		
+		System.out.println(ssservise.getImageReference("ubuntu-12.04", ssservise));
+		System.out.println(ssservise.getImageReference("ubuntu-12.04", ssservise));
+		//testPutImage("images1/ubuntu-12.04", ssservise);
 		
 //		testPutApplication(ssservise);
 		
-		HashMap<String,String> parameters = new HashMap<String, String>();
-		parameters.put("apache:multiplicity", "1");
-		parameters.put("apache:Flexiant.cpu", "2");
-		parameters.put("client:multiplicity", "1");
-		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample3/apacheExample", parameters);
+//		HashMap<String,String> parameters = new HashMap<String, String>();
+//		parameters.put("apache:multiplicity", "1");
+//		parameters.put("apache:Flexiant.cpu", "2");
+//		parameters.put("client:multiplicity", "1");
+//		String deploymnetId = ssservise.launchApplication("examples/CELAR/apacheExample3/apacheExample", parameters);
 		
 //		if(deploymnetId==null)
 //			System.exit(0);
@@ -223,5 +304,8 @@ public class SlipStreamSSServiceTest {
 		System.exit(0);
 		
 	}
+
+
+
 
 }
