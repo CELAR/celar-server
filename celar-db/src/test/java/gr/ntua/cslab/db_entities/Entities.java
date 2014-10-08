@@ -95,7 +95,7 @@ public class Entities {
             
             //==========  This creates a structured JSON. Maybe not useful... I dunno.=================    
                 //export the application description to a JSONObject
-                    JSONObject appDescriptionJson = ApplicationParser.exportApplicationDescription(app, new Timestamp(System.currentTimeMillis()));
+                    JSONObject appDescriptionJson = ApplicationParser.exportApplicationDescription(app);
                     System.out.println(appDescriptionJson.toString(3));
             //============================================================================================
                     

@@ -175,6 +175,7 @@ public abstract class DBEntity {
             if (lc != null && !lc.isEmpty()) {
                 mapsFromDB = DBTools.doSelect(dummy.getTableName(), lc, or);
             } else {
+                System.out.println("lc is empty");
                 mapsFromDB = DBTools.doSelect(dummy.getTableName(), "TRUE");
             }
 
@@ -199,7 +200,8 @@ public abstract class DBEntity {
     
     private static <T extends DBEntity> List<T> getByField(Class myClass, String field, String value){
         List<Constrain> cl = new LinkedList();
-        if(field!=null)  cl.add(new Constrain(field, value));
+        Constrain c = new Constrain(field, value);
+        if(field!=null)  cl.add(c);
         return getByConstrains(myClass, cl, false);
     }
 

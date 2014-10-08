@@ -11,6 +11,7 @@ import gr.ntua.cslab.db_entities.Application;
 import gr.ntua.cslab.db_entities.Component;
 import gr.ntua.cslab.db_entities.DBException;
 import gr.ntua.cslab.db_entities.Module;
+import gr.ntua.cslab.db_entities.Resource;
 import gr.ntua.cslab.db_entities.ResourceType;
 import gr.ntua.cslab.db_entities.User;
 import java.sql.Timestamp;
@@ -75,8 +76,12 @@ public class ApplicationParser {
         return null;
     }
     
-    public static JSONObject exportApplicationDescription(Application app, Timestamp ts) throws DBException {
-        return exportApplication(app, ts, false);
+    public static JSONObject exportApplicationDescription(Application app) throws DBException{
+        return exportApplication(app, new Timestamp(System.currentTimeMillis()), false);
+    }
+    
+    public static JSONObject exportApplication(Application app) throws DBException{
+        return exportApplication(app, new Timestamp(System.currentTimeMillis()), true);
     }
 
     public static JSONObject exportApplication(Application app, Timestamp ts, boolean includeResources) throws DBException {
@@ -111,11 +116,18 @@ public class ApplicationParser {
             JSONObject componentJson = c.toJSONObject();
             //inject the resource type name as "resource type"
             componentJson.put("resource_type", (new ResourceType(c.getResourceTypeId())).getTypeName());
-            //if (includeResources) componentJson.put("resources", exportComponentResources(c, ts));
+            if (includeResources) componentJson.put("resources", exportComponentResources(c, ts));
             componentsJson.put(componentJson);
         }
         return componentsJson;
     }
     
+        public static JSONArray exportComponentResources(Component c, Timestamp ts) throws DBException{
+           List<Resource> lr= Resource.getByComponent(c);
+            JSONArray resourcesJson = new JSONArray();
+            for(Resource r: lr) resourcesJson.put(r.toJSONObject());
+//            resourcesJson.put(lr);
+            return resourcesJson;
+        }
 
 }
