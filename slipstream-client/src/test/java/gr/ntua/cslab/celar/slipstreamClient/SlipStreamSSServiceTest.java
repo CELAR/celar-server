@@ -270,7 +270,7 @@ public class SlipStreamSSServiceTest {
 	
 	public static void main(String[] args) throws Exception {
 		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "a1s2d3f4", "https://83.212.122.157");
-		System.out.println(ssservise.getDeploymentState("855d5ef3-f758-4e5d-b6ef-ff7a109a41e5"));
+		System.out.println(ssservise.getDeploymentIPs("fef145fb-e4b6-4eb2-a5ba-4e2bb498694c"));
 		
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));

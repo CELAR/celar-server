@@ -109,7 +109,8 @@ public abstract class DBConnectable {
             String url = "jdbc:" + BACKEND + ":" + "//" + HOST + ":" + PORT + "/" + DB_NAME;
             connection = DriverManager.getConnection(url, USER, PASSWORD);
         } catch (SQLException e) {
-            LOG.fatal("Failed to create connection\n" + e);
+            LOG.fatal("Failed to create connection to DB server "+HOST+":"+PORT);
+            LOG.fatal("REASON: " + e);
             e.printStackTrace();
         }
         LOG.debug("Connection created");

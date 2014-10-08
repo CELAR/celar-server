@@ -1,18 +1,22 @@
 package gr.ntua.cslab.celar.slipstreamClient;
 
+import java.util.HashMap;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class SAXStateHandler extends DefaultHandler {
 	
-	public String state;
+	public String state, currentKey;
+	public HashMap<String,String> ips;
 	private boolean print;
 
 	public SAXStateHandler() {
 		super();
 		state = "NOT FOUND";
 		print=false;
+		ips = new HashMap<String, String>();
 	}
 
 	@Override
@@ -34,6 +38,7 @@ public class SAXStateHandler extends DefaultHandler {
 			break;
 		case "runtimeParameter":
 			if(attributes.getValue("key").endsWith(":hostname")){
+				currentKey = attributes.getValue("key");
 				print=true;
 			}
 			break;
@@ -55,7 +60,7 @@ public class SAXStateHandler extends DefaultHandler {
 			throws SAXException {
 		String content = String.copyValueOf(ch, start, length).trim();
 		if(print){
-			System.out.println("!! "+content);
+			ips.put(currentKey, content);
 			print=false;
 		}
 	}
