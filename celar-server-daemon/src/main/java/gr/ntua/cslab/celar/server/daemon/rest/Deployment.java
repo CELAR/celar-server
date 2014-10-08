@@ -28,14 +28,13 @@ public class Deployment {
     @GET
     @Path("{deploymentID}/")
     public DeploymentInfo getDeployment(@PathParam("deploymentID") String deploymentID) throws Exception {
-    	DeploymentInfo retInfo = DeploymentCache.removeDeployment(deploymentID);
+    	DeploymentInfo retInfo = DeploymentCache.getDeployment(deploymentID);
     	if(retInfo==null){
     		return new DeploymentInfo(deploymentID, new ApplicationInfo(), new Date().getTime()-10000l, new Date().getTime()+10000l, "NOT FOUND");
     	}
     	else{
     		String status = Main.ssService.getDeploymentState(deploymentID);
     		retInfo.setStatus(status);
-    		DeploymentCache.addDeployment(retInfo);
         	return retInfo;
     	}
     }

@@ -3,9 +3,11 @@ package gr.ntua.cslab.celar.slipstreamClient;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -146,10 +149,11 @@ public class SlipStreamSSService {
 		logger.info("deploymentId: "+deploymentId);
 		return deploymentId;
 	}
-	
+
 	public String getDeploymentState(String deploymentID) throws Exception{
 		logger.info("Getting deployment state for deploymentID: "+deploymentID);
-		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-k"};
+		String[] command = new String[] {"ss-run-get", "--endpoint", url, "-u", user, "-p", password, deploymentID};
+		//String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-k"};
 		String ret = executeCommand(command);
 		if(ret.startsWith("<!DOCTYPE html>")){
 			return "Not Found";
@@ -243,10 +247,13 @@ public class SlipStreamSSService {
 			c+=command[i]+" ";
 		}
 		logger.info(c);
+		
 		StringBuffer output = new StringBuffer();
-		Process p = Runtime.getRuntime().exec(command);
-		p.waitFor();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		ProcessBuilder p = new ProcessBuilder(command);
+		Process p1 = p.start();
+		//Process p = Runtime.getRuntime().exec(command);
+		p1.waitFor();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(p1.getInputStream()));
 		String line = "";			
 		while ((line = reader.readLine())!= null) {
 			output.append(line + "\n");
