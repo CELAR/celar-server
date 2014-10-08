@@ -1,14 +1,23 @@
 package gr.ntua.cslab.celar.server.daemon;
 
+import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
+
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
+import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
+import gr.ntua.cslab.celar.server.daemon.rest.Application;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
+import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.ws.WebServiceException;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -29,7 +38,9 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
  * @author Giannis Giannakopoulos
  */
 public class Main {
-
+	
+	public static SlipStreamSSService ssService;
+	
     private static void loadProperties() throws IOException {
         InputStream stream = Main.class.getClassLoader().getResourceAsStream("celar-server.properties");
         if (stream == null) {
@@ -102,6 +113,7 @@ public class Main {
         Logger.getLogger(Main.class.getName()).info("Server configured");
         
         ApplicationCache.allocateCache();
+        DeploymentCache.allocateCache();
     }
 
     private static void configureLogger() {
@@ -140,9 +152,27 @@ public class Main {
         creatDirs();
         addShutdownHook();
         configureServer();
+        configureSlipstreamClient();
 
         ServerStaticComponents.server.start();
         Logger.getLogger(Main.class.getName()).info("Server is started");
-
+        
     }
+
+	private static void configureSlipstreamClient() throws IOException, ValidationException {
+
+        InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
+        Properties properties = new Properties();
+        if (propsInput != null) {
+            properties.load(propsInput);
+        } else {
+            throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
+        }
+        Logger.getLogger(Main.class.getName()).info(properties.toString());
+        String username = properties.getProperty("slipstream.username"),
+                password = properties.getProperty("slipstream.password"),
+                slipstreamHost = properties.getProperty("slipstream.url");
+
+        ssService = new SlipStreamSSService(username, password, slipstreamHost);
+	}
 }

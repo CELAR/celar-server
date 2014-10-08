@@ -14,28 +14,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeploymentInfo {
     
-    private int id;
     private long startTime, endTime;
-    private DeploymentStatus status;
+    private String status;
     private ApplicationInfo application;
+    private String deploymentID;
 
-    public DeploymentInfo() {
+    public String getDeploymentID() {
+		return deploymentID;
+	}
+
+	public void setDeploymentID(String deploymentID) {
+		this.deploymentID = deploymentID;
+	}
+
+	public DeploymentInfo() {
     }
 
-    public DeploymentInfo(int id, ApplicationInfo applicationInfo, long startTime, long endTime, DeploymentStatus status) {
-        this.id = id;
+    public DeploymentInfo(String deploymentID, ApplicationInfo applicationInfo, long startTime, long endTime, String status) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
         this.application = applicationInfo;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.deploymentID = deploymentID;
     }
 
     public long getStartTime() {
@@ -54,11 +54,11 @@ public class DeploymentInfo {
         this.endTime = endTime;
     }
 
-    public DeploymentStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(DeploymentStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

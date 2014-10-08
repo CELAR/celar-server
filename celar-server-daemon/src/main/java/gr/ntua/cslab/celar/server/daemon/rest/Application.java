@@ -8,7 +8,9 @@ import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
 
+import gr.ntua.cslab.celar.server.daemon.Main;
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
+import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
@@ -110,27 +112,14 @@ public class Application {
         }
         input.close();
 
-        InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
-        Properties properties = new Properties();
-        if (propsInput != null) {
-            properties.load(propsInput);
-        } else {
-            throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
-        }
-        System.out.println(properties);
-        String username = properties.getProperty("slipstream.username"),
-                password = properties.getProperty("slipstream.password"),
-                slipstreamHost = properties.getProperty("slipstream.url");
-        // start slipstream description
-        SlipStreamSSService ssservise = new SlipStreamSSService(username, password, slipstreamHost);
-
         //create a Parser instance
         Parser tc = new CSARParser(filename);
 
         //application name and version
-        String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
+        //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
+        String ssApplicationName = tc.getAppName();
         logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
-        String appName = ssservise.createApplication(ssApplicationName, tc.getAppVersion());
+        String appName = Main.ssService.createApplication(ssApplicationName, tc.getAppVersion());
         HashMap<String, Node> nodes = new HashMap<String, Node>();
 
         //iterate through modules
@@ -144,7 +133,7 @@ public class Application {
             for (String component : tc.getModuleComponents(module)) {
             	logger.info("\t\t" + component);
                 ImageModule imModule = new ImageModule(appName + "/" + component);
-                Authz auth = new Authz(ssservise.getUser(), imModule);
+                Authz auth = new Authz(Main.ssService.getUser(), imModule);
                 imModule.setAuthz(auth);
 
                 //component dependencies
@@ -155,21 +144,20 @@ public class Application {
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
                     //System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
                     if (prop.getKey().toString().equals("VMI")) {
-                        imModule.setModuleReference(ssservise.getImageReference("ubuntu-12.04"));
+                        imModule.setModuleReference(Main.ssService.getImageReference("ubuntu-12.04"));
                     } else if (prop.getKey().toString().equals("executeScript")) {
                     	logger.info("script: "+prop.getValue().toString());
                         Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
                         targets.add(t);
-
                     }
                 }
                 imModule.setTargets(targets);
 
-        		for(ModuleParameter p : ssservise.baseParameters){
+        		for(ModuleParameter p : Main.ssService.baseParameters){
         			imModule.setParameter(p);
         		}
 
-                ssservise.putModule(imModule);
+        		Main.ssService.putModule(imModule);
                 nodes.put(imModule.getShortName(), new Node(imModule.getShortName(), imModule));
 
             }
@@ -178,12 +166,12 @@ public class Application {
         //add DeploymentModule 
         String name = appName + "/" + appName;
         DeploymentModule deployment = new DeploymentModule(name);
-        Authz auth = new Authz(ssservise.getUser(), deployment);
+        Authz auth = new Authz(Main.ssService.getUser(), deployment);
         deployment.setAuthz(auth);
         logger.info("App Modules: "+nodes);
         deployment.setNodes(nodes);
         
-        ssservise.putModule(deployment);
+        Main.ssService.putModule(deployment);
 
         ApplicationInfo info = new ApplicationInfo();
         info.setId(UUID.randomUUID().toString());
@@ -202,28 +190,28 @@ public class Application {
     public DeploymentInfo launchDeployment(@PathParam("id") String applicationId) throws IOException, InterruptedException, ValidationException {
         ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
 
-        InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
-        Properties properties = new Properties();
-        if (propsInput != null) {
-            properties.load(propsInput);
-        } else {
-            throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
-        }
-        logger.info(properties);
-        String username = properties.getProperty("slipstream.username"),
-                password = properties.getProperty("slipstream.password"),
-                slipstreamHost = properties.getProperty("slipstream.url");
-
-        SlipStreamSSService sservice = new SlipStreamSSService(username, password, slipstreamHost);
         
         Map<String, String> params = new HashMap<>();
-        sservice.launchApplication(app.getSlipstreamName(), params);
+        String deploymentID = Main.ssService.launchApplication(app.getSlipstreamName(), params);
          
         DeploymentInfo deployment = new DeploymentInfo();
+        deployment.setDeploymentID(deploymentID);
         deployment.setApplication(app);
         deployment.setStartTime(System.currentTimeMillis());
         deployment.setEndTime(-1);
-        deployment.setStatus(DeploymentStatus.BOOTSTRAPPING);
+        deployment.setStatus("BOOTSTRAPPING");
+        DeploymentCache.addDeployment(deployment);
         return deployment;
+    }
+    
+    @POST
+    @Path("{id}/terminate/")
+    public DeploymentInfo terminateDeployment(@PathParam("id") String deploymentID) throws IOException, InterruptedException, ValidationException {
+    	Main.ssService.terminateApplication(deploymentID);
+
+    	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
+    	deploymentInfo.setStatus("FINISHED");
+    	
+        return deploymentInfo;
     }
 }
