@@ -198,7 +198,7 @@ public class Application {
         deployment.setApplication(app);
         deployment.setStartTime(System.currentTimeMillis());
         deployment.setEndTime(-1);
-        deployment.setStatus(DeploymentStatus.BOOTSTRAPPING);
+        deployment.setStatus("BOOTSTRAPPING");
         DeploymentCache.addDeployment(deployment);
         return deployment;
     }
@@ -208,9 +208,8 @@ public class Application {
     public DeploymentInfo terminateDeployment(@PathParam("id") String deploymentID) throws IOException, InterruptedException, ValidationException {
     	Main.ssService.terminateApplication(deploymentID);
 
-    	DeploymentInfo deploymentInfo = DeploymentCache.getDeployment(deploymentID);
-    	DeploymentCache.removeDeployment(deploymentInfo);
-    	deploymentInfo.setStatus(DeploymentStatus.FINISHED);
+    	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
+    	deploymentInfo.setStatus("FINISHED");
     	
         return deploymentInfo;
     }

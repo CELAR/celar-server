@@ -144,8 +144,7 @@ public class SlipStreamSSService {
 			if(ret.equals("")){
 				return null;
 			}
-			String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
-			deploymentId = deploymentId.trim();
+			String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length()-1);
 			return deploymentId;
 		}
 	}

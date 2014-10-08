@@ -30,12 +30,7 @@ public class DeploymentCache {
      */
     public static DeploymentInfo getDeployment(String deploymentID) {
     	DeploymentInfo deploymentInfo = deployments.get(deploymentID);
-    	if(deploymentInfo==null){
-            return new DeploymentInfo(deploymentID, new ApplicationInfo(), new Date().getTime()-10000l, new Date().getTime()+10000l, DeploymentStatus.ERROR);
-    	}
-    	else{
-    		return deploymentInfo;
-    	}
+    	return deploymentInfo;
     }
     
     public static List<DeploymentInfo> searchDeployments(
@@ -52,7 +47,7 @@ public class DeploymentCache {
 		deployments.put(deployment.getDeploymentID(), deployment);
 	}
 	
-	public static void removeDeployment(DeploymentInfo deployment) {
-		deployments.remove(deployment).getDeploymentID();
+	public static DeploymentInfo removeDeployment(String deploymentID) {
+		return deployments.remove(deploymentID);
 	}
 }
