@@ -9,11 +9,11 @@
     <packaging>jar</packaging>
     <groupId>gr.ntua.cslab</groupId>
 
-<!--    <parent>
+    <parent>
         <groupId>gr.ntua.cslab</groupId>
         <artifactId>celar-server</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-    </parent>-->
+    </parent>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
