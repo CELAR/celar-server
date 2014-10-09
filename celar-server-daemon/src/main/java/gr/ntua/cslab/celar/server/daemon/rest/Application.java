@@ -110,6 +110,9 @@ public class Application {
             sum += count;
             file.write(buffer, 0, count);
         }
+        file.flush();
+        file.close();
+        Logger.getLogger(Application.class).info("Read CSAR file ("+sum+" bytes)");
         input.close();
 
         //create a Parser instance
