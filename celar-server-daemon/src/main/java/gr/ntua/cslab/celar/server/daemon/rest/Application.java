@@ -99,13 +99,12 @@ public class Application {
     @Path("describe/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public ApplicationInfo describe(@Context HttpServletRequest request, InputStream input) throws IOException, Exception {
-
         // fetching csar file and store it to local fs
         String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
         byte[] buffer = new byte[1024];
         OutputStream file = new FileOutputStream(filename);
-        int count, sum = 0;
-        while (input.available() > 0) {
+        int count=Integer.MAX_VALUE, sum = 0;
+        while (count > 0) {
             count = input.read(buffer);
             sum += count;
             file.write(buffer, 0, count);
