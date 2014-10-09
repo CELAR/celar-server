@@ -9,25 +9,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Giannis Giannakopoulos
  */
-
 @XmlRootElement(name = "deployment")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeploymentInfo {
-    
+
     private long startTime, endTime;
     private String status;
     private ApplicationInfo application;
     private String deploymentID;
 
-    public String getDeploymentID() {
-		return deploymentID;
-	}
-
-	public void setDeploymentID(String deploymentID) {
-		this.deploymentID = deploymentID;
-	}
-
-	public DeploymentInfo() {
+    public DeploymentInfo() {
     }
 
     public DeploymentInfo(String deploymentID, ApplicationInfo applicationInfo, long startTime, long endTime, String status) {
@@ -70,4 +61,11 @@ public class DeploymentInfo {
         this.application = application;
     }
     
+    public String getDeploymentID() {
+        return deploymentID;
+    }
+
+    public void setDeploymentID(String deploymentID) {
+        this.deploymentID = deploymentID;
+    }
 }
