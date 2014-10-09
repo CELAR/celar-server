@@ -6,11 +6,12 @@
 
 package gr.ntua.cslab.db_entities;
 
-import java.util.List;
-import static org.junit.Assert.*;
-import org.junit.Test;
 
 import gr.ntua.cslab.db_entities.DBTools.Constrain;
+import java.util.List;
+import static org.junit.Assert.*;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *
@@ -22,6 +23,7 @@ public class SpecTest {
     }
 
     @Test
+    @Ignore
     public void testSomeMethod() throws DBException {
         
         Spec c = new Spec();
