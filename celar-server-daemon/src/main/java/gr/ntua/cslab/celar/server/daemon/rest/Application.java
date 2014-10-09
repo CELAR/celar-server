@@ -106,6 +106,7 @@ public class Application {
         int count=Integer.MAX_VALUE, sum = 0;
         while (count > 0) {
             count = input.read(buffer);
+            Logger.getLogger(Application.class).debug("Read CSAR file ("+count+" bytes)");
             sum += count;
             file.write(buffer, 0, count);
         }
