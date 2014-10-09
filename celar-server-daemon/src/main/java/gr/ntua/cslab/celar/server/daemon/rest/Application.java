@@ -54,8 +54,10 @@ import tools.Parser;
 @Path("/application/")
 public class Application {
 
-    public  Logger logger = Logger.getLogger(Application.class);
+    public Logger logger = Logger.getLogger(Application.class);
+
     // IS calls
+
     @GET
     @Path("{id}/")
     public ApplicationInfo getApplicationInfo(@PathParam("id") String id) {
@@ -99,17 +101,21 @@ public class Application {
     @Path("describe/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public ApplicationInfo describe(@Context HttpServletRequest request, InputStream input) throws IOException, Exception {
-
         // fetching csar file and store it to local fs
         String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
         byte[] buffer = new byte[1024];
         OutputStream file = new FileOutputStream(filename);
+        
         int count, sum = 0;
-        while (input.available() > 0) {
-            count = input.read(buffer);
-            sum += count;
+
+        while ((count = input.read(buffer)) != -1) {
+            sum+=count;
             file.write(buffer, 0, count);
         }
+
+        file.flush();
+        file.close();
+        Logger.getLogger(Application.class).info("Read CSAR file (" + sum + " bytes)");
         input.close();
 
         //create a Parser instance
@@ -124,14 +130,14 @@ public class Application {
 
         //iterate through modules
         for (String module : tc.getModules()) {
-        	logger.info("\t" + module);
+            logger.info("\t" + module);
 
             //module dependecies
-        	logger.info("\t\tdepends on: " + tc.getModuleDependencies(module));
+            logger.info("\t\tdepends on: " + tc.getModuleDependencies(module));
 
             //iterate through components
             for (String component : tc.getModuleComponents(module)) {
-            	logger.info("\t\t" + component);
+                logger.info("\t\t" + component);
                 ImageModule imModule = new ImageModule(appName + "/" + component);
                 Authz auth = new Authz(Main.ssService.getUser(), imModule);
                 imModule.setAuthz(auth);
@@ -146,18 +152,18 @@ public class Application {
                     if (prop.getKey().toString().equals("VMI")) {
                         imModule.setModuleReference(Main.ssService.getImageReference("ubuntu-12.04"));
                     } else if (prop.getKey().toString().equals("executeScript")) {
-                    	logger.info("script: "+prop.getValue().toString());
+                        logger.info("script: " + prop.getValue().toString());
                         Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
                         targets.add(t);
                     }
                 }
                 imModule.setTargets(targets);
 
-        		for(ModuleParameter p : Main.ssService.baseParameters){
-        			imModule.setParameter(p);
-        		}
+                for (ModuleParameter p : Main.ssService.baseParameters) {
+                    imModule.setParameter(p);
+                }
 
-        		Main.ssService.putModule(imModule);
+                Main.ssService.putModule(imModule);
                 nodes.put(imModule.getShortName(), new Node(imModule.getShortName(), imModule));
 
             }
@@ -168,12 +174,13 @@ public class Application {
         DeploymentModule deployment = new DeploymentModule(name);
         Authz auth = new Authz(Main.ssService.getUser(), deployment);
         deployment.setAuthz(auth);
-        logger.info("App Modules: "+nodes);
+        logger.info("App Modules: " + nodes);
         deployment.setNodes(nodes);
-        
+
         Main.ssService.putModule(deployment);
 
         ApplicationInfo info = new ApplicationInfo();
+        info.setCsarFilePath(filename);
         info.setId(UUID.randomUUID().toString());
         info.setSubmitted(System.currentTimeMillis());
         info.setVersion("1.0");
@@ -190,10 +197,9 @@ public class Application {
     public DeploymentInfo launchDeployment(@PathParam("id") String applicationId) throws IOException, InterruptedException, ValidationException {
         ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
 
-        
         Map<String, String> params = new HashMap<>();
         String deploymentID = Main.ssService.launchApplication(app.getSlipstreamName(), params);
-         
+
         DeploymentInfo deployment = new DeploymentInfo();
         deployment.setDeploymentID(deploymentID);
         deployment.setApplication(app);
@@ -203,15 +209,5 @@ public class Application {
         DeploymentCache.addDeployment(deployment);
         return deployment;
     }
-    
-    @POST
-    @Path("{id}/terminate/")
-    public DeploymentInfo terminateDeployment(@PathParam("id") String deploymentID) throws IOException, InterruptedException, ValidationException {
-    	Main.ssService.terminateApplication(deploymentID);
 
-    	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
-    	deploymentInfo.setStatus("FINISHED");
-    	
-        return deploymentInfo;
-    }
 }

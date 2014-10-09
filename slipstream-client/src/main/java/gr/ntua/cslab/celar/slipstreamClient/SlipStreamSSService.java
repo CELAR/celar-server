@@ -5,8 +5,12 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,9 +19,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.net.ssl.*;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.sixsq.slipstream.exceptions.ValidationException;
@@ -30,9 +37,6 @@ import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.util.SerializationUtil;
 
-//import com.sixsq.slipstream.persistence.ImageModule;
-//import com.sixsq.slipstream.persistence.Module;
-//import com.sixsq.slipstream.util.SerializationUtil;
 
 public class SlipStreamSSService {
 	private String user, password, url;
@@ -146,11 +150,13 @@ public class SlipStreamSSService {
 		logger.info("deploymentId: "+deploymentId);
 		return deploymentId;
 	}
-	
+
 	public String getDeploymentState(String deploymentID) throws Exception{
 		logger.info("Getting deployment state for deploymentID: "+deploymentID);
-		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-k"};
-		String ret = executeCommand(command);
+		//String[] command = new String[] {"ss-run-get", "--endpoint", url, "-u", user, "-p", password, deploymentID};
+		//String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-k"};
+		//String ret = executeCommand(command);
+		String ret = httpsGet(url+"/run/"+deploymentID+"?media=xml");
 		if(ret.startsWith("<!DOCTYPE html>")){
 			return "Not Found";
 		}
@@ -162,7 +168,53 @@ public class SlipStreamSSService {
 			return handler.state;
 		}
 	}	
+
+	public HashMap<String,String> getDeploymentIPs(String deploymentID) throws Exception{
+		logger.info("Getting deployment ips for deploymentID: "+deploymentID);
+		String ret = httpsGet(url+"/run/"+deploymentID+"?media=xml");
+		if(ret.startsWith("<!DOCTYPE html>")){
+			return new HashMap<>();
+		}
+		else{
+			SAXParserFactory parserFactor = SAXParserFactory.newInstance();
+			SAXParser parser = parserFactor.newSAXParser();
+			SAXStateHandler handler = new SAXStateHandler();
+			parser.parse(new ByteArrayInputStream(ret.getBytes(StandardCharsets.UTF_8)),handler);
+			return handler.ips;
+		}
+	}	
 	
+	private String httpsGet(String urlLink) throws Exception {
+		TrustManager[] trustAllCerts = new TrustManager[] { 
+	      new X509TrustManager() {
+	        public X509Certificate[] getAcceptedIssuers() { 
+	          return new X509Certificate[0]; 
+	        }
+	        public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+	        public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+	    }};
+
+	    // Ignore differences between given hostname and certificate hostname
+	    HostnameVerifier hv = new HostnameVerifier() {
+	      public boolean verify(String hostname, SSLSession session) { return true; }
+	    };
+	    // Install the all-trusting trust manager
+	    SSLContext sc = SSLContext.getInstance("SSL");
+	    sc.init(null, trustAllCerts, new SecureRandom());
+
+	    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+	    HttpsURLConnection.setDefaultHostnameVerifier(hv);
+		SSLSocketFactory sslsocketfactory = sc.getSocketFactory();//(SSLSocketFactory) SSLSocketFactory.getDefault();
+		URL url1 = new URL(urlLink);
+		HttpsURLConnection conn = (HttpsURLConnection)url1.openConnection();
+		conn.setSSLSocketFactory(sslsocketfactory);
+
+		String userpass = user + ":" + password;
+		String basicAuth = "Basic " + new String(new Base64().encode(userpass.getBytes()));
+		conn.setRequestProperty ("Authorization", basicAuth);
+		InputStream inputStream = conn.getInputStream();
+		return IOUtils.toString(inputStream, "UTF-8");
+	}
 
 	public String addVM(String deploymnetId, String type, Integer number) throws Exception {
 		logger.info("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
@@ -243,10 +295,13 @@ public class SlipStreamSSService {
 			c+=command[i]+" ";
 		}
 		logger.info(c);
+		
 		StringBuffer output = new StringBuffer();
-		Process p = Runtime.getRuntime().exec(command);
-		p.waitFor();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		ProcessBuilder p = new ProcessBuilder(command);
+		Process p1 = p.start();
+		//Process p = Runtime.getRuntime().exec(command);
+		p1.waitFor();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(p1.getInputStream()));
 		String line = "";			
 		while ((line = reader.readLine())!= null) {
 			output.append(line + "\n");

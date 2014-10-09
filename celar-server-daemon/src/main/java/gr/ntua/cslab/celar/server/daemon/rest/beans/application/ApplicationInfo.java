@@ -24,9 +24,12 @@ public class ApplicationInfo {
     private String description;
     private String version;
     
-    @XmlTransient
+    @XmlTransient    
     private String slipstreamName;
-
+    @XmlTransient
+    private String csarFilePath;
+    
+    
     public ApplicationInfo() {
     }
 
@@ -76,6 +79,14 @@ public class ApplicationInfo {
 
     public void setSlipstreamName(String slipstreamName) {
         this.slipstreamName = slipstreamName;
+    }
+
+    public String getCsarFilePath() {
+        return csarFilePath;
+    }
+
+    public void setCsarFilePath(String csarFilePath) {
+        this.csarFilePath = csarFilePath;
     }
     
 }
