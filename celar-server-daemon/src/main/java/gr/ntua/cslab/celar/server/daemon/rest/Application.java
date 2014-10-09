@@ -174,6 +174,7 @@ public class Application {
         Main.ssService.putModule(deployment);
 
         ApplicationInfo info = new ApplicationInfo();
+        info.setCsarFilePath(filename);
         info.setId(UUID.randomUUID().toString());
         info.setSubmitted(System.currentTimeMillis());
         info.setVersion("1.0");
