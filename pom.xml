@@ -19,6 +19,7 @@
         <module>tosca-parser</module>
         <module>celar-server-daemon</module>
 	<module>celar-server-rpm</module>
+        <module>celar-server-client</module>
     </modules>
 
 </project>
