@@ -5,7 +5,6 @@
 
     <name>CELAR DB</name>
     <artifactId>celar-db</artifactId>
-    <version>1</version>
     <packaging>jar</packaging>
     <groupId>gr.ntua.cslab</groupId>
 
