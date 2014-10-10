@@ -92,6 +92,11 @@ public class Entities {
                 module.store();
                 component = new Component(module, "test module", resourceType);
                 component.store();
+                
+                Metric metric = new Metric(component);
+                metric.store();
+                metric = new Metric(metric.getId());
+                System.out.println(Metric.getByComponent(component));
             
             //==========  This creates a structured JSON. Maybe not useful... I dunno.=================    
                 //export the application description to a JSONObject
@@ -103,6 +108,7 @@ public class Entities {
                 note that we delete the "child" fields first so as not to cause
                 any foreign key violations
             */            
+                metric.delete();
                 component.delete();
                 module.delete();
                 app.delete();
@@ -124,6 +130,8 @@ public class Entities {
     @Test
     public void test_01_testDeployment(){
         try {
+            
+            //================ Prep =========================
             user = new User("name");
             user.store();
             app = new Application("test_application", user);
@@ -137,9 +145,10 @@ public class Entities {
             
             component = new Component(module, "test module", resourceType);
             component.store();
+            Metric metric = new Metric(component);
+            metric.store();
             
-            
-            //==============================
+            //================ Actual deployment testing ==============
             Deployment depl = new Deployment(app);
             depl.store();
             depl = new Deployment(depl.getId());
@@ -150,11 +159,20 @@ public class Entities {
             res = new Resource(res.getId());
             System.out.println(res);
             
+            //metric value testing
+            MetricValue mv = new MetricValue(metric, res);
+            mv.store();
+            mv = new MetricValue(mv.getId());
+            System.out.println(MetricValue.getByMetric(metric));
+            
+            
+            mv.delete();
             
             res.delete();            
             depl.delete();
-            //=====================================
+            //=================  TearDown ====================
             providedResource.delete();
+            metric.delete();
             component.delete();
             resourceType.delete();
             module.delete();
