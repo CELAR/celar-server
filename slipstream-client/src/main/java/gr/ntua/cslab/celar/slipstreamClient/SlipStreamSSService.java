@@ -227,6 +227,32 @@ public class SlipStreamSSService {
 		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
 		executeCommand(command);
 	}
+        
+        /**
+         * Remove a number of VMs from a specific node type
+         * @param deploymnetId the unique Id of the deployment
+         * @param type the node type
+         * @param number the number of the VMs to be removed
+         * @throws Exception 
+         */
+        public void removeVM(String deploymnetId, String type, int number) throws Exception {
+//		logger.info("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
+            HashMap<String,String> ips = this.getDeploymentIPs(deploymnetId);
+            List<String> vmsToBeDeleted = new ArrayList<>(number);
+            for(String vm : ips.keySet()) {
+                if(vm.startsWith(type) && vmsToBeDeleted.size()<number) {
+                    vmsToBeDeleted.add(vm.split(":")[0]); // keeping only the identifier, no the "hostname" keyword
+                }
+            }
+            String ids = "";
+            for(int i=0;i<number;i++) {
+                ids+=vmsToBeDeleted.get(i);
+                if(i!=number-1) {
+                    ids+=",";
+                }
+            }
+            this.removeVM(deploymnetId, type, ids);
+	}
 
 	public void waitForReadyState(String deploymnetId) throws Exception {
 		logger.info("Waiting for ready state deploymentID: "+deploymnetId);
@@ -400,9 +426,4 @@ public class SlipStreamSSService {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
-
-
-
-
 }
