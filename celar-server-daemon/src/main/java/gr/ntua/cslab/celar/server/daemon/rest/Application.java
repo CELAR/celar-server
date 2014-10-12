@@ -14,6 +14,7 @@ import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfoList;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfoList;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
@@ -216,4 +217,10 @@ public class Application {
         return deployment;
     }
 
+    @GET
+    @Path("{id}/deployments/")
+    public DeploymentInfoList getDeploymentsByApplicationId(@PathParam("id") String applicationId) {
+        List<DeploymentInfo> res = DeploymentCache.getDeploymentsByApplication(applicationId);
+        return new DeploymentInfoList(res);
+    }
 }
