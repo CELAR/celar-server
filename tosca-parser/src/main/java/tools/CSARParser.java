@@ -13,11 +13,14 @@ import eu.celar.tosca.TServiceTemplate;
 import eu.celar.tosca.elasticity.ServicePropertiesType;
 import eu.celar.tosca.elasticity.impl.NodePropertiesTypeImpl;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import static java.util.Arrays.asList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -38,6 +41,7 @@ public class CSARParser implements Parser{
      private List<String[]> componentDependencies = new java.util.LinkedList();
      private Path tempDir=null;
      String name, version; 
+    private String toscaContents;
     
     
     /***
@@ -61,6 +65,7 @@ public class CSARParser implements Parser{
         //find the version
         //parse the tosca xml
         handleRoot(tosca);
+        this.toscaContents = this.readToscaContents();
         //delete the temp dir
         Tools.recursiveDelete(tempDir.toFile());
         logger.info("Parsed the csar file");
@@ -282,6 +287,27 @@ public class CSARParser implements Parser{
         return rv;
     }
     
+    private String readToscaContents() {
+                String toscaFile = tempDir+"/Definitions/Application.tosca";
+        StringBuilder builder = new StringBuilder();
+        char[] buffer= new char[1024];
+        int count;
+        try {
+            try (FileReader reader = new FileReader(toscaFile)) {
+                while((count=reader.read(buffer))!=-1) {
+                    builder.append(buffer,0, count);
+                }
+            }
+            
+        } catch (FileNotFoundException ex) {
+            java.util.logging.Logger.getLogger(CSARParser.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(CSARParser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return builder.toString();
+
+    }
+    
     public String getStructure(){
         String rv ="";
          //application name and version
@@ -348,6 +374,12 @@ public class CSARParser implements Parser{
     }
     
     
+    
+    @Override
+    public String getToscaContents() {
+        return this.toscaContents;
+    }
+    
     public static void main(String[] args) throws Exception {
 
         // extract the csar archive
@@ -361,7 +393,12 @@ public class CSARParser implements Parser{
 //        CSARParser tc = new CSARParser();
 //        tc.handleRoot(tosca);
         //System.out.println(tc.componentsProperties);
-         Parser tc  = new CSARParser("testApp06.csar"); 
+        if(args.length <1 ){
+            System.err.println("Please provide CSAR path");   
+            System.exit(1);
+        }
+        Parser tc  = new CSARParser(args[0]); 
+        System.out.println(tc.getToscaContents());
        
 
     }
