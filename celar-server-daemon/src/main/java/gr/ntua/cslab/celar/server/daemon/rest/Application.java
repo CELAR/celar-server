@@ -12,6 +12,7 @@ import gr.ntua.cslab.celar.server.daemon.Main;
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
 import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfoList;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
@@ -55,7 +56,12 @@ import tools.Parser;
 public class Application {
 
     public Logger logger = Logger.getLogger(Application.class);
-
+    
+    
+    @GET
+    public ApplicationInfoList getApplications() {
+        return ApplicationCache.getApplications();
+    }
     // IS calls
 
     @GET
