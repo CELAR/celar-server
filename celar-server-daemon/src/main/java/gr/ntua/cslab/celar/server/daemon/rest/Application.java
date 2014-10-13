@@ -39,6 +39,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -201,10 +202,50 @@ public class Application {
 
     @POST
     @Path("{id}/deploy/")
-    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId) throws IOException, InterruptedException, ValidationException {
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId, InputStream input) throws Exception {
+
+        // fetching csar file and store it to local fs
+        String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
+        byte[] buffer = new byte[1024];
+        OutputStream file = new FileOutputStream(filename);
+        
+        int count, sum = 0;
+
+        while ((count = input.read(buffer)) != -1) {
+            sum+=count;
+            file.write(buffer, 0, count);
+        }
+
+        file.flush();
+        file.close();
+        Logger.getLogger(Application.class).info("Read CSAR file (" + sum + " bytes)");
+        input.close();
+
+        // parse TOSCA and give params to deployment
+        
         ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
 
         Map<String, String> params = new HashMap<>();
+        //create a Parser instance
+        Parser tc = new CSARParser(filename);
+        //iterate through modules
+        for (String module : tc.getModules()) {
+            logger.info("\t" + module);
+            //iterate through components
+            for (String component : tc.getModuleComponents(module)) {
+                logger.info("\t\t" + component);
+                for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
+                    if (prop.getKey().toString().equals("minInstances")) {
+                        logger.info("minInstances: " + prop.getValue().toString());
+                    	params.put(component+":multiplicity", prop.getValue().toString());
+                    } 
+                }
+            }
+        }
+        
+        
+        
         String deploymentID = Main.ssService.launchApplication(app.getSlipstreamName(), params);
 
         DeploymentInfo deployment = new DeploymentInfo();
@@ -213,6 +254,7 @@ public class Application {
         deployment.setStartTime(System.currentTimeMillis());
         deployment.setEndTime(-1);
         deployment.setStatus("BOOTSTRAPPING");
+        deployment.setDescription(params.toString());
         DeploymentCache.addDeployment(deployment);
         return deployment;
     }

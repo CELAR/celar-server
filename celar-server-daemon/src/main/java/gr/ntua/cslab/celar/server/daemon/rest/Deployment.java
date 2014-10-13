@@ -37,13 +37,13 @@ public class Deployment {
     public DeploymentInfo getDeployment(@PathParam("deploymentID") String deploymentID) throws Exception {
     	DeploymentInfo retInfo = DeploymentCache.getDeployment(deploymentID);
     	if(retInfo==null){
-    		return new DeploymentInfo(deploymentID, new ApplicationInfo(), new Date().getTime()-10000l, new Date().getTime()+10000l, "NOT FOUND");
+    		return new DeploymentInfo(deploymentID, new ApplicationInfo(), new Date().getTime()-10000l, new Date().getTime()+10000l, "NOT FOUND","No Description");
     	}
     	else{
     		String status = Main.ssService.getDeploymentState(deploymentID);
     		HashMap<String, String> ips = Main.ssService.getDeploymentIPs(deploymentID);
     		retInfo.setStatus(status);
-    		retInfo.getApplication().setDescription(ips.toString());
+    		retInfo.setDescription(ips.toString());
         	return retInfo;
     	}
     }

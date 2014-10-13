@@ -82,5 +82,6 @@ public class ApplicationInfo {
     public void setCsarFilePath(String csarFilePath) {
         this.csarFilePath = csarFilePath;
     }
+
     
 }
