@@ -104,4 +104,19 @@ public class User extends DBIDEntity{
         return dummy.<User>getAll();
     }
     
+    
+    
+    
+    public static void main(String args[]) throws Exception{
+            User user = new User("christos");
+            user.store();
+            
+            Map<String, String> map= user.getFieldMap();
+            user.fromFieldMap(map);
+            System.out.println(user);
+            
+            
+            user.delete();
+
+    }
 }

@@ -5,9 +5,12 @@
 package gr.ntua.cslab.db_entities;
 
 import gr.ntua.cslab.db_entities.DBTools.Constrain;
+import java.lang.reflect.Field;
+import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedList;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -245,4 +248,55 @@ public abstract class DBEntity {
         DBTools.doDelete(this.getTableName(), this.toMap());
     }
 
+    
+    Map<String, String> getFieldMap() {
+        Map<String, String> rv = new java.util.TreeMap();
+        Class current = this.getClass();
+        while (current != DBEntity.class) {
+            for (Field f : current.getDeclaredFields()) {
+                try {
+                    String name = f.getName();
+                    if(f.get(this)==null) continue;
+                    String value = f.get(this).toString();
+                    rv.put(name, value);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    LOG.error(ex);
+                }
+
+            }
+            current = current.getSuperclass();
+        }
+        return rv;
+    }
+    
+    
+    public <T extends DBEntity> void fromFieldMap(Map<String, String> fieldMap) {
+        Class current = this.getClass();
+        while (current != DBEntity.class && current!=null) {
+            System.out.println(current);
+            for (Field f : current.getDeclaredFields()) {
+                try {
+                    String name = f.getName();
+                    String value = fieldMap.get(name);
+                    if (value==null) continue;
+                    Class type = f.getType();
+                    System.out.println("setting "+name+" ("+type.getName()+"): "+value);
+                    if(type==String.class)
+                        f.set(this, value);
+                    else if(type==int.class)
+                        f.set(this, Integer.parseInt(value));
+                    else if(type==Timestamp.class)
+                        f.set(this, Timestamp.valueOf(value));
+                    else
+                        throw new Exception("Unhandled type: "+type);
+                } catch (Exception ex) {
+                    LOG.error(ex);
+                }
+            }
+            current = current.getSuperclass();
+
+        }
+    }
+ 
 }

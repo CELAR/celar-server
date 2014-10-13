@@ -24,12 +24,6 @@ public class Application extends DBEntity {
     String id, description; /*the description*/
     Timestamp submitted;
     int userId, uniqueId, majorVersion, minorVersion;
-    
-    static Logger LOG = Logger.getLogger(Application.class);
-    
-    static{
-        //LOG.setLevel(DEBUG);
-    }
 
     /**
      * The default constructor

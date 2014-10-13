@@ -6,6 +6,7 @@
 package gr.ntua.cslab.db_entities;
 
 import gr.ntua.cslab.db_entities.parsers.ApplicationParser;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Timestamp;
@@ -35,6 +36,7 @@ public class Entities {
     Component component;
 
     @Test
+    @Ignore
     public void test_00_showOff() {
         try {
 
@@ -136,6 +138,13 @@ public class Entities {
             user.store();
             app = new Application("test_application", user);
             app.store();
+            
+            Timestamp t = app.submitted;
+            app.submitted = null;
+            app.fromFieldMap(app.getFieldMap());
+            System.out.println("DONE");
+            app.submitted = t;
+            
             Module module = new Module("test_module", app);
             module.store();
             resourceType = new ResourceType("VM_IMAGE");
@@ -163,7 +172,6 @@ public class Entities {
             MetricValue mv = new MetricValue(metric, res);
             mv.store();
             mv = new MetricValue(mv.getId());
-            System.out.println(MetricValue.getByMetric(metric));
             
             
             mv.delete();

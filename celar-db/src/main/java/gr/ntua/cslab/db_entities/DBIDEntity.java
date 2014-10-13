@@ -5,6 +5,7 @@
  */
 package gr.ntua.cslab.db_entities;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import org.json.JSONObject;
 
@@ -70,6 +71,7 @@ public abstract class DBIDEntity extends DBEntity {
      * executing the query storing this entry
      */
     public void store() throws DBException {
+        System.out.println(this.getFieldMap());
         Map m = this.toMap();
         this.id = DBTools.insertIDData(this.getTableName(), m);
         
