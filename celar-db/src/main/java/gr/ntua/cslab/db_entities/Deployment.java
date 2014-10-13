@@ -2,6 +2,34 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.db_entities;
@@ -20,8 +48,8 @@ import org.json.JSONObject;
  * @author cmantas
  */
 public class Deployment extends DBIDEntity{
-    String applicationId;
-    Timestamp startTime, endTime;
+    String application_Id;
+    Timestamp start_Time ,end_Time;
     
     /**
      * Default constructor for all DBEntities
@@ -36,9 +64,9 @@ public class Deployment extends DBIDEntity{
      */
     public Deployment(Application app){
         super();
-        applicationId = app.getId();
-        endTime = null;
-        startTime = new Timestamp(System.currentTimeMillis());
+        application_Id = app.getId();
+        end_Time = null;
+        start_Time = new Timestamp(System.currentTimeMillis());
         
     }
     
@@ -65,36 +93,7 @@ public class Deployment extends DBIDEntity{
         super(id);
     }
     
-    /**
-     * looks up all the fields of the Entity from the input map and updates the 
-     * relevant fields of this instance
-     * @param fields 
-     */
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        this.applicationId=fields.get("APPLICATION_id");
-        this.startTime = Timestamp.valueOf(fields.get("start_time"));
-        String endTimeString = fields.get("end_time");
-        if(endTimeString==null)
-            this.endTime = null;
-        else this.endTime = Timestamp.valueOf(fields.get("end_time"));
-    }
-
-    /**
-     * creates a map of field--> value for all the fields of the Entity
-     * @return 
-     */
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id", ""+id);
-        m.put("APPLICATION_id", applicationId);
-        m.put("start_time", ""+startTime);
-        m.put("end_time", ""+endTime);
-        return m;
-    }
+    
 
     /**
      * Returns the name of the table that this Entity is saved to

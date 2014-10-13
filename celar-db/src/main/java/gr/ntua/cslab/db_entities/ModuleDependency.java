@@ -17,36 +17,16 @@ import java.util.Map;
  * Entity representing an entry in the Dummy table 
  * @author cmantas
  */
-public class ModuleDependency extends Dependency{
+public class ModuleDependency extends DBEntity{
+    
+    int module_from_Id, module_to_Id;
 
     public ModuleDependency(Module from, Module to) {
-        super(from, to);
+        module_from_Id= from.getId();
+        module_to_Id = to.getId();
     }
 
 
-
-    /**
-     * looks up all the fields of the Entity from the input map and updates the 
-     * relevant fields of this instance
-     * @param fields 
-     */
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        this.from=Integer.parseInt(fields.get("MODULE_from_id"));
-        this.to=Integer.parseInt(fields.get("MODULE_to_id"));
-    }
-
-    /**
-     * creates a map of field--> value for all the fields of the Entity
-     * @return 
-     */
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("MODULE_from_id", ""+from);
-        m.put("MODULE_to_id", ""+to);
-        return m;
-    }
 
     /**
      * Returns the name of the table that this Entity is saved to

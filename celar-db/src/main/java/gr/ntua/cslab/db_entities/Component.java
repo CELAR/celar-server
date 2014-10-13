@@ -2,6 +2,34 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.db_entities;
@@ -19,7 +47,7 @@ public class Component extends DBIDEntity{
     /**
      * The fields of the Entity
      */
-    int moduleId, resourceTypeId;
+    int module_Id, resource_Type_Id;
     String description;
     
     /**
@@ -39,8 +67,8 @@ public class Component extends DBIDEntity{
      */
     public Component(Module module, String description, ResourceType rt){
                 //check if the app is not strored in the database (for consistency reasons)
-        this.moduleId = module.id;
-        this.resourceTypeId = rt.id;
+        this.module_Id = module.id;
+        this.resource_Type_Id = rt.id;
         this.description=description;
     }
     
@@ -77,29 +105,11 @@ public class Component extends DBIDEntity{
      */
     public Component(Module m, String description, String resourceTypeName) throws DBException {
         ResourceType rt = ResourceType.getByName(resourceTypeName);
-        this.resourceTypeId = rt.getId();
+        this.resource_Type_Id = rt.getId();
         this.description=description;
-        this.moduleId = m.id;
+        this.module_Id = m.id;
     }
 
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        this.moduleId = Integer.parseInt(fields.get("MODULE_id"));
-        this.resourceTypeId = Integer.parseInt(fields.get("RESOURCE_TYPE_id"));
-        this.description =fields.get("description");
-    }
-
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id", "" + id);
-        m.put("MODULE_id", "" + moduleId);
-        m.put("RESOURCE_TYPE_id", "" + resourceTypeId);
-        m.put("description", description);
-        return m;
-    }
 
     @Override
     public String getTableName() {
@@ -111,7 +121,7 @@ public class Component extends DBIDEntity{
      * @return 
      */
     public int getResourceTypeId(){
-        return this.resourceTypeId;
+        return this.resource_Type_Id;
     }
 
     /**
@@ -119,7 +129,7 @@ public class Component extends DBIDEntity{
      * @return 
      */
     public int getModuleId() {
-        return moduleId;
+        return module_Id;
     }
 
     /**

@@ -2,6 +2,10 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.db_entities;
@@ -15,7 +19,7 @@ import org.json.JSONObject;
  * @author cmantas
  */
 public class Module extends DBIDEntity{
-    String name,applicationId;
+    String name,application_Id;
     
     /**
      * Default constructor
@@ -32,7 +36,7 @@ public class Module extends DBIDEntity{
     public Module(String name, Application app){
         this.name=name;
         this.name=name;
-        this.applicationId=app.id;
+        this.application_Id=app.id;
     }
     
     /**
@@ -56,23 +60,6 @@ public class Module extends DBIDEntity{
      */
     public Module(int id) throws DBException{
         super(id);
-    }
-
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        this.name = fields.get("name");
-        this.applicationId = fields.get("APPLICATION_id");
-    }
-
-    @Override
-    protected Map<String, String> toMap() {
-       Map<String, String>  map = new java.util.TreeMap();
-        map.put("id", ""+id);
-        map.put("APPLICATION_id",""+applicationId);
-        map.put("name",name);
-        return map;
     }
 
     /**Returns the name of the table this Entity will be stored to

@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -24,7 +27,7 @@ import org.junit.runners.MethodSorters;
  *
  * @author cmantas
  */
-//@Ignore 
+@Ignore 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Entities {
 
@@ -52,12 +55,11 @@ public class Entities {
                 user.store();
                 System.out.println(user);
 
-            //export the entity to JSON
-                JSONObject userJson = user.toJSONObject();
-
-            // create another entity with the same fields (but 0 id)
-            // if we stored it, it whould get a new id
-                User user2 = new User(userJson);
+            //you can retrieve an entity by its id (if it has one)
+                user = new User(user.getId());
+                System.out.println("Retrieved "+user);
+                
+                
 
             // search a user by its name
                 User user3 = User.getByName(username);
@@ -66,17 +68,19 @@ public class Entities {
             //create and store a Resource type
                 resourceType = new ResourceType("VM_IMAGE");
                 resourceType.store();
+                System.out.println("Retrieved: " + new ResourceType(resourceType.getId()));
 
             // create and store a Provided resource
             // Note that you need to know the father entity of an entity that 
             // is the child of other entities (has foreing keys to other tables)
                 providedResource = new ProvidedResource("sample_vm_image", resourceType);
                 providedResource.store();
+                assertTrue(providedResource.equals(new ProvidedResource(providedResource.getId())));
 
             // search the provided resources by a type (father)
                 List<ProvidedResource> prl = ProvidedResource.getByType(resourceType);
                 System.out.println(prl);
-
+//
             //create and store some specs 
                 spec1 = new Spec(providedResource, "cpu_count", "2");
                 spec1.store();
@@ -90,45 +94,50 @@ public class Entities {
             // Create an application structure
                 app = new Application("test_application", user);
                 app.store();
+                app = new Application (app.getId());
+                System.out.println(app);
                 Module module = new Module("test_module", app);
                 module.store();
                 component = new Component(module, "test module", resourceType);
                 component.store();
+                System.out.println(component);
+                System.out.println(new Component(component.getId()));
+                assertTrue(component.equals(new Component(component.getId())));
                 
                 Metric metric = new Metric(component);
                 metric.store();
-                metric = new Metric(metric.getId());
-                System.out.println(Metric.getByComponent(component));
-            
-            //==========  This creates a structured JSON. Maybe not useful... I dunno.=================    
-                //export the application description to a JSONObject
-                    JSONObject appDescriptionJson = ApplicationParser.exportApplicationDescription(app);
-                    System.out.println(appDescriptionJson.toString(3));
-            //============================================================================================
-                    
-            /*  delete the applciation structure
-                note that we delete the "child" fields first so as not to cause
-                any foreign key violations
-            */            
+                assertTrue(metric.equals( new Metric(metric.getId())));
+//            
+//            //==========  This creates a structured JSON. Maybe not useful... I dunno.=================    
+//                //export the application description to a JSONObject
+//                    JSONObject appDescriptionJson = ApplicationParser.exportApplicationDescription(app);
+//                    System.out.println(appDescriptionJson.toString(3));
+//            //============================================================================================
+//                    
+//            /*  delete the applciation structure
+//                note that we delete the "child" fields first so as not to cause
+//                any foreign key violations
+//            */            
                 metric.delete();
                 component.delete();
                 module.delete();
                 app.delete();
-
+//
             // delete resources. etc
                 spec1.delete();
                 spec2.delete();
                 providedResource.delete();
                 resourceType.delete();
-
+//
             //delete the user
                 user.delete();
-        } catch (DBException ex) {
+        } catch (Exception ex) {
             System.out.println(ex);
             fail("failed to create resources");
         }
     }
     
+
     @Test
     public void test_01_testDeployment(){
         try {
@@ -147,6 +156,13 @@ public class Entities {
             
             Module module = new Module("test_module", app);
             module.store();
+            
+            Module module2 = new Module("test_module2", app);
+            module2.store();
+            
+            ModuleDependency mdep = new ModuleDependency(module, module2);
+            mdep.store();
+            
             resourceType = new ResourceType("VM_IMAGE");
             resourceType.store();
             providedResource = new ProvidedResource("sample_vm_image", resourceType);
@@ -160,13 +176,13 @@ public class Entities {
             //================ Actual deployment testing ==============
             Deployment depl = new Deployment(app);
             depl.store();
-            depl = new Deployment(depl.getId());
-            System.out.println(depl);
+            assertTrue(depl.equals(new Deployment(depl.getId())));
             
             Resource res = new Resource(depl, component, providedResource);
             res.store();
             res = new Resource(res.getId());
             System.out.println(res);
+            assertTrue(res.equals(new Resource(res.getId())));
             
             //metric value testing
             MetricValue mv = new MetricValue(metric, res);
@@ -183,6 +199,8 @@ public class Entities {
             metric.delete();
             component.delete();
             resourceType.delete();
+            mdep.delete();
+            module2.delete();
             module.delete();
             app.delete();
             user.delete();

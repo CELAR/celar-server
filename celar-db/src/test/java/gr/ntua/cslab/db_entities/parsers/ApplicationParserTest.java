@@ -100,6 +100,7 @@ public class ApplicationParserTest {
     }
     
     @Test
+    @Ignore
     public void test_01_parseApplicationDescription() throws Exception {
         //create again the application structure from its JSON description and store it
         System.out.println("\n ================  TEST Auto-generated JSON  ===========================");
