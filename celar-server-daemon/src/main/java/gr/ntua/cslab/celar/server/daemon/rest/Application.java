@@ -203,7 +203,7 @@ public class Application {
     @POST
     @Path("{id}/deploy/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId, InputStream input) throws IOException, InterruptedException, ValidationException {
+    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId, InputStream input) throws Exception {
 
         // fetching csar file and store it to local fs
         String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
@@ -221,13 +221,31 @@ public class Application {
         file.close();
         Logger.getLogger(Application.class).info("Read CSAR file (" + sum + " bytes)");
         input.close();
-        
-        
+
         // parse TOSCA and give params to deployment
         
         ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
 
         Map<String, String> params = new HashMap<>();
+        //create a Parser instance
+        Parser tc = new CSARParser(filename);
+        //iterate through modules
+        for (String module : tc.getModules()) {
+            logger.info("\t" + module);
+            //iterate through components
+            for (String component : tc.getModuleComponents(module)) {
+                logger.info("\t\t" + component);
+                for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
+                    if (prop.getKey().toString().equals("minInstances")) {
+                        logger.info("minInstances: " + prop.getValue().toString());
+                    	params.put(component+":multiplicity", prop.getValue().toString());
+                    } 
+                }
+            }
+        }
+        
+        
+        
         String deploymentID = Main.ssService.launchApplication(app.getSlipstreamName(), params);
 
         DeploymentInfo deployment = new DeploymentInfo();
@@ -236,6 +254,7 @@ public class Application {
         deployment.setStartTime(System.currentTimeMillis());
         deployment.setEndTime(-1);
         deployment.setStatus("BOOTSTRAPPING");
+        deployment.setDescription(params.toString());
         DeploymentCache.addDeployment(deployment);
         return deployment;
     }

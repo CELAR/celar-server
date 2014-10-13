@@ -17,19 +17,29 @@ public class DeploymentInfo {
     private String status;
     private ApplicationInfo application;
     private String deploymentID;
-
+    private String description;
+    
     public DeploymentInfo() {
     }
 
-    public DeploymentInfo(String deploymentID, ApplicationInfo applicationInfo, long startTime, long endTime, String status) {
+    public DeploymentInfo(String deploymentID, ApplicationInfo applicationInfo, long startTime, long endTime, String status, String description) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
         this.application = applicationInfo;
         this.deploymentID = deploymentID;
+        this.description = description;
     }
 
-    public long getStartTime() {
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public long getStartTime() {
         return startTime;
     }
 
