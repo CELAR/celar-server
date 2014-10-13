@@ -90,7 +90,7 @@ public class Tools {
       while( ze != null ) {
         //directories are created only for the necessary files
         if (!ze.isDirectory()){
-            String fileName = ze.getName();
+            String fileName = ze.getName().replace("\\", "/");
             File newFile = new File( outputFolder + File.separator + fileName );
             logger.debug("Extracting file: " + newFile.getAbsoluteFile() ); //$NON-NLS-1$
             //this is where dirs are actually created
@@ -154,7 +154,7 @@ public class Tools {
                 int c = line.indexOf(':');
                 if(c==-1) continue;
                 String key = line.substring(0, c).trim();
-                String value = line.substring(c + 1).trim();
+                String value = line.substring(c + 1).trim().replace("\\", "/");
                 props.put(key, value);
             }
         }
