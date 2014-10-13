@@ -58,6 +58,12 @@ public interface Parser {
      * @return a map of properties
      */
     public Map<String, String> getComponentProperties(String component);
+
+    /**
+     * Returns the contents of the TOSCA file, packaged in the CSAR archive
+     * @return 
+     */
+    public String getToscaContents();
     
     
     

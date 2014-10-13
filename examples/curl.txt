@@ -1,0 +1,2 @@
+curl http://<celar server>:8080/application/describe/ --data-binary @test.csar -X POST -H "Content-Type: application/octet-stream" -ik
+curl http://<celar server>:8080/application/<app id>/deploy/ -ik

@@ -1,6 +1,7 @@
 package gr.ntua.cslab.celar.server.daemon.cache;
 
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfoList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,4 +39,7 @@ public class ApplicationCache {
         return null;
     }
     
+    public static ApplicationInfoList getApplications() {
+        return new ApplicationInfoList(applications);
+    }
 }
