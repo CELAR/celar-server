@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gr.ntua.cslab.db_entities;
 
 import java.sql.Timestamp;
@@ -21,8 +15,8 @@ import org.json.JSONObject;
  * @author cmantas
  */
 public class Resource extends DBIDEntity{
-    int deploymentId, componentId, providedResourceId;
-    Timestamp startTime, endTime;
+    int deployment_Id, component_Id, provided_Resource_Id;
+    Timestamp start_Time, end_Time;
     
     /**
      * Default constructor for all DBEntities
@@ -39,11 +33,11 @@ public class Resource extends DBIDEntity{
      */
     public Resource(Deployment depl, Component comp, ProvidedResource provRes){
         super();
-        deploymentId = depl.getId();
-        componentId = comp.getId();
-        providedResourceId = provRes.getId();
-        endTime = null;
-        startTime = new Timestamp(System.currentTimeMillis());
+        deployment_Id = depl.getId();
+        component_Id = comp.getId();
+        provided_Resource_Id = provRes.getId();
+        end_Time = null;
+        start_Time = new Timestamp(System.currentTimeMillis());
         
     }
     
@@ -70,40 +64,6 @@ public class Resource extends DBIDEntity{
         super(id);
     }
     
-    /**
-     * looks up all the fields of the Entity from the input map and updates the 
-     * relevant fields of this instance
-     * @param fields 
-     */
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        this.deploymentId=Integer.parseInt(fields.get("DEPLOYMENT_id"));
-        this.componentId=Integer.parseInt(fields.get("COMPONENT_id"));
-        this.providedResourceId=Integer.parseInt(fields.get("PROVIDED_RESOURCE_id"));        
-        this.startTime = Timestamp.valueOf(fields.get("start_time"));
-        String endTimeString = fields.get("end_time");
-        if(endTimeString==null)
-            this.endTime = null;
-        else this.endTime = Timestamp.valueOf(fields.get("end_time"));
-    }
-
-    /**
-     * creates a map of field--> value for all the fields of the Entity
-     * @return 
-     */
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id", ""+id);
-        m.put("DEPLOYMENT_id", ""+deploymentId);
-        m.put("COMPONENT_id", ""+componentId);
-        m.put("PROVIDED_RESOURCE_id", ""+providedResourceId);
-        m.put("start_time", ""+startTime);
-        m.put("end_time", ""+endTime);
-        return m;
-    }
 
     /**
      * Returns the name of the table that this Entity is saved to

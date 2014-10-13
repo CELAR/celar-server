@@ -56,29 +56,6 @@ public class Dummy extends DBIDEntity{
         this.name=name;
     }
 
-    /**
-     * looks up all the fields of the Entity from the input map and updates the 
-     * relevant fields of this instance
-     * @param fields 
-     */
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        this.name=fields.get("name");
-    }
-
-    /**
-     * creates a map of field--> value for all the fields of the Entity
-     * @return 
-     */
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id", ""+id);
-        m.put("name", name);
-        return m;
-    }
 
     /**
      * Returns the name of the table that this Entity is saved to

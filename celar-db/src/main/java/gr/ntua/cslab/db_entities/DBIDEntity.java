@@ -33,7 +33,7 @@ public abstract class DBIDEntity extends DBEntity {
      */
      public DBIDEntity(int id) throws DBException{
          Map fields = DBTools.doSelectByID(this.getTableName(), id);
-         this.fromMap(fields);
+         this.fromFieldMap(fields);
      }
      
     /**
@@ -71,8 +71,7 @@ public abstract class DBIDEntity extends DBEntity {
      * executing the query storing this entry
      */
     public void store() throws DBException {
-        System.out.println(this.getFieldMap());
-        Map m = this.toMap();
+        Map m = this.getFieldMap();
         this.id = DBTools.insertIDData(this.getTableName(), m);
         
     }

@@ -2,6 +2,18 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.db_entities;
@@ -17,7 +29,7 @@ import org.json.JSONObject;
  */
 
 public class MetricValue extends DBIDEntity{
-    int metricsId, resourcesId;
+    int metrics_Id, resources_Id;
     
     /**
      * Default constructor for all DBEntities
@@ -51,35 +63,10 @@ public class MetricValue extends DBIDEntity{
     
     
     public MetricValue(Metric metric, Resource res){
-        this.metricsId = metric.getId();
-        this.resourcesId = res.getId();
+        this.metrics_Id = metric.getId();
+        this.resources_Id = res.getId();
     }
 
-    /**
-     * looks up all the fields of the Entity from the input map and updates the 
-     * relevant fields of this instance
-     * @param fields 
-     */
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        this.metricsId=Integer.parseInt(fields.get("METRICS_id"));
-        this.resourcesId=Integer.parseInt(fields.get("RESOURCES_id"));
-    }
-
-    /**
-     * creates a map of field--> value for all the fields of the Entity
-     * @return 
-     */
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id", ""+id);
-        m.put("METRICS_id", ""+metricsId);
-        m.put("RESOURCES_id", ""+resourcesId);
-        return m;
-    }
 
     /**
      * Returns the name of the table that this Entity is saved to

@@ -55,24 +55,8 @@ public class User extends DBIDEntity{
     }
 
     @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        else this.id = -1;
-        this.name=fields.get("name");
-    }
-
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id", ""+id);
-        m.put("name", name);
-        return m;
-    }
-
-    @Override
     public String getTableName() {
-        return "USER";
+        return "USERS";
     }
 
     
