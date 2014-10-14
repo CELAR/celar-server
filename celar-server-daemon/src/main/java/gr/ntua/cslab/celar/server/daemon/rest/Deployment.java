@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.xml.ws.WebServiceException;
 
 /**
  *
@@ -37,7 +38,7 @@ public class Deployment {
     public DeploymentInfo getDeployment(@PathParam("deploymentID") String deploymentID) throws Exception {
     	DeploymentInfo retInfo = DeploymentCache.getDeployment(deploymentID);
     	if(retInfo==null){
-    		return new DeploymentInfo(deploymentID, new ApplicationInfo(), new Date().getTime()-10000l, new Date().getTime()+10000l, "NOT FOUND","No Description");
+            throw new WebServiceException("Deployment with the specified ID not found");
     	}
     	else{
     		String status = Main.ssService.getDeploymentState(deploymentID);

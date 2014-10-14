@@ -54,7 +54,7 @@ public class SQLTools {
 
         //generate SQL keys SET
         for (Map.Entry<String, String> e : tupples.entrySet()) {
-            keys += "\"" + e.getKey() + "\",";
+            keys += "" + e.getKey() + ",";
         }
         keys = keys.substring(0, keys.length() - 1);
         keys = "(" + keys + ")";
@@ -80,7 +80,7 @@ public class SQLTools {
         }
         values = values.substring(0, values.length() - 1);
         values = "(" + values + ")";
-        String sql = "INSERT INTO \"" + tableName + "\" " + keys + " VALUES " + values + ";";
+        String sql = "INSERT INTO " + tableName + " " + keys + " VALUES " + values + ";";
         return sql;
     }
 
@@ -93,7 +93,7 @@ public class SQLTools {
      * @return
      */
     public static String selectSQL(String tableName, String whereStatement) {
-        return "SELECT * FROM \"" + tableName + "\" WHERE " + whereStatement + ";";
+        return "SELECT * FROM " + tableName + " WHERE " + whereStatement + ";";
     }
 
     /**
@@ -105,7 +105,7 @@ public class SQLTools {
      * @return
      */
     protected static String deleteSQL(String tableName, String tableField, String tableValue) {
-        String sql = "DELETE FROM \"" + tableName + "\" WHERE " + tableField + "=" + tableValue;
+        String sql = "DELETE FROM " + tableName + " WHERE " + tableField + "=" + tableValue;
 //		System.out.println(sql);
         return sql;
     }
@@ -122,7 +122,7 @@ public class SQLTools {
         String keys = "";
         //generate SQL keys SET
         for (Map.Entry<String, String> e : tupples.entrySet()) {
-            keys += "\"" + e.getKey() + "\",";
+            keys += "" + e.getKey() + ",";
         }
         keys = keys.substring(0, keys.length() - 1);
         keys = "(" + keys + ")";
@@ -135,7 +135,7 @@ public class SQLTools {
         }
         values = values.substring(0, values.length() - 1);
         values = "(" + values + ")";
-        String sql = "DELETE from \"" + tableName + "\"  WHERE " + keys + " = " + values + ";";
+        String sql = "DELETE from " + tableName + "  WHERE " + keys + " = " + values + ";";
         return sql;
     }
 

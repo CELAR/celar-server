@@ -5,9 +5,12 @@
 package gr.ntua.cslab.db_entities;
 
 import gr.ntua.cslab.db_entities.DBTools.Constrain;
+import java.lang.reflect.Field;
+import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedList;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
@@ -38,7 +41,7 @@ public abstract class DBEntity {
      * @param fields
      */
     DBEntity(Map<String, String> fields) {
-        fromMap(fields);
+        fromFieldMap(fields);
         modified = false;
     }
 
@@ -52,22 +55,6 @@ public abstract class DBEntity {
         modified = true;
         fromJSON(jo);
     }
-
-    /**
-     * Reads the entity-specific parameters from the Database fields and stores
-     * them in the appropriate class variables;
-     *
-     * @param fields
-     */
-    abstract protected void fromMap(Map<String, String> fields);
-
-    /**
-     * Creates an entity-specific mapping of fields-->values for this DBEntity
-     * instance;
-     *
-     * @return mapping of fields-->values
-     */
-    abstract protected Map<String, String> toMap();
 
     /**
      * Returns the name of the table that this Entity is saved to
@@ -85,7 +72,7 @@ public abstract class DBEntity {
      * @throws gr.ntua.cslab.db_entities.DBException in case of an error
      */
     public void store() throws DBException {
-        DBTools.insertData(this.getTableName(), this.toMap());
+        DBTools.insertData(this.getTableName(), this.getFieldMap());
     }
 
     /**
@@ -96,7 +83,7 @@ public abstract class DBEntity {
      */
     public JSONObject toJSONObject() {
         JSONObject jo = new JSONObject();
-        Map<String, String> m = this.toMap();
+        Map<String, String> m = this.getFieldMap();
         for (Map.Entry<String, String> entry : m.entrySet()) {
             jo.put(entry.getKey(), entry.getValue());
         }
@@ -118,7 +105,7 @@ public abstract class DBEntity {
                 m.put(key, (String) value);
             }
         }
-        fromMap(m);
+        fromFieldMap(m);
     }
 
     /**
@@ -129,7 +116,7 @@ public abstract class DBEntity {
     public String toString() {
         String s = "";
         s += this.getClass().getSimpleName() + "(";
-        Map<String, String> m = this.toMap();
+        Map<String, String> m = this.getFieldMap();
         boolean once = true;
         for (Map.Entry<String, String> entry : m.entrySet()) {
             if (once) {
@@ -151,8 +138,8 @@ public abstract class DBEntity {
      */
     public boolean equals(DBEntity e) {
         JSONObject jo = new JSONObject();
-        Map<String, String> me = this.toMap();
-        Map<String, String> other = e.toMap();
+        Map<String, String> me = this.getFieldMap();
+        Map<String, String> other = e.getFieldMap();
         for (Map.Entry<String, String> entry : me.entrySet()) {
             String key = entry.getKey();
             String my_value = entry.getValue();
@@ -175,13 +162,12 @@ public abstract class DBEntity {
             if (lc != null && !lc.isEmpty()) {
                 mapsFromDB = DBTools.doSelect(dummy.getTableName(), lc, or);
             } else {
-                System.out.println("lc is empty");
                 mapsFromDB = DBTools.doSelect(dummy.getTableName(), "TRUE");
             }
 
             for (Map m : mapsFromDB) {
                 T e = (T) myClass.newInstance();
-                e.fromMap(m);
+                e.fromFieldMap(m);
                 e.modified = false;
                 results.add(e);
             }
@@ -242,7 +228,56 @@ public abstract class DBEntity {
      * @throws DBException 
      */
     public void delete() throws DBException {
-        DBTools.doDelete(this.getTableName(), this.toMap());
+        DBTools.doDelete(this.getTableName(), this.getFieldMap());
     }
 
+    
+    Map<String, String> getFieldMap() {
+        Map<String, String> rv = new java.util.TreeMap();
+        Class current = this.getClass();
+        while (current != DBEntity.class) {
+            for (Field f : current.getDeclaredFields()) {
+                try {
+                    String name = f.getName();
+                    if(f.get(this)==null) continue;
+                    String value = f.get(this).toString();
+                    rv.put(name, value.toLowerCase());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    LOG.error(ex);
+                }
+
+            }
+            current = current.getSuperclass();
+        }
+        return rv;
+    }
+    
+    
+    public <T extends DBEntity> void fromFieldMap(Map<String, String> fieldMap) {
+        Class current = this.getClass();
+        while (current != DBEntity.class && current!=null) {
+            for (Field f : current.getDeclaredFields()) {
+                try {
+                    String name = f.getName();
+                    String value = fieldMap.get(name.toLowerCase());
+                    Class type = f.getType();
+                    //System.out.println("setting "+name+" ("+type.getName()+"): "+value);
+                    if (value==null) continue;
+                    if(type==String.class)
+                        f.set(this, value);
+                    else if(type==int.class)
+                        f.set(this, Integer.parseInt(value));
+                    else if(type==Timestamp.class)
+                        f.set(this, Timestamp.valueOf(value));
+                    else
+                        throw new Exception("Unhandled type: "+type);
+                } catch (Exception ex) {
+                    LOG.error(ex);
+                }
+            }
+            current = current.getSuperclass();
+        }
+    }
+ 
 }

@@ -2,6 +2,10 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.db_entities;
@@ -19,7 +23,7 @@ public class ProvidedResource  extends DBIDEntity{
          * The values of the table fields
          */
         String name;
-        int resourceTypeId;
+        int resource_Type_Id;
     
     /**
      *Default Entity Constructor
@@ -38,7 +42,7 @@ public class ProvidedResource  extends DBIDEntity{
      */
 	public ProvidedResource(String name, ResourceType resourceType) throws DBException {
 		super();
-		this.resourceTypeId=resourceType.getId();
+		this.resource_Type_Id=resourceType.getId();
 		this.name=name;
 	}
     
@@ -55,26 +59,6 @@ public class ProvidedResource  extends DBIDEntity{
      */
     public ProvidedResource(int id) throws DBException{
         super(id);
-    }
-    
-    
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        else this.id = -1;
-        this.resourceTypeId=Integer.parseInt( fields.get("RESOURCE_TYPE_id") );
-	this.name=fields.get("name");
-    }
-
-
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id",""+id);
-        m.put("RESOURCE_TYPE_id",""+this.resourceTypeId);
-        m.put("name", name);
-        return m;
     }
 
     /**
@@ -127,7 +111,7 @@ public class ProvidedResource  extends DBIDEntity{
     }
 
     public int getResourceTypeId() {
-        return resourceTypeId;
+        return resource_Type_Id;
     }
     
     

@@ -18,7 +18,7 @@ public class CSARParserTest {
     }
 
     
-     @Ignore
+     //@Ignore
      @org.junit.Test
     public void test_01_showCase(){
         

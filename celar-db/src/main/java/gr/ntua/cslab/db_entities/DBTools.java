@@ -44,7 +44,7 @@ public class DBTools extends DBConnectable{
         
         @Override
         public String toString(){
-            String rv = "\""+field+"\" "+operator+" '"+value+"'";
+            String rv = ""+field+" "+operator+" '"+value+"'";
             return rv;
         }
     }
@@ -129,7 +129,7 @@ public class DBTools extends DBConnectable{
      */
     static String maxValue(String tableName, String field){
         Statement statement;
-        String query = "SELECT MAX(" + field + ") FROM \"" + tableName + "\";";
+        String query = "SELECT MAX(" + field + ") FROM " + tableName + ";";
         LOG.debug(query);
         try {
             ResultSet set = executeQuery(query);
@@ -214,7 +214,7 @@ public class DBTools extends DBConnectable{
      * @throws DBException in case of an  error in the query
      */
     public static List<Map<String, String>> doSelectByField(String tablename, String field, String value) throws DBException {
-        return doSelect(tablename, "\""+field + "\" ='" + value + "'");
+        return doSelect(tablename, ""+field + " ='" + value + "'");
     }
     
     

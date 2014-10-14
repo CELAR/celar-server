@@ -2,6 +2,10 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package gr.ntua.cslab.db_entities;
 
@@ -15,7 +19,7 @@ import java.util.Map;
  */
 public class Spec extends DBIDEntity {
 
-    int providedResourceId;
+    int provided_Resource_Id;
     String property, value;
 
     /**
@@ -33,7 +37,7 @@ public class Spec extends DBIDEntity {
      * @param value 
      */
     public Spec(ProvidedResource pr, String property, String value) {
-        this.providedResourceId = pr.id;
+        this.provided_Resource_Id = pr.id;
         this.property = property;
         this.value = value;
     }
@@ -53,23 +57,6 @@ public class Spec extends DBIDEntity {
     }
     
 
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        this.id = Integer.parseInt(fields.get("id"));
-        this.providedResourceId = Integer.parseInt(fields.get("PROVIDED_RESOURCE_id"));
-        this.property = fields.get("property");
-        this.value = fields.get("value");
-    }
-
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> map = new java.util.TreeMap();
-        map.put("id", ""+id);
-        map.put("PROVIDED_RESOURCE_id",""+providedResourceId);
-        map.put("property", ""+property);
-        map.put("value", ""+value);
-        return map;
-    }
 
     /**
      * Returns the name of the table that this Entity is saved to
@@ -117,7 +104,7 @@ public class Spec extends DBIDEntity {
         Spec dummy = new Spec();
         List<Integer> rv = new java.util.LinkedList();
         for(Object e: dummy.getByConstrains(lc, false)){
-            rv.add(((Spec) e).providedResourceId);
+            rv.add(((Spec) e).provided_Resource_Id);
         }
         return rv;
     }
