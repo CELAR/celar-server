@@ -253,7 +253,7 @@ public class Application {
         deployment.setApplication(app);
         deployment.setStartTime(System.currentTimeMillis());
         deployment.setEndTime(-1);
-        deployment.setStatus("BOOTSTRAPPING");
+        deployment.setState(Main.ssService.getDeploymentState(deploymentID));
         deployment.setDescription(params.toString());
         DeploymentCache.addDeployment(deployment);
         return deployment;

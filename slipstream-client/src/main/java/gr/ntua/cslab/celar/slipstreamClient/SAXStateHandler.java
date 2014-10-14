@@ -6,15 +6,18 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.sixsq.slipstream.statemachine.States;
+
 public class SAXStateHandler extends DefaultHandler {
 	
-	public String state, currentKey;
+	public String currentKey;
+	public States state;
 	public HashMap<String,String> ips;
 	private boolean print;
 
 	public SAXStateHandler() {
 		super();
-		state = "NOT FOUND";
+		state = States.Unknown;
 		print=false;
 		ips = new HashMap<String, String>();
 	}
@@ -30,7 +33,13 @@ public class SAXStateHandler extends DefaultHandler {
 		case "run":
 			for (int i = 0; i < attributes.getLength(); i++) {
 				if(attributes.getQName(i).equals("state")){
-					state = attributes.getValue(i);
+					String tmp = attributes.getValue(i);
+					for(States s : States.values()){
+						if(tmp.equals(s.name())){
+							state = s;
+							break;
+						}
+					}
 					break;
 				}
 				//System.out.println(attributes.getQName(i)+" : "+attributes.getValue(i));

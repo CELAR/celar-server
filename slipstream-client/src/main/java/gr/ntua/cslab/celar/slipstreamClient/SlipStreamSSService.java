@@ -35,6 +35,7 @@ import com.sixsq.slipstream.persistence.Module;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.User;
+import com.sixsq.slipstream.statemachine.States;
 import com.sixsq.slipstream.util.SerializationUtil;
 
 
@@ -151,14 +152,14 @@ public class SlipStreamSSService {
 		return deploymentId;
 	}
 
-	public String getDeploymentState(String deploymentID) throws Exception{
+	public States getDeploymentState(String deploymentID) throws Exception{
 		logger.info("Getting deployment state for deploymentID: "+deploymentID);
 		//String[] command = new String[] {"ss-run-get", "--endpoint", url, "-u", user, "-p", password, deploymentID};
 		//String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-k"};
 		//String ret = executeCommand(command);
 		String ret = httpsGet(url+"/run/"+deploymentID+"?media=xml");
 		if(ret.startsWith("<!DOCTYPE html>")){
-			return "Not Found";
+			return States.Unknown;
 		}
 		else{
 			SAXParserFactory parserFactor = SAXParserFactory.newInstance();
@@ -257,9 +258,9 @@ public class SlipStreamSSService {
 	public void waitForReadyState(String deploymnetId) throws Exception {
 		logger.info("Waiting for ready state deploymentID: "+deploymnetId);
 		while(true){
-			String state = getDeploymentState(deploymnetId);
+			States state = getDeploymentState(deploymnetId);
 			logger.info("Current State: "+state);
-			if(state.equals("Ready"))
+			if(state.equals(States.Ready))
 				break;
 			Thread.sleep(1000);
 		}
