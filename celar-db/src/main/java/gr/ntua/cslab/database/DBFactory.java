@@ -6,8 +6,8 @@
 
 package gr.ntua.cslab.database;
 
-import fasolakia.IDEntity;
-import fasolakia.IDEntityFactory;
+import gr.ntua.cslab.celar.server.beans.IDEntity;
+import gr.ntua.cslab.celar.server.beans.IDEntityFactory;
 import java.util.Map;
 
 /**

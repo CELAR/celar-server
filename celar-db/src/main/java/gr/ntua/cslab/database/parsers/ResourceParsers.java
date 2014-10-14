@@ -6,9 +6,9 @@
 
 package gr.ntua.cslab.database.parsers;
 
-import fasolakia.ProvidedResource;
-import fasolakia.ResourceType;
-import fasolakia.Spec;
+import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
+import gr.ntua.cslab.celar.server.beans.Spec;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getProvidedResourceByType;
 import static gr.ntua.cslab.database.EntityGetters.getResourceTypeByName;

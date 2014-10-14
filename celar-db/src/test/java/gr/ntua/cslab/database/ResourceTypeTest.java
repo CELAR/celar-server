@@ -6,7 +6,7 @@
 
 package gr.ntua.cslab.database;
 
-import fasolakia.ResourceType;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getResourceTypeByName;
 import static gr.ntua.cslab.database.EntityTools.delete;

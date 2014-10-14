@@ -1,13 +1,13 @@
 package gr.ntua.cslab.database.parsers;
 
 
-import fasolakia.Application;
-import fasolakia.Component;
+import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityTools.toJSONObject;
-import fasolakia.Module;
-import fasolakia.Resource;
-import fasolakia.ResourceType;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.Resource;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
 import java.sql.Timestamp;
 import java.util.List;
 import static org.apache.log4j.Level.*;

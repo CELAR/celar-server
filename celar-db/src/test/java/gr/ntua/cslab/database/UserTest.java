@@ -7,7 +7,7 @@
 package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.database.DBException;
-import fasolakia.User;
+import gr.ntua.cslab.celar.server.beans.User;
 import static gr.ntua.cslab.database.EntityGetters.getAllUsers;
 import static gr.ntua.cslab.database.EntityGetters.getUserByName;
 import static gr.ntua.cslab.database.EntityTools.delete;

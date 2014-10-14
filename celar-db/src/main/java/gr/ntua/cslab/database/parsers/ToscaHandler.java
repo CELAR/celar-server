@@ -1,15 +1,15 @@
 package gr.ntua.cslab.database.parsers;
 
-import fasolakia.Application;
-import fasolakia.Component;
-import fasolakia.ComponentDependency;
-import fasolakia.Deployment;
-import fasolakia.Module;
-import fasolakia.ModuleDependency;
-import fasolakia.ProvidedResource;
-import fasolakia.Resource;
-import fasolakia.ResourceType;
-import fasolakia.User;
+import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.ComponentDependency;
+import gr.ntua.cslab.celar.server.beans.Deployment;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.ModuleDependency;
+import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.Resource;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
+import gr.ntua.cslab.celar.server.beans.User;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getProvidedResourceByFlavorInfo;
 import static gr.ntua.cslab.database.EntityGetters.getResourceTypeByName;

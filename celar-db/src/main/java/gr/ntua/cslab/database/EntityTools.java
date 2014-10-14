@@ -1,10 +1,10 @@
 package gr.ntua.cslab.database;
 
-import fasolakia.Application;
-import static fasolakia.Application.makeStringID;
-import fasolakia.IDEntity;
-import fasolakia.IDEntityFactory;
-import fasolakia.ReflectiveEntity;
+import gr.ntua.cslab.celar.server.beans.Application;
+import static gr.ntua.cslab.celar.server.beans.Application.makeStringID;
+import gr.ntua.cslab.celar.server.beans.IDEntity;
+import gr.ntua.cslab.celar.server.beans.IDEntityFactory;
+import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
 import gr.ntua.cslab.database.DBTools.Constrain;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
@@ -36,7 +36,7 @@ public final class EntityTools {
      * the static initializer
      */
     static{
-        fasolakia.IDEntity.setFactory(new DBFactory());
+        gr.ntua.cslab.celar.server.beans.IDEntity.setFactory(new DBFactory());
     }
 
     /**

@@ -5,14 +5,14 @@
  */
 package gr.ntua.cslab.database;
 
-import fasolakia.Module;
-import fasolakia.Component;
-import fasolakia.Metric;
-import fasolakia.ProvidedResource;
-import fasolakia.User;
-import fasolakia.Spec;
-import fasolakia.ResourceType;
-import fasolakia.Application;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Metric;
+import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.User;
+import gr.ntua.cslab.celar.server.beans.Spec;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
+import gr.ntua.cslab.celar.server.beans.Application;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;

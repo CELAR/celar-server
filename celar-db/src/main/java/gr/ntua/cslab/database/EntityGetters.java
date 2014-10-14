@@ -1,15 +1,15 @@
 package gr.ntua.cslab.database;
 
-import fasolakia.Component;
-import fasolakia.Application;
-import fasolakia.User;
-import fasolakia.MetricValue;
-import fasolakia.Spec;
-import fasolakia.Module;
-import fasolakia.Metric;
-import fasolakia.ProvidedResource;
-import fasolakia.Resource;
-import fasolakia.ResourceType;
+import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.User;
+import gr.ntua.cslab.celar.server.beans.MetricValue;
+import gr.ntua.cslab.celar.server.beans.Spec;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.Metric;
+import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.Resource;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
 import java.sql.Timestamp;
 import java.util.List;
 import org.apache.log4j.Logger;

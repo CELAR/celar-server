@@ -6,16 +6,16 @@
 
 package gr.ntua.cslab.database.parsers;
 
-import fasolakia.Application;
-import fasolakia.Component;
+import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
-import fasolakia.Module;
-import fasolakia.ProvidedResource;
-import fasolakia.ResourceType;
-import fasolakia.Spec;
-import fasolakia.User;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
+import gr.ntua.cslab.celar.server.beans.Spec;
+import gr.ntua.cslab.celar.server.beans.User;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.*;
 import java.sql.Timestamp;
 import java.util.logging.Level;
