@@ -22,6 +22,7 @@ import com.sixsq.slipstream.persistence.Module;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.ParameterCategory;
 import com.sixsq.slipstream.persistence.Target;
+import com.sixsq.slipstream.statemachine.States;
 import com.sixsq.slipstream.util.SerializationUtil;
 
 //import com.sixsq.slipstream.persistence.ImageModule;
@@ -128,11 +129,11 @@ public class SlipStreamRestService {
 		return true;
 	}
 	
-	public static String getDeploymentState(String deploymentID) throws Exception{
+	public static States getDeploymentState(String deploymentID) throws Exception{
 		String[] command = new String[] {"curl", url+"run/"+deploymentID, "--user", user+":"+password, "-k"};
 		String ret = executeCommand(command);
 		if(ret.startsWith("<!DOCTYPE html>")){
-			return "Not Found";
+			return States.Unknown;
 		}
 		else{
 			SAXParserFactory parserFactor = SAXParserFactory.newInstance();

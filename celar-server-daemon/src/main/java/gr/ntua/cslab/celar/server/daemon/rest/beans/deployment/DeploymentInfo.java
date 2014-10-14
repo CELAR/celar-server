@@ -1,9 +1,12 @@
 package gr.ntua.cslab.celar.server.daemon.rest.beans.deployment;
 
 import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.sixsq.slipstream.statemachine.States;
 
 /**
  *
@@ -14,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DeploymentInfo {
 
     private long startTime, endTime;
-    private String status;
+    private States state;
     private ApplicationInfo application;
     private String deploymentID;
     private String description;
@@ -22,10 +25,10 @@ public class DeploymentInfo {
     public DeploymentInfo() {
     }
 
-    public DeploymentInfo(String deploymentID, ApplicationInfo applicationInfo, long startTime, long endTime, String status, String description) {
+    public DeploymentInfo(String deploymentID, ApplicationInfo applicationInfo, long startTime, long endTime, States state, String description) {
         this.startTime = startTime;
         this.endTime = endTime;
-        this.status = status;
+        this.state = state;
         this.application = applicationInfo;
         this.deploymentID = deploymentID;
         this.description = description;
@@ -55,12 +58,12 @@ public class DeploymentInfo {
         this.endTime = endTime;
     }
 
-    public String getStatus() {
-        return status;
+    public States getState() {
+        return state;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setState(States state) {
+        this.state = state;
     }
 
     public ApplicationInfo getApplication() {

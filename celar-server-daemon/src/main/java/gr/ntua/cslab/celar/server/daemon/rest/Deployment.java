@@ -20,10 +20,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
 import com.sixsq.slipstream.exceptions.ValidationException;
+import com.sixsq.slipstream.statemachine.States;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.xml.ws.WebServiceException;
 
 /**
  *
@@ -37,12 +41,12 @@ public class Deployment {
     public DeploymentInfo getDeployment(@PathParam("deploymentID") String deploymentID) throws Exception {
     	DeploymentInfo retInfo = DeploymentCache.getDeployment(deploymentID);
     	if(retInfo==null){
-    		return new DeploymentInfo(deploymentID, new ApplicationInfo(), new Date().getTime()-10000l, new Date().getTime()+10000l, "NOT FOUND","No Description");
+            throw new WebServiceException("Deployment with the specified ID not found");
     	}
     	else{
-    		String status = Main.ssService.getDeploymentState(deploymentID);
+    		States state = Main.ssService.getDeploymentState(deploymentID);
     		HashMap<String, String> ips = Main.ssService.getDeploymentIPs(deploymentID);
-    		retInfo.setStatus(status);
+    		retInfo.setState(state);
     		retInfo.setDescription(ips.toString());
         	return retInfo;
     	}
@@ -65,7 +69,7 @@ public class Deployment {
     	Main.ssService.terminateApplication(deploymentID);
 
     	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
-    	deploymentInfo.setStatus("FINISHED");
+    	deploymentInfo.setState(States.Done);
     	
         return deploymentInfo;
     }
