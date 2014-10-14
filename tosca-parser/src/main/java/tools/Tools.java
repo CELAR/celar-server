@@ -162,6 +162,7 @@ public class Tools {
     }
     
     public static String readFromFile(String filename) throws IOException{
+        filename = filename.replace("\\", "/");
         String content = new String(Files.readAllBytes(Paths.get(filename)));
         return content;
     }
