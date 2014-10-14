@@ -249,6 +249,7 @@ public class CSARParser implements Parser{
                     try {
                         scriptContents = Tools.readFromFile(tempDir+File.separator+scriptPath);
                     } catch (IOException ex) {
+                        ex.printStackTrace();
                         logger.error("Could not find script file: "+scriptPath);
                     }
                     componentProps.put(scriptName, scriptContents);
