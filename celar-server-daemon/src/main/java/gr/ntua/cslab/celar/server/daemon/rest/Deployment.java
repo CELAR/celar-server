@@ -44,7 +44,7 @@ public class Deployment {
     		String status = Main.ssService.getDeploymentState(deploymentID);
     		HashMap<String, String> ips = Main.ssService.getDeploymentIPs(deploymentID);
     		retInfo.setStatus(status);
-    		retInfo.getApplication().setDescription(ips.toString());
+    		retInfo.setDescription(ips.toString());
         	return retInfo;
     	}
     }

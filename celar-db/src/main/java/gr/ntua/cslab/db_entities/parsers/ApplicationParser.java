@@ -41,7 +41,7 @@ public class ApplicationParser {
             appJson = topJson.getJSONObject("application");
             //check if the json specifies the user by name instead of USER_id
             if (!appJson.has("USER_id")) {
-                appJson.put("USER_id", (User.getByName(appJson.getString("USER_name"))).getId());
+                appJson.put("USER_id", (User.getByName(appJson.getString("USER_name".toLowerCase()))).getId());
             }
             Application app = new Application(appJson);
             if(store) app.store();

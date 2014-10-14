@@ -6,6 +6,14 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.db_entities;
@@ -25,7 +33,7 @@ import org.json.JSONObject;
  * @author cmantas
  */
 public class Metric extends DBIDEntity{
-    int componentID;
+    int component_ID;
     Timestamp timestamp;
     
     /**
@@ -60,36 +68,9 @@ public class Metric extends DBIDEntity{
     
     
     public Metric(Component c){
-        this.componentID=c.getId();
+        this.component_ID=c.getId();
         this.timestamp = new Timestamp(System.currentTimeMillis());
     }
-
-    /**
-     * looks up all the fields of the Entity from the input map and updates the 
-     * relevant fields of this instance
-     * @param fields 
-     */
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        if(fields.containsKey("id"))
-            this.id=Integer.parseInt(fields.get("id"));
-        this.componentID=Integer.parseInt(fields.get("COMPONENT_id"));
-        this.timestamp = Timestamp.valueOf(fields.get("timestamp"));
-    }
-
-    /**
-     * creates a map of field--> value for all the fields of the Entity
-     * @return 
-     */
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> m = new java.util.TreeMap();
-        m.put("id", ""+id);
-        m.put("COMPONENT_id", ""+componentID);
-        m.put("timestamp", ""+timestamp);
-        return m;
-    }
-
     /**
      * Returns the name of the table that this Entity is saved to
      * @return 

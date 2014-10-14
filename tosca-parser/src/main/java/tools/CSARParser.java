@@ -393,11 +393,11 @@ public class CSARParser implements Parser{
 //        CSARParser tc = new CSARParser();
 //        tc.handleRoot(tosca);
         //System.out.println(tc.componentsProperties);
-        if(args.length <1 ){
-            System.err.println("Please provide CSAR path");   
-            System.exit(1);
-        }
-        Parser tc  = new CSARParser(args[0]); 
+//        if(args.length <1 ){
+//            System.err.println("Please provide CSAR path");   
+//            System.exit(1);
+//        }
+        Parser tc  = new CSARParser("example.csar");
         System.out.println(tc.getToscaContents());
        
 

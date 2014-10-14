@@ -59,16 +59,16 @@ def parse(input_filename, output_filename):
         time_taken = time.time() - started
         percentage_done = (i+1) / float(num_lines)
         secs_left = (time_taken / percentage_done) - time_taken
-        # logging.write("\rLine %i (of %s: %.2f%%) [%s tables] [%s inserts] [ETA: %i min %i sec]" % (
-        #     i + 1,
-        #     num_lines,
-        #     ((i+1)/float(num_lines))*100,
-        #     len(tables),
-        #     num_inserts,
-        #     secs_left // 60,
-        #     secs_left % 60,
-        # ))
-        # logging.flush()
+        logging.write("\rLine %i (of %s: %.2f%%) [%s tables] [%s inserts] [ETA: %i min %i sec]" % (
+            i + 1,
+            num_lines,
+            ((i+1)/float(num_lines))*100,
+            len(tables),
+            num_inserts,
+            secs_left // 60,
+            secs_left % 60,
+        ))
+        logging.flush()
         line = line.decode("utf8").strip().replace(r"\\", "WUBWUBREALSLASHWUB").replace(r"\'", "''").replace("WUBWUBREALSLASHWUB", r"\\")
         # Ignore comment lines
         if line.startswith("--") or line.startswith("/*") or line.startswith("LOCK TABLES") or line.startswith("DROP TABLE") or line.startswith("UNLOCK TABLES") or not line:
@@ -154,29 +154,25 @@ def parse(input_filename, output_filename):
                     type = enum_name
 
                 if final_type:
-                    cast_lines.append("ALTER TABLE %s ALTER COLUMN %s DROP DEFAULT, ALTER COLUMN %s TYPE %s USING CAST(%s as %s)" % (current_table, name, name, final_type, name, final_type))
+                    cast_lines.append("ALTER TABLE \"%s\" ALTER COLUMN \"%s\" DROP DEFAULT, ALTER COLUMN \"%s\" TYPE %s USING CAST(\"%s\" as %s)" % (current_table, name, name, final_type, name, final_type))
                 # ID fields need sequences [if they are integers?]
                 if name == "id" and set_sequence is True:
                     sequence_lines.append("CREATE SEQUENCE %s_id_seq" % (current_table))
-                    sequence_lines.append("SELECT setval('%s_id_seq', max(id)) FROM %s" % (current_table, current_table))
-                    sequence_lines.append("ALTER TABLE %s ALTER COLUMN id SET DEFAULT nextval('%s_id_seq')" % (current_table, current_table))
+                    sequence_lines.append("SELECT setval('%s_id_seq', max(id)) FROM \"%s\"" % (current_table, current_table))
+                    sequence_lines.append("ALTER TABLE \"%s\" ALTER COLUMN \"id\" SET DEFAULT nextval('%s_id_seq')" % (current_table, current_table))
                 # Record it
                 creation_lines.append('"%s" %s %s' % (name, type, extra))
                 tables[current_table]['columns'].append((name, type, extra))
-
             # Is it a constraint or something?
             elif line.startswith("PRIMARY KEY"):
-                line = line.replace("\"","")
                 creation_lines.append(line.rstrip(","))
             elif line.startswith("CONSTRAINT"):
-                line = line.replace("\"","")
-                foreign_key_lines.append("ALTER TABLE %s ADD CONSTRAINT %s DEFERRABLE INITIALLY DEFERRED" % (current_table, line.split("CONSTRAINT")[1].strip().rstrip(",")))
-                foreign_key_lines.append("CREATE INDEX ON %s %s" % (current_table, line.split("FOREIGN KEY")[1].split("REFERENCES")[0].strip().rstrip(",")))
+                foreign_key_lines.append("ALTER TABLE \"%s\" ADD CONSTRAINT %s DEFERRABLE INITIALLY DEFERRED" % (current_table, line.split("CONSTRAINT")[1].strip().rstrip(",")))
+                foreign_key_lines.append("CREATE INDEX ON \"%s\" %s" % (current_table, line.split("FOREIGN KEY")[1].split("REFERENCES")[0].strip().rstrip(",")))
             elif line.startswith("UNIQUE KEY"):
-                line = line.replace("\"","")
                 creation_lines.append("UNIQUE (%s)" % line.split("(")[1].split(")")[0])
             elif line.startswith("FULLTEXT KEY"):
-                line = line.replace("\"","")
+
                 fulltext_keys = " || ' ' || ".join( line.split('(')[-1].split(')')[0].replace('"', '').split(',') )
                 fulltext_key_lines.append("CREATE INDEX ON %s USING gin(to_tsvector('english', %s))" % (current_table, fulltext_keys))
 
@@ -184,9 +180,8 @@ def parse(input_filename, output_filename):
                 pass
             # Is it the end of the table?
             elif line == ");":
-                output.write("CREATE TABLE %s (\n" % current_table)
+                output.write("CREATE TABLE \"%s\" (\n" % current_table)
                 for i, line in enumerate(creation_lines):
-                    line = line.replace("\"","")
                     output.write("    %s%s\n" % (line, "," if i != (len(creation_lines) - 1) else ""))
                 output.write(');\n\n')
                 current_table = None

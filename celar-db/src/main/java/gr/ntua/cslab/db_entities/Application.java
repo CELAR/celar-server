@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gr.ntua.cslab.db_entities;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
 import static org.apache.log4j.Level.*;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 
@@ -23,13 +18,7 @@ public class Application extends DBEntity {
      */
     String id, description; /*the description*/
     Timestamp submitted;
-    int userId, uniqueId, majorVersion, minorVersion;
-    
-    static Logger LOG = Logger.getLogger(Application.class);
-    
-    static{
-        //LOG.setLevel(DEBUG);
-    }
+    int user_Id, unique_Id, major_Version, minor_Version;
 
     /**
      * The default constructor
@@ -59,15 +48,15 @@ public class Application extends DBEntity {
     public Application(int uniqueId, int majorVersion, int minorVersion, String description, Timestamp submitted, User user) {
         this.description = description;
         this.submitted = submitted;
-        this.userId = user.id;
-        this.uniqueId = uniqueId;
-        this.majorVersion = majorVersion;
-        this.minorVersion = minorVersion;
+        this.user_Id = user.id;
+        this.unique_Id = uniqueId;
+        this.major_Version = majorVersion;
+        this.minor_Version = minorVersion;
         
-        if(this.uniqueId==0){
+        if(this.unique_Id==0){
              String prevMax = DBTools.maxValue(this.getTableName(), "unique_id");
-             this.uniqueId= prevMax!=null? Integer.parseInt(prevMax)+1:1;
-             this.id = makeStringID(this.uniqueId, majorVersion, minorVersion);
+             this.unique_Id= prevMax!=null? Integer.parseInt(prevMax)+1:1;
+             this.id = makeStringID(this.unique_Id, majorVersion, minorVersion);
         }
     }
     
@@ -103,29 +92,16 @@ public class Application extends DBEntity {
     public Application(int majorVersion, int minorVersion, String description, User user) {
         this(0,majorVersion,minorVersion, description, new Timestamp(System.currentTimeMillis()), user);
     }
-
-    @Override
-    protected void fromMap(Map<String, String> fields) {
-        this.id = fields.get("id");
-        this.uniqueId = Integer.parseInt(fields.get("unique_id"));
-        this.majorVersion = Integer.parseInt(fields.get("major_version"));
-        this.minorVersion = Integer.parseInt(fields.get("minor_version"));
-        this.description = fields.get("description");
-        this.submitted = Timestamp.valueOf(fields.get("submitted"));
-        this.userId = Integer.parseInt(fields.get("USER_id"));
-    }
-
-    @Override
-    protected Map<String, String> toMap() {
-        Map<String, String> map = new java.util.TreeMap();
-        map.put("id",id);
-        map.put("unique_id",""+uniqueId);
-        map.put("major_version", ""+majorVersion);
-        map.put("minor_version", ""+minorVersion);
-        map.put("description", ""+description);
-        map.put("submitted", submitted.toString());    
-        map.put("USER_id", ""+userId);
-        return map;
+    
+    /***
+     * Creates an application by its unique ID
+     * @param id 
+     */
+    public Application(String id) throws Exception{
+        List<Map<String, String>> l = DBTools.doSelectByField(getTableName(), "id", id);
+        if (l.isEmpty()) throw new Exception("Could not find an application with an id of: "+id);
+        Map fields = DBTools.doSelectByField(getTableName(), "id", id).get(0);
+         this.fromFieldMap(fields);
     }
 
     /**
@@ -148,7 +124,7 @@ public class Application extends DBEntity {
     /**
      * The String id of the application
      * @return a string like this 0000000001.001.002, representing the 
-     * uniqueID.majorVersion.minorVersion
+ uniqueID.major_Version.minor_Version
      */
     public String getId() {
         return id;
@@ -163,7 +139,7 @@ public class Application extends DBEntity {
     }
 
     public int getUserId() {
-        return userId;
+        return user_Id;
     }
     
     
@@ -173,7 +149,7 @@ public class Application extends DBEntity {
      * @param uniqueId the unique application identifier
      * @param majorVersion the major version of the application
      * @param minorVersion the minor version of the application
-     * @return an 18-digit String (uniqueId.majorVersion.minorVersion)based on the given parameters
+     * @return an 18-digit String (uniqueId.major_Version.minor_Version)based on the given parameters
      */
     
     public static String makeStringID(int uniqueId, int majorVersion, int minorVersion){
