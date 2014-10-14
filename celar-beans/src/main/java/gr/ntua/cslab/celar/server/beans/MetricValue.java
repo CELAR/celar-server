@@ -1,4 +1,4 @@
-package fasolakia;
+package gr.ntua.cslab.celar.server.beans;
 
 /**
  * The Metric Value entity representing an entry in the Metric Value table 

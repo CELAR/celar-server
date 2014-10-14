@@ -1,4 +1,4 @@
-package fasolakia;
+package gr.ntua.cslab.celar.server.beans;
 
 /**
  * The dummy entity includes all the constructors and methods any DBIDEntity should have

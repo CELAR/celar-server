@@ -3,10 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <name>CELAR BEANS</name>
+    <name>CELAR Java Beans</name>
     <artifactId>celar-beans</artifactId>
     <packaging>jar</packaging>
     <groupId>gr.ntua.cslab</groupId>
+    <description>
+        Maven module holding 
+    </description>
 
     <parent>
         <groupId>gr.ntua.cslab</groupId>

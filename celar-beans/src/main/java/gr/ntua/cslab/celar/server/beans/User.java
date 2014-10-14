@@ -1,4 +1,4 @@
-package fasolakia;
+package gr.ntua.cslab.celar.server.beans;
 
 /**
  * Represents an entity in the 'User' table
