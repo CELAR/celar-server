@@ -54,7 +54,6 @@ public class SlipStreamSSService {
 			System.out.println(ret);
 			Module m = (Module)SerializationUtil.fromXml(ret, ImageModule.class);
 			//String xml = SerializationUtil.toXmlString(m);
-			System.out.println("asdfasd!!!!!!!!!!!!!!");
 			System.out.println(m.getName());
 			//m.
 			return m;
@@ -96,33 +95,37 @@ public class SlipStreamSSService {
 		String xml = SerializationUtil.toXmlString(user);
 		String xmlfile = writeXML(xml);
 		String[] command = new String[] {"ss-user-put", "-u", this.user, "-p", password, "--endpoint", url, xmlfile};
-		String ret = executeCommand(command);
-		if(ret.equals(""))
-			return true;
-		else
-			return false;
+		Map<String, String> ret = executeCommand(command);
+		if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}
+		return true;
 	}
 	
-	public boolean putModule(Module module) throws IOException, InterruptedException{
+	public boolean putModule(Module module) throws Exception{
 		logger.info("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
 		String xmlfile = writeXML(xml);
 		String[] command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
-		String ret = executeCommand(command);
-		if(ret.equals(""))
-			return true;
-		else
-			return false;
-	}
-	
-	public boolean terminateApplication(String deploymentID) throws IOException, InterruptedException{
-		logger.info("Terminating deployment: "+deploymentID);
-		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-X", "DELETE", "-k"};
-		String ret = executeCommand(command);
+		Map<String, String>  ret = executeCommand(command);
+		if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}
 		return true;
 	}
 	
-	public String launchApplication(String name, Map<String,String> deploymentParameters) throws IOException, InterruptedException{
+	public boolean terminateApplication(String deploymentID) throws Exception{
+		logger.info("Terminating deployment: "+deploymentID);
+		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-X", "DELETE", "-k"};
+		Map<String, String>  ret = executeCommand(command);
+
+		if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}
+		return true;
+	}
+	
+	public String launchApplication(String name, Map<String,String> deploymentParameters) throws Exception{
 		String[] command;
 		if(deploymentParameters.size()==0){
 			logger.info("Launching application: "+name+" without parameters");
@@ -142,11 +145,12 @@ public class SlipStreamSSService {
 			command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
 			
 		}
-		String ret = executeCommand(command);
-		if(ret.equals("")){
-			return null;
+		Map<String, String> ret = executeCommand(command);
+		if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
 		}
-		String deploymentId = ret.substring(ret.lastIndexOf("/")+1,ret.length());
+		String r = ret.get("output");
+		String deploymentId = r.substring(r.lastIndexOf("/")+1,r.length());
 		deploymentId = deploymentId.replaceAll("(\\r|\\n|\\t)", "");
 		logger.info("deploymentId: "+deploymentId);
 		return deploymentId;
@@ -220,13 +224,20 @@ public class SlipStreamSSService {
 	public String addVM(String deploymnetId, String type, Integer number) throws Exception {
 		logger.info("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
 		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
-		return executeCommand(command);
+		Map<String, String> ret = executeCommand(command);
+		if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}
+		return ret.get("output");
 	}
 
 	public void removeVM(String deploymnetId, String type, String ids) throws Exception {
 		logger.info("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
 		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
-		executeCommand(command);
+		Map<String, String> ret = executeCommand(command);
+		if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}
 	}
         
         /**
@@ -316,7 +327,7 @@ public class SlipStreamSSService {
 		return ref;
 	}
 	
-	public String executeCommand(String[] command) throws IOException, InterruptedException {
+	public Map<String,String> executeCommand(String[] command) throws IOException, InterruptedException {
 		String c="Executing command: ";
 		for (int i = 0; i < command.length; i++) {
 			c+=command[i]+" ";
@@ -328,13 +339,23 @@ public class SlipStreamSSService {
 		Process p1 = p.start();
 		//Process p = Runtime.getRuntime().exec(command);
 		p1.waitFor();
+		Map<String,String> ret = new HashMap<String, String>();
+		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(p1.getInputStream()));
 		String line = "";			
 		while ((line = reader.readLine())!= null) {
 			output.append(line + "\n");
 		}
         logger.info("Command Output: "+output.toString());
-		return output.toString();
+        ret.put("output", output.toString());
+		reader = new BufferedReader(new InputStreamReader(p1.getErrorStream()));
+		line = "";			
+		while ((line = reader.readLine())!= null) {
+			output.append(line + "\n");
+		}
+        logger.info("Command Error: "+output.toString());
+        ret.put("error", output.toString());
+		return ret;
  
 	}
 
