@@ -65,7 +65,7 @@ public class Deployment {
 
     @POST
     @Path("{deploymentID}/terminate/")
-    public DeploymentInfo terminateDeployment(@PathParam("deploymentID") String deploymentID) throws IOException, InterruptedException, ValidationException {
+    public DeploymentInfo terminateDeployment(@PathParam("deploymentID") String deploymentID) throws Exception {
     	Main.ssService.terminateApplication(deploymentID);
 
     	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
