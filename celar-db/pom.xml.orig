@@ -57,17 +57,15 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-   	<dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>celar-beans</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>        
-        <dependency>
+<<<<<<< HEAD
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20140107</version>
-        </dependency>
-
+=======
+            <groupId>${project.groupId}</groupId>
+            <artifactId>celar-beans</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+>>>>>>> dbtesting
         </dependency>
         <dependency>
             <groupId>javax</groupId>

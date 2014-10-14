@@ -20,6 +20,7 @@
         <module>celar-server-daemon</module>
         <module>celar-server-rpm</module>
         <module>celar-server-client</module>
+        <module>celar-beans</module>
     </modules>
     
     <repositories>
