@@ -30,7 +30,7 @@ public class User {
     public SlipStreamCredentials getSlipStreamCredentials(@QueryParam("user") String username) {
         String  user =ServerStaticComponents.properties.getProperty("slipstream.username"),
                 pass =ServerStaticComponents.properties.getProperty("slipstream.password");
-        if(username.equals(user))
+        if(user!=null && username.equals(user))
             return new SlipStreamCredentials(user, pass);
         else
             throw new WebApplicationException(Response.SC_FORBIDDEN);
