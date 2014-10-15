@@ -3,7 +3,8 @@ CELAR Server
 
 What is it?
 ----------
-FIXME: how to use?
+CELAR Server is the endpoint of the CELAR Platform. It is located inside the cloud provider, and it is responsible to receive application descriptions,
+launch new deployments, store deployment-related data and provide an API for interaction between the platform and the clients.
 
 Licensing
 ---------
@@ -50,7 +51,7 @@ After that, visit the CELAR Server and edit the following file:
 
     vi /opt/celar/celar-server/conf/slipstream.properties
 
-and place the appropriate username, password and SlipStream Server hostname. Finally, execute
+and place the appropriate username, password. The CELAR Server must be deployed in the same VM as the SlipStream Server. Finally, execute
 
     service celar-server restart
 
@@ -58,6 +59,8 @@ and the Server is ready for use!
 
 Contact
 -------
-Giannis Giannakopoulos, <ggian@cslab.ece.ntua.gr>
-Nikos Papailiou,	<npapa@cslab.ece.ntua.gr>
+Giannis Giannakopoulos, <ggian@cslab.ece.ntua.gr>,
+
+Nikos Papailiou,	<npapa@cslab.ece.ntua.gr>,
+
 Christos Mantas,	<cmantas@cslab.ece.ntua.gr>
