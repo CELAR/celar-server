@@ -16,12 +16,14 @@ CLASSPATH=$CLASSPATH:$CELAR_SERVER_HOME/celar-server.jar
 PIDFILE=/tmp/celar-server.pid
 
 start() {
+    [ -f $PIDFILE ] && echo "CELAR Server already running ($(cat $PIDFILE))" && exit 0
     java -Dname=celar-server -cp $CLASSPATH  gr.ntua.cslab.celar.server.daemon.Main &
     echo $! > $PIDFILE;
 }
 
 stop() {
-    PID=$(cat $PIDFILE)
+    PID=$(cat $PIDFILE 2>/dev/null)
+    [ "$PID" == "" ] && echo "CELAR Server not running" && exit 0
     kill -TERM $PID
     rm -f $PIDFILE 
 }

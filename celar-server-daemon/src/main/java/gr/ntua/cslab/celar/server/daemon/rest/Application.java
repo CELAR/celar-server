@@ -16,6 +16,7 @@ import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfoL
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfoList;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
+import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
 import java.io.FileOutputStream;
@@ -133,7 +134,7 @@ public class Application {
         //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
         String ssApplicationName = tc.getAppName();
         logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
-        String appName = Main.ssService.createApplication(ssApplicationName, tc.getAppVersion());
+        String appName = ServerStaticComponents.ssService.createApplication(ssApplicationName, tc.getAppVersion());
         HashMap<String, Node> nodes = new HashMap<String, Node>();
 
         //iterate through modules
@@ -147,7 +148,7 @@ public class Application {
             for (String component : tc.getModuleComponents(module)) {
                 logger.info("\t\t" + component);
                 ImageModule imModule = new ImageModule(appName + "/" + component);
-                Authz auth = new Authz(Main.ssService.getUser(), imModule);
+                Authz auth = new Authz(ServerStaticComponents.ssService.getUser(), imModule);
                 imModule.setAuthz(auth);
 
                 //component dependencies
@@ -158,7 +159,7 @@ public class Application {
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
                     //System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
                     if (prop.getKey().toString().equals("VMI")) {
-                        imModule.setModuleReference(Main.ssService.getImageReference("ubuntu-12.04"));
+                        imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("ubuntu-12.04"));
                     } else if (prop.getKey().toString().equals("executeScript")) {
                         logger.info("script: " + prop.getValue().toString());
                         Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
@@ -167,11 +168,11 @@ public class Application {
                 }
                 imModule.setTargets(targets);
 
-                for (ModuleParameter p : Main.ssService.baseParameters) {
+                for (ModuleParameter p : ServerStaticComponents.ssService.baseParameters) {
                     imModule.setParameter(p);
                 }
 
-                Main.ssService.putModule(imModule);
+                ServerStaticComponents.ssService.putModule(imModule);
                 nodes.put(imModule.getShortName(), new Node(imModule.getShortName(), imModule));
 
             }
@@ -180,12 +181,12 @@ public class Application {
         //add DeploymentModule 
         String name = appName + "/" + appName;
         DeploymentModule deployment = new DeploymentModule(name);
-        Authz auth = new Authz(Main.ssService.getUser(), deployment);
+        Authz auth = new Authz(ServerStaticComponents.ssService.getUser(), deployment);
         deployment.setAuthz(auth);
         logger.info("App Modules: " + nodes);
         deployment.setNodes(nodes);
 
-        Main.ssService.putModule(deployment);
+        ServerStaticComponents.ssService.putModule(deployment);
 
         ApplicationInfo info = new ApplicationInfo();
         info.setCsarFilePath(filename);
@@ -246,14 +247,14 @@ public class Application {
         
         
         
-        String deploymentID = Main.ssService.launchApplication(app.getSlipstreamName(), params);
+        String deploymentID = ServerStaticComponents.ssService.launchApplication(app.getSlipstreamName(), params);
 
         DeploymentInfo deployment = new DeploymentInfo();
         deployment.setDeploymentID(deploymentID);
         deployment.setApplication(app);
         deployment.setStartTime(System.currentTimeMillis());
         deployment.setEndTime(-1);
-        deployment.setState(Main.ssService.getDeploymentState(deploymentID));
+        deployment.setState(ServerStaticComponents.ssService.getDeploymentState(deploymentID));
         deployment.setDescription(params.toString());
         DeploymentCache.addDeployment(deployment);
         return deployment;
