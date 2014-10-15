@@ -40,7 +40,8 @@ import com.sixsq.slipstream.util.SerializationUtil;
 
 
 public class SlipStreamSSService {
-	private String user, password, url;
+	private String user, password, url, cookie, cookieFile;
+	private boolean cookieAuth;
     public  Logger logger = Logger.getLogger(SlipStreamSSService.class);
     public HashMap<String,String> baseImageReferences; //imageName-reference
     public HashMap<String,HashMap<String,String>> baseImages; //imageName-cloud-flavorID
@@ -90,11 +91,46 @@ public class SlipStreamSSService {
 		return xmlfile;
 	}
 	
+	private void writeCookie(String cookie) throws IOException{
+		logger.debug("Writing cookie");
+		BufferedWriter writer = null;
+		this.cookieFile = "/tmp/slipstream.cookie";
+		
+		try
+		{
+		    writer = new BufferedWriter( new FileWriter( this.cookieFile));
+		    writer.write("cookie = ");
+		    writer.write( cookie);
+
+		}
+		catch ( IOException e)
+		{
+		}
+		finally
+		{
+		    try
+		    {
+		        if ( writer != null)
+		        writer.close( );
+		    }
+		    catch ( IOException e)
+		    {
+		    	throw e;
+		    }
+		}
+	}
+	
 	public boolean putUser(User user) throws Exception{
 		logger.info("Putting user: "+ user.getName());
 		String xml = SerializationUtil.toXmlString(user);
 		String xmlfile = writeXML(xml);
-		String[] command = new String[] {"ss-user-put", "-u", this.user, "-p", password, "--endpoint", url, xmlfile};
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {"ss-user-put", "-u", this.user, "--cookie="+cookieFile, "--endpoint", url, xmlfile};
+		}
+		else{	
+			command = new String[] {"ss-user-put", "-u", this.user, "-p", password, "--endpoint", url, xmlfile};
+		}
 		Map<String, String> ret = executeCommand(command);
 		if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
@@ -106,7 +142,13 @@ public class SlipStreamSSService {
 		logger.info("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
 		String xmlfile = writeXML(xml);
-		String[] command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {"ss-module-put", "-u", user, "--cookie="+cookieFile, "--endpoint", url, xmlfile};
+		}
+		else{	
+			command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
+		}
 		Map<String, String>  ret = executeCommand(command);
 		if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
@@ -116,7 +158,13 @@ public class SlipStreamSSService {
 	
 	public boolean terminateApplication(String deploymentID) throws Exception{
 		logger.info("Terminating deployment: "+deploymentID);
-		String[] command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-X", "DELETE", "-k"};
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {"curl", url+"/run/"+deploymentID, "-H", "cookie : "+cookie, "-X", "DELETE", "-k"};
+		}
+		else{	
+			command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-X", "DELETE", "-k"};
+		}
 		Map<String, String>  ret = executeCommand(command);
 
 		if(!ret.get("error").equals("")){
@@ -349,7 +397,8 @@ public class SlipStreamSSService {
         logger.info("Command Output: "+output.toString());
         ret.put("output", output.toString());
 		reader = new BufferedReader(new InputStreamReader(p1.getErrorStream()));
-		line = "";			
+		line = "";	
+		output = new StringBuffer();		
 		while ((line = reader.readLine())!= null) {
 			output.append(line + "\n");
 		}
@@ -364,6 +413,21 @@ public class SlipStreamSSService {
 		this.user = user;
 		this.password = password;
 		this.url = url;
+		init();
+	}
+	
+	public SlipStreamSSService(String user, String cookie, String url, Boolean cookieAuth) throws Exception {
+		super();
+		this.user = user;
+		this.cookie = cookie;
+		writeCookie(cookie);
+		this.cookieAuth = true;
+		this.url = url;
+		init();
+	}
+	
+	private void init() throws ValidationException{
+
 		baseImageReferences = new HashMap<String,String>();
 		baseImages = new HashMap<>();
 		HashMap<String,String> temp = new HashMap<String, String>();
@@ -422,9 +486,8 @@ public class SlipStreamSSService {
         parameter = new ModuleParameter(parameterName, "", description);
         parameter.setCategory("Output");
         baseParameters.add(parameter);
-		
 	}
-
+	
 	public String getUser() {
 		return user;
 	}
