@@ -38,9 +38,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
  * @author Giannis Giannakopoulos
  */
 public class Main {
-	
-	public static SlipStreamSSService ssService;
-	
+
     private static void loadProperties() throws IOException {
         InputStream stream = Main.class.getClassLoader().getResourceAsStream("celar-server.properties");
         if (stream == null) {
@@ -56,7 +54,7 @@ public class Main {
         int plainPort = -1, sslPort = -1;
         String keystorePath = null, keystorePassword = null;
         ServerConnector connector = null, sslConnector = null;
-        
+
         if (ServerStaticComponents.properties.getProperty("server.plain.port") != null) {
             plainPort = new Integer(ServerStaticComponents.properties.getProperty("server.plain.port"));
         }
@@ -86,11 +84,11 @@ public class Main {
             sslConnector.setPort(sslPort);
 
         }
-        if(sslConnector!=null && connector!=null) {
+        if (sslConnector != null && connector != null) {
             ServerStaticComponents.server.setConnectors(new Connector[]{connector, sslConnector});
-        } else if(connector!=null) {
+        } else if (connector != null) {
             ServerStaticComponents.server.setConnectors(new Connector[]{connector});
-        } else if(sslConnector!=null) {
+        } else if (sslConnector != null) {
             ServerStaticComponents.server.setConnectors(new Connector[]{sslConnector});
         } else {
             System.err.println("Please choose one of the plain and SSL connections!");
@@ -111,7 +109,7 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServerStaticComponents.server, "/", ServletContextHandler.SESSIONS);
         context.addServlet(holder, "/*");
         Logger.getLogger(Main.class.getName()).info("Server configured");
-        
+
         ApplicationCache.allocateCache();
         DeploymentCache.allocateCache();
     }
@@ -141,11 +139,12 @@ public class Main {
 
     private static void creatDirs() {
         File csarDir = new File("/tmp/csar/");
-        
-        if(!csarDir.exists()) {
+
+        if (!csarDir.exists()) {
             csarDir.mkdir();
         }
     }
+
     public static void main(String[] args) throws Exception {
         configureLogger();
         loadProperties();
@@ -156,23 +155,23 @@ public class Main {
 
         ServerStaticComponents.server.start();
         Logger.getLogger(Main.class.getName()).info("Server is started");
-        
+
     }
 
-	private static void configureSlipstreamClient() throws IOException, ValidationException {
+    private static void configureSlipstreamClient() throws IOException, ValidationException {
 
-        InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
-        Properties properties = new Properties();
-        if (propsInput != null) {
-            properties.load(propsInput);
-        } else {
-            throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
-        }
-        Logger.getLogger(Main.class.getName()).info(properties.toString());
-        String username = properties.getProperty("slipstream.username"),
-                password = properties.getProperty("slipstream.password"),
-                slipstreamHost = properties.getProperty("slipstream.url");
+//        InputStream propsInput = Application.class.getClassLoader().getResourceAsStream("slipstream.properties");
+//        Properties properties = new Properties();
+//        if (propsInput != null) {
+//            properties.load(propsInput);
+//        } else {
+//            throw new WebServiceException("Wrong server configuration; SlipStream not accessible");
+//        }
+//        Logger.getLogger(Main.class.getName()).info(properties.toString());
+        String username = ServerStaticComponents.properties.getProperty("slipstream.username"),
+                password = ServerStaticComponents.properties.getProperty("slipstream.password"),
+                slipstreamHost = ServerStaticComponents.properties.getProperty("slipstream.url");
 
-        ssService = new SlipStreamSSService(username, password, slipstreamHost);
-	}
+        ServerStaticComponents.ssService = new SlipStreamSSService(username, password, slipstreamHost);
+    }
 }

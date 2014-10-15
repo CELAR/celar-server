@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.shared;
 
+import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 import java.util.Properties;
 import org.eclipse.jetty.server.Server;
 
@@ -21,4 +22,10 @@ public class ServerStaticComponents {
      * (could be a security leak).
      */
     public static Server server;
+    
+    /**
+     * SSService component 
+     */
+    public static SlipStreamSSService ssService;
+
 }

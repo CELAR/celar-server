@@ -21,6 +21,7 @@ import javax.ws.rs.QueryParam;
 
 import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sixsq.slipstream.statemachine.States;
+import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -44,8 +45,8 @@ public class Deployment {
             throw new WebServiceException("Deployment with the specified ID not found");
     	}
     	else{
-    		States state = Main.ssService.getDeploymentState(deploymentID);
-    		HashMap<String, String> ips = Main.ssService.getDeploymentIPs(deploymentID);
+    		States state = ServerStaticComponents.ssService.getDeploymentState(deploymentID);
+    		HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
     		retInfo.setState(state);
     		retInfo.setDescription(ips.toString());
         	return retInfo;
@@ -66,7 +67,7 @@ public class Deployment {
     @POST
     @Path("{deploymentID}/terminate/")
     public DeploymentInfo terminateDeployment(@PathParam("deploymentID") String deploymentID) throws Exception {
-    	Main.ssService.terminateApplication(deploymentID);
+    	ServerStaticComponents.ssService.terminateApplication(deploymentID);
 
     	DeploymentInfo deploymentInfo = DeploymentCache.removeDeployment(deploymentID);
     	deploymentInfo.setState(States.Done);
