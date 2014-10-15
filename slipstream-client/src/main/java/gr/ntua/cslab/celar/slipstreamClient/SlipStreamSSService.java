@@ -94,7 +94,7 @@ public class SlipStreamSSService {
 	private void writeCookie(String cookie) throws IOException{
 		logger.debug("Writing cookie");
 		BufferedWriter writer = null;
-		this.cookieFile = "/tmp/slipstream.cookie";
+		this.cookieFile = "/tmp/slipstream-"+System.currentTimeMillis()+".cookie";
 		
 		try
 		{
