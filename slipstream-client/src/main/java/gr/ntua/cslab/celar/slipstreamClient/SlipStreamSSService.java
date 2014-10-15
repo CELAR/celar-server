@@ -321,7 +321,7 @@ public class SlipStreamSSService {
 			logger.info("Current State: "+state);
 			if(state.equals(States.Ready))
 				break;
-			Thread.sleep(1000);
+			Thread.sleep(10000);
 		}
 	}
 	
