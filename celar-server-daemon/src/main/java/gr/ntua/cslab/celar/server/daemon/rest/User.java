@@ -1,6 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
-import gr.ntua.cslab.celar.server.daemon.rest.beans.SlipStreamCredentials;
+import gr.ntua.cslab.celar.server.beans.SlipStreamCredentials;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.user.AuthenticationRequest;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.user.AuthenticationResponse;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;

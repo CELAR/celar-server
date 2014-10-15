@@ -116,6 +116,11 @@
             <artifactId>jersey-multipart</artifactId>
             <version>1.18.1</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>celar-beans</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     
     <properties>

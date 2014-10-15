@@ -1,4 +1,4 @@
-package gr.ntua.cslab.celar.server.daemon.rest.beans;
+package gr.ntua.cslab.celar.server.beans;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
