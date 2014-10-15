@@ -160,7 +160,7 @@ public class SlipStreamSSService {
 		logger.info("Terminating deployment: "+deploymentID);
 		String[] command;
 		if(cookieAuth){
-			command = new String[] {"curl", url+"/run/"+deploymentID, "-H", "cookie : "+cookie, "-X", "DELETE", "-k"};
+			command = new String[] {"curl", url+"/run/"+deploymentID, "--cookie", cookie, "-X", "DELETE", "-k"};
 		}
 		else{	
 			command = new String[] {"curl", url+"/run/"+deploymentID, "--user", user+":"+password, "-X", "DELETE", "-k"};
@@ -177,7 +177,12 @@ public class SlipStreamSSService {
 		String[] command;
 		if(deploymentParameters.size()==0){
 			logger.info("Launching application: "+name+" without parameters");
-			command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", name};
+			if(cookieAuth){
+				command = new String[] {"ss-execute", "-u", user, "--cookie="+cookieFile, "--endpoint", url, "--mutable-run", name};
+			}
+			else{
+				command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", name};
+			}
 		}
 		else{
 			String params = "";
@@ -190,8 +195,12 @@ public class SlipStreamSSService {
 				i++;
 			}
 			logger.info("Launching application: "+name+" with parameters: "+params);
-			command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
-			
+			if(cookieAuth){
+				command = new String[] {"ss-execute", "-u", user, "--cookie="+cookieFile, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
+			}
+			else{
+				command = new String[] {"ss-execute", "-u", user, "-p", password, "--endpoint", url, "--mutable-run", "--parameters", params,  name};
+			}
 		}
 		Map<String, String> ret = executeCommand(command);
 		if(!ret.get("error").equals("")){
@@ -262,16 +271,27 @@ public class SlipStreamSSService {
 		HttpsURLConnection conn = (HttpsURLConnection)url1.openConnection();
 		conn.setSSLSocketFactory(sslsocketfactory);
 
-		String userpass = user + ":" + password;
-		String basicAuth = "Basic " + new String(new Base64().encode(userpass.getBytes()));
-		conn.setRequestProperty ("Authorization", basicAuth);
+		if(cookieAuth){
+			conn.addRequestProperty("Cookie", cookie.split(";", 1)[0]);
+		}
+		else{
+			String userpass = user + ":" + password;
+			String basicAuth = "Basic " + new String(new Base64().encode(userpass.getBytes()));
+			conn.setRequestProperty ("Authorization", basicAuth);
+		}
 		InputStream inputStream = conn.getInputStream();
 		return IOUtils.toString(inputStream, "UTF-8");
 	}
 
 	public String addVM(String deploymnetId, String type, Integer number) throws Exception {
 		logger.info("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
-		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--cookie", cookie,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
+		}
+		else{	
+			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
+		}
 		Map<String, String> ret = executeCommand(command);
 		if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
@@ -281,7 +301,13 @@ public class SlipStreamSSService {
 
 	public void removeVM(String deploymnetId, String type, String ids) throws Exception {
 		logger.info("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
-		String[] command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--cookie", cookie,"-X", "DELETE", "-k", "-D", "-"};
+		}
+		else{	
+			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+		}
 		Map<String, String> ret = executeCommand(command);
 		if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));

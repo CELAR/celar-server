@@ -252,8 +252,10 @@ public class SlipStreamSSServiceTest {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "a1s2d3f4", "https://83.212.122.157");
-		System.out.println(ssservise.getDeploymentIPs("fef145fb-e4b6-4eb2-a5ba-4e2bb498694c"));
+		String cookie = "com.sixsq.slipstream.cookie=com.sixsq.idtype=local&com.sixsq.identifier=ioannis&com.sixsq.expirydate=1413407587469&com.sixsq.signature=e9wlflxyxi139ge3anrf68d27j1o9uvoz0sb4oh003xpdbfrx0mi7jflj3g12or64v7anqpjr9mepa778vjy6qgqqfqbnbgxwu8; Path=/";
+		
+		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", cookie, "https://109.231.121.23",true);
+		System.out.println(ssservise.getDeploymentIPs("aa418e9a-ddfd-4273-8019-cd06d7bb708a"));
 		
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));
