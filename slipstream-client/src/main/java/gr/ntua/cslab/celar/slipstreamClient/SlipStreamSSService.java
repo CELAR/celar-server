@@ -142,6 +142,7 @@ public class SlipStreamSSService {
 	public boolean putModule(Module module) throws Exception{
 		logger.info("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
+		logger.info(xml);
 		String xmlfile = writeXML(xml);
 		String[] command;
 		if(cookieAuth){

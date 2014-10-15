@@ -159,30 +159,33 @@ public class Application {
                 List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                 Set<Target> targets = new HashSet<Target>();
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
-                	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
                     if (prop.getKey().toString().equals("VMI")) {
+                    	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
                     	imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("ubuntu-12.04"));
                     } 
                     else if (prop.getKey().toString().equals("executeScript")) {
+                    	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Execute script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
                 		Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
                 		targets.add(t);
                     }
                     else if (prop.getKey().toString().equals("Add")) {
+                    	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Add script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
                 		Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
                 		targets.add(t);
                     }
                     else if (prop.getKey().toString().equals("Remove")) {
+                    	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Remove script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
                 		Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
                 		targets.add(t);
                     }
                     else if (prop.getKey().toString().equals("flavor")) {
-                        logger.debug("flavor: " + prop.getValue().toString());
+                    	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
                     	parameters.addAll(ServerStaticComponents.ssService.createFlavorParameters(prop.getValue().toString()));
                     }
                 }
