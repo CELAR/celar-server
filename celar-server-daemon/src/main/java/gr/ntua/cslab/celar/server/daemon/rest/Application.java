@@ -170,14 +170,14 @@ public class Application {
                 		Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
                 		targets.add(t);
                     }
-                    else if (prop.getKey().toString().equals("Add")) {
+                    else if (prop.getKey().toString().contains("Add")) {
                     	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Add script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
                 		Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
                 		targets.add(t);
                     }
-                    else if (prop.getKey().toString().equals("Remove")) {
+                    else if (prop.getKey().toString().contains("Remove")) {
                     	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Remove script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
