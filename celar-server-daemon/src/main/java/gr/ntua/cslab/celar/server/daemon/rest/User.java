@@ -7,6 +7,9 @@ import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import org.eclipse.jetty.server.Response;
 
 
 /**
@@ -24,10 +27,13 @@ public class User {
     
     @GET
     @Path("credentials/")
-    public SlipStreamCredentials getSlipStreamCredentials() {
+    public SlipStreamCredentials getSlipStreamCredentials(@QueryParam("user") String username) {
         String  user =ServerStaticComponents.properties.getProperty("slipstream.username"),
                 pass =ServerStaticComponents.properties.getProperty("slipstream.password");
-        return new SlipStreamCredentials(user, pass);
+        if(username.equals(user))
+            return new SlipStreamCredentials(user, pass);
+        else
+            throw new WebApplicationException(Response.SC_FORBIDDEN);
     }
     
 }
