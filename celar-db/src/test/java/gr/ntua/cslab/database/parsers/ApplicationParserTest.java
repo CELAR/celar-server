@@ -21,6 +21,7 @@ import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.*;
+import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +39,7 @@ import org.junit.runners.MethodSorters;
  * @author cmantas
  */
 
-@Ignore
+//@Ignore
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ApplicationParserTest {
     
@@ -120,7 +121,10 @@ public class ApplicationParserTest {
         System.out.println("here");
         ApplicationInfo ai = exportApplicationDescription(app);
         System.out.println("Hello");
-        System.out.println(ai.printStructured());
+        System.out.println(ai.toStucturedString());
+        FileOutputStream fo = new FileOutputStream("test");
+        ai.marshal(fo);
+        fo.close();
         
     }
 

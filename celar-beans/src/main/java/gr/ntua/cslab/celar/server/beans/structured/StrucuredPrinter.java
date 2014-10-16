@@ -1,4 +1,5 @@
 
+
 package gr.ntua.cslab.celar.server.beans.structured;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,6 @@ public final class StrucuredPrinter {
 
     
     public static final String print(Structured re, int indent) {
-        System.out.println(re);
         indent = indent>0?--indent:0;
         String sindent = indent>0?"|":"";
         sindent  += (new String(new char[indent]).replace("\0"," |"));
@@ -47,7 +47,7 @@ public final class StrucuredPrinter {
                 if(f.get(re)==null) continue;
                 for(Object li: (List)f.get(re)){
                     if (li instanceof Structured) {                        
-                      s+=((Structured)li).printStructured(indent+1);
+                      s+=((Structured)li).toStructuredString(indent+1);
                   }
                     else{
                         s+=sindent+name+":"+li.toString();

@@ -29,11 +29,11 @@ public class ComponentInfo extends Component implements Structured{
        super(component);
     }
 
-    public String printStructured() {
+    public String toStucturedString() {
        return StrucuredPrinter.print(this, 0);
     }
     
-   public String printStructured(int indent) {
+   public String toStructuredString(int indent) {
        return StrucuredPrinter.print(this, indent);
     }
 

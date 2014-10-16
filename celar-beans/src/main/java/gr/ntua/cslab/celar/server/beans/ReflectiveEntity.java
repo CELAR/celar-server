@@ -129,7 +129,6 @@ public abstract class ReflectiveEntity {
      * @throws JAXBException 
      */
     public void unmarshal(InputStream in) throws JAXBException{
-        System.out.println("Unmarshal");
          JAXBContext jc = JAXBContext.newInstance(this.getClass());
          Unmarshaller um = jc.createUnmarshaller();        
          ReflectiveEntity e = (ReflectiveEntity)um.unmarshal(in);

@@ -46,11 +46,13 @@ public class ApplicationInfo extends Application implements Structured{
 
     }
     
-    public String printStructured(){
+    @Override
+    public String toStucturedString(){
         return StrucuredPrinter.print(this, 0);
     }
     
-    public String printStructured(int indent){
+    @Override
+    public String toStructuredString(int indent){
         return StrucuredPrinter.print(this, indent);
     }
 }

@@ -33,11 +33,11 @@ public class ModuleInfo extends Module implements Structured{
        components.add(c);
    }
 
-    public String printStructured() {
+    public String toStucturedString() {
         return StrucuredPrinter.print(this, 0);
     }
 
-    public String printStructured(int indent) {
+    public String toStructuredString(int indent) {
         return StrucuredPrinter.print(this, indent);
     }
        
