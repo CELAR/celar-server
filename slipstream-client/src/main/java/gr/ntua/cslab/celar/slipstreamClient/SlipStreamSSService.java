@@ -295,9 +295,9 @@ public class SlipStreamSSService {
 			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
 		}
 		Map<String, String> ret = executeCommand(command);
-		if(!ret.get("error").equals("")){
+		/*if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
-		}
+		}*/
 		return ret.get("output");
 	}
 
@@ -311,9 +311,9 @@ public class SlipStreamSSService {
 			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
 		}
 		Map<String, String> ret = executeCommand(command);
-		if(!ret.get("error").equals("")){
+		/*if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
-		}
+		}*/
 	}
         
         /**
