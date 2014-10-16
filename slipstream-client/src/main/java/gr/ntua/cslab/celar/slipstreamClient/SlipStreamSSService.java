@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 import javax.net.ssl.*;
 import javax.xml.parsers.SAXParser;
@@ -141,6 +142,7 @@ public class SlipStreamSSService {
 	public boolean putModule(Module module) throws Exception{
 		logger.info("Putting "+module.getClass() +" module: "+ module.getName());
 		String xml = SerializationUtil.toXmlString(module);
+		logger.debug(xml);
 		String xmlfile = writeXML(xml);
 		String[] command;
 		if(cookieAuth){
@@ -293,9 +295,9 @@ public class SlipStreamSSService {
 			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "n="+number, "--user", user+":"+password,"-X", "POST", "-H", "Content-Type: text/plain", "-k", "-D", "-"};
 		}
 		Map<String, String> ret = executeCommand(command);
-		if(!ret.get("error").equals("")){
+		/*if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
-		}
+		}*/
 		return ret.get("output");
 	}
 
@@ -309,9 +311,9 @@ public class SlipStreamSSService {
 			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
 		}
 		Map<String, String> ret = executeCommand(command);
-		if(!ret.get("error").equals("")){
+		/*if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
-		}
+		}*/
 	}
         
         /**
@@ -463,7 +465,7 @@ public class SlipStreamSSService {
 		baseImages.put("ubuntu-12.04", temp);
 		
 		baseParameters = new ArrayList<ModuleParameter>();
-		String parameterName = "Flexiant.ram";
+		/*String parameterName = "Flexiant.ram";
 		String description = "ram";
 		String value = "2048";
 	
@@ -511,7 +513,86 @@ public class SlipStreamSSService {
 
         parameter = new ModuleParameter(parameterName, "", description);
         parameter.setCategory("Output");
-        baseParameters.add(parameter);
+        baseParameters.add(parameter);*/
+	}
+	
+	public List<ModuleParameter> getOutputParamsFromScript(String script) throws ValidationException{
+		List<ModuleParameter> ret = new ArrayList<ModuleParameter>();
+		String[] s = script.split("ss-set ");
+		for (int i = 1; i < s.length; i++) {
+			String param = s[i].substring(0,s[i].indexOf(" "));
+			String parameterName = param;
+	        String description = param;
+
+	        ModuleParameter parameter = new ModuleParameter(parameterName, "", description);
+	        parameter.setCategory("Output");
+			ret.add(parameter);
+		}
+		return ret;
+	}
+	
+	public List<ModuleParameter> createFlavorParameters(String flavor)throws ValidationException{
+		List<ModuleParameter> ret = new ArrayList<ModuleParameter>();
+    	String cpu="", ram="", disk="";
+    	String[] fl = flavor.split(" ");
+    	for (int i = 0; i < fl.length; i++) {
+			String[] f = fl[i].split(":");
+			switch (f[0]) {
+			case "vcpus":
+				cpu=f[1];
+				break;
+			case "ram":
+				ram=f[1];
+				break;
+			case "disk":
+				disk=f[1];
+				break;
+
+			default:
+				break;
+			}
+		}
+    	String okeanosFlavor = "C"+cpu+"R"+ram+"D"+disk+"ext_vlmc";
+    	
+    	logger.info("Okeanos flavor: "+okeanosFlavor);
+    	
+    	String parameterName = "okeanos.instance.type";
+    	String description = "Flavor";
+    	String value = okeanosFlavor;
+	
+    	ModuleParameter parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("okeanos");
+		parameter.setDefaultValue(okeanosFlavor);
+		ret.add(parameter);
+		
+		parameterName = "okeanos.security.groups";
+		description = "Security Groups (comma separated list)";
+		value = "default";
+	
+		parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("okeanos");
+		parameter.setDefaultValue("default");
+		ret.add(parameter);
+		
+		parameterName = "Flexiant.ram";
+		description = "ram";
+		value = ram;
+	
+		parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("Flexiant");
+		parameter.setDefaultValue(ram);
+		ret.add(parameter);
+		
+		parameterName = "Flexiant.cpu";
+		description = "cpu";
+		value = cpu;
+	
+		parameter = new ModuleParameter(parameterName, value, description);
+		parameter.setCategory("Flexiant");
+		parameter.setDefaultValue(cpu);
+		ret.add(parameter);
+		
+		return ret;
 	}
 	
 	public String getUser() {

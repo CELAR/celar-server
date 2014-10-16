@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -155,19 +156,44 @@ public class Application {
                 logger.info("\t\t\tdepends on: " + tc.getComponentDependencies(component));
 
                 //component properties
+                List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                 Set<Target> targets = new HashSet<Target>();
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
-                    //System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
                     if (prop.getKey().toString().equals("VMI")) {
-                        imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("ubuntu-12.04"));
-                    } else if (prop.getKey().toString().equals("executeScript")) {
-                        logger.info("script: " + prop.getValue().toString());
-                        Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
-                        targets.add(t);
+                    	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
+                    	imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("ubuntu-12.04"));
+                    } 
+                    else if (prop.getKey().toString().equals("executeScript")) {
+                    	logger.info("\t\t\t"+prop.getKey());
+                        logger.debug("Execute script: " + prop.getValue().toString());
+                    	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
+                		Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
+                		targets.add(t);
+                    }
+                    else if (prop.getKey().toString().contains("Add")) {
+                    	logger.info("\t\t\t"+prop.getKey());
+                        logger.debug("Add script: " + prop.getValue().toString());
+                    	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
+                		Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
+                		targets.add(t);
+                    }
+                    else if (prop.getKey().toString().contains("Remove")) {
+                    	logger.info("\t\t\t"+prop.getKey());
+                        logger.debug("Remove script: " + prop.getValue().toString());
+                    	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
+                		Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
+                		targets.add(t);
+                    }
+                    else if (prop.getKey().toString().equals("flavor")) {
+                    	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
+                    	parameters.addAll(ServerStaticComponents.ssService.createFlavorParameters(prop.getValue().toString()));
                     }
                 }
                 imModule.setTargets(targets);
 
+            	for(ModuleParameter p : parameters){
+            		imModule.setParameter(p);
+            	}
                 for (ModuleParameter p : ServerStaticComponents.ssService.baseParameters) {
                     imModule.setParameter(p);
                 }

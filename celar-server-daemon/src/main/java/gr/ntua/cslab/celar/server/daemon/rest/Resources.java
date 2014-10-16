@@ -68,8 +68,8 @@ public class Resources {
     @Path("actions/")
     public List<ElasticityAction> getElasticityActions() {
         List<ElasticityAction> actions = new LinkedList<>();
-        actions.add(new ElasticityAction(1, "Add VM"));
-        actions.add(new ElasticityAction(2, "Remove VM"));
+        actions.add(new ElasticityAction(1, "AddVM"));
+        actions.add(new ElasticityAction(2, "RemoveVM"));
         return actions;
     }
 
