@@ -6,17 +6,12 @@
 
 package gr.ntua.cslab.database.parsers;
 
-import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.Component;
-import gr.ntua.cslab.celar.server.beans.Module;
-import gr.ntua.cslab.celar.server.beans.MyTimestamp;
-import gr.ntua.cslab.celar.server.beans.ProvidedResource;
-import gr.ntua.cslab.celar.server.beans.ResourceType;
-import gr.ntua.cslab.celar.server.beans.Spec;
-import gr.ntua.cslab.celar.server.beans.User;
+import gr.ntua.cslab.celar.server.beans.*;
+
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityTools.delete;
+import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.EntityTools.store;
@@ -53,6 +48,8 @@ public class ApplicationParserTest {
     public static  Module module;
     public static Component component;
     static Application app ;
+    static Resource resource;
+    static Deployment depl;
     
     
     @Test
@@ -78,6 +75,10 @@ public class ApplicationParserTest {
         store(module);
         component = new Component(module, "test module", vm);
         store(component);
+        depl = new Deployment(app);
+        store(depl);
+        resource = new Resource(depl, component, tinyVM);
+        store(resource);
         
         } catch(Exception e){
             e.printStackTrace();
@@ -88,15 +89,21 @@ public class ApplicationParserTest {
     @Test
     public void test_99_clear() throws DBException{
             System.out.println("------> Clearing the DB ");
+            
+            delete(resource);
             delete(coreCount);
             delete(ramSize);
             delete(tinyVM);
-            System.out.println(component);
             delete(component);
             delete(vm);
             delete(module);
+            delete(depl);
             delete(app);
-            delete(chris);
+            delete(chris);            
+
+            
+
+        
 
         
     }
@@ -119,9 +126,9 @@ public class ApplicationParserTest {
      
         //export the application description to a JSONObject
         System.out.println("here");
-        ApplicationInfo ai = exportApplicationDescription(app);
+        ApplicationInfo ai = exportApplication(app);
         System.out.println("Hello");
-        System.out.println(ai.toStucturedString());
+        System.out.println(ai.toString(true));
         FileOutputStream fo = new FileOutputStream("test");
         ai.marshal(fo);
         fo.close();

@@ -3,6 +3,7 @@ package gr.ntua.cslab.celar.server.beans;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -133,6 +134,57 @@ public abstract class ReflectiveEntity {
          Unmarshaller um = jc.createUnmarshaller();        
          ReflectiveEntity e = (ReflectiveEntity)um.unmarshal(in);
          this.mirror(e);
+    }
+    
+    
+    public final String toString(boolean structured){
+        return toString(0);
+    }
+    
+    
+    String toString( int indent) {
+        indent = indent>0?--indent:0;
+        String sindent = indent>0?"|":"";
+        sindent  += (new String(new char[indent]).replace("\0"," |"));
+        String  i = sindent+ (indent>0?" ":"");
+        String s = i+this.getClass().getSimpleName()+"\n";
+        
+        sindent  =indent>0? "| "+sindent+"--":"|--";
+        indent = indent+1;
+        List<Field> lists = new java.util.LinkedList();
+        try {
+            for (Field f : this.getClass().getFields()) {
+
+                String name = f.getName();
+                Object value = f.get(this);
+                if (f.get(this) == null) {
+                    continue;
+                }
+                if (f.get(this) instanceof List) {
+                    lists.add(f);
+                    continue;
+                }
+                s += sindent+name+":"+value.toString()+"\n";
+
+            }
+            //print data in lists
+            for (Field f : lists) {
+                String name = f.getName();
+                s+=sindent+ name+":\n";
+                if(f.get(this)==null) continue;
+                for(Object li: (List)f.get(this)){
+                    if (li instanceof ReflectiveEntity) {                        
+                      s+=((ReflectiveEntity)li).toString(indent+1);
+                  }
+                    else{
+                        s+=sindent+" |"+li.toString();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return s;
     }
     
     

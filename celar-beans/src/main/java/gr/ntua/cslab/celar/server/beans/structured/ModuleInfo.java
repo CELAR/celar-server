@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author cmantas
  */
-public class ModuleInfo extends Module implements Structured{
+public class ModuleInfo extends Module{
     public List<ComponentInfo> components=new java.util.LinkedList();
     
     
@@ -33,12 +33,6 @@ public class ModuleInfo extends Module implements Structured{
        components.add(c);
    }
 
-    public String toStucturedString() {
-        return StrucuredPrinter.print(this, 0);
-    }
 
-    public String toStructuredString(int indent) {
-        return StrucuredPrinter.print(this, indent);
-    }
        
 }

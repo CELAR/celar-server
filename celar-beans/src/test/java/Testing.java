@@ -69,7 +69,7 @@ public class Testing {
                         inai.unmarshal(fi);
                         
                         System.out.println(inai);
-                        System.out.println(inai.toStucturedString());
+                        System.out.println(inai.toString(true));
     
                 
 //                    Metric metric = new Metric(component);

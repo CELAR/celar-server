@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ComponentInfo extends Component implements Structured{
+public class ComponentInfo extends Component{
     
     public List<Resource> resources = null;
    /**
@@ -29,12 +29,5 @@ public class ComponentInfo extends Component implements Structured{
        super(component);
     }
 
-    public String toStucturedString() {
-       return StrucuredPrinter.print(this, 0);
-    }
-    
-   public String toStructuredString(int indent) {
-       return StrucuredPrinter.print(this, indent);
-    }
 
 }

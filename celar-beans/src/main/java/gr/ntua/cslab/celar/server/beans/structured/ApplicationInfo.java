@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 //@XmlAccessorType(XmlAccessType.PROPERTY)
-public class ApplicationInfo extends Application implements Structured{
+public class ApplicationInfo extends Application{
     
     public List<ModuleInfo> modules = new java.util.LinkedList();
         
@@ -45,14 +45,5 @@ public class ApplicationInfo extends Application implements Structured{
     public static void main(String args[]) throws Exception{
 
     }
-    
-    @Override
-    public String toStucturedString(){
-        return StrucuredPrinter.print(this, 0);
-    }
-    
-    @Override
-    public String toStructuredString(int indent){
-        return StrucuredPrinter.print(this, indent);
-    }
+
 }
