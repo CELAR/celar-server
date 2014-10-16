@@ -1,13 +1,17 @@
 package gr.ntua.cslab.celar.server.beans;
-import java.sql.Timestamp;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *  The Metric entity 
  * @author cmantas
  */
+@XmlRootElement
 public class Metric extends IDEntity{
     public int component_ID;
-    public Timestamp timestamp;
+    public MyTimestamp timestamp;
     
     /**
      * Default constructor for all DBEntities
@@ -31,7 +35,7 @@ public class Metric extends IDEntity{
     
     public Metric(Component c){
         this.component_ID=c.getId();
-        this.timestamp = new Timestamp(System.currentTimeMillis());
+        this.timestamp = new MyTimestamp(System.currentTimeMillis());
     }
 
 

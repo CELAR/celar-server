@@ -4,6 +4,7 @@ import gr.ntua.cslab.celar.server.beans.Application;
 import static gr.ntua.cslab.celar.server.beans.Application.makeStringID;
 import gr.ntua.cslab.celar.server.beans.IDEntity;
 import gr.ntua.cslab.celar.server.beans.IDEntityFactory;
+import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
 import gr.ntua.cslab.database.DBTools.Constrain;
 import java.lang.reflect.Field;
@@ -43,7 +44,7 @@ public final class EntityTools {
      * Stores the entity in the appropriate Database Table
      *
      * @param entity
-     * @throws gr.ntua.cslab.db_entities.DBException in case of an error
+     * @throws DBException in case of an error
      */
     public static void store(ReflectiveEntity entity) throws DBException {
         DBTools.insertData(TableTools.getTableName(entity.getClass()), entity.getFieldMap());
@@ -53,14 +54,18 @@ public final class EntityTools {
      * Stores the entity in the appropriate Database Table
      *
      * @param app
-     * @throws gr.ntua.cslab.db_entities.DBException in case of an error
+     * @throws DBException in case of an error
      */
     public static void store(Application app) throws DBException {
-        int appId[] = app.breakId();
-        if(appId[0]==0){
+        System.out.println("Storeing application");
+        int appId = app.getUnique_Id();
+        if(appId==0){
+            System.out.println("looking for new id");
              String prevMax = DBTools.maxValue(TableTools.getTableName(app.getClass()), "unique_id");
-             int unique_Id= prevMax!=null? Integer.parseInt(prevMax)+1:1;
-             app.id = Application.makeStringID(unique_Id, appId[1], appId[2]);
+             System.out.println("prev max: "+prevMax);
+             int uniqueId = prevMax!=null? Integer.parseInt(prevMax)+1:1;
+             app.setUnique_Id(uniqueId);
+             
         }
         DBTools.insertData(TableTools.getTableName(app.getClass()), app.getFieldMap());
     }
@@ -96,8 +101,8 @@ public final class EntityTools {
                         f.set(e, value);
                     else if(type==int.class)
                         f.set(e, Integer.parseInt(value));
-                    else if(type==Timestamp.class)
-                        f.set(e, Timestamp.valueOf(value));
+                    else if(type==MyTimestamp.class)
+                        f.set(e, new MyTimestamp(Timestamp.valueOf(value).getTime()));
                     else
                         throw new Exception("Unhandled type: "+type);
                 } catch (Exception ex) {

@@ -18,13 +18,13 @@ public class CSARParserTest {
     }
 
     
-     //@Ignore
+     @Ignore
      @org.junit.Test
     public void test_01_showCase(){
         
         try {
             //create a Parser instance
-  Parser tc  = new CSARParser("example.csar");
+  Parser tc  = new CSARParser("CassandraElasticitySubmission.csar");
             
 
             

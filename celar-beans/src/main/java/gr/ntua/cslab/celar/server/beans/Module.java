@@ -15,6 +15,14 @@ public class Module extends IDEntity{
     }
     
     /**
+     * Copy constructor
+     * @param m 
+     */
+   public Module(Module m) {
+        super(m);
+    }
+    
+    /**
      * Creates a Module entity from a given name and its father "Application"
      * @param name the name of the module
      * @param app the Application instance whose child is this Module
@@ -22,7 +30,7 @@ public class Module extends IDEntity{
     public Module(String name, Application app){
         this.name=name;
         this.name=name;
-        this.application_Id=app.id;
+        this.application_Id=app.getId();
     }
     
     /**

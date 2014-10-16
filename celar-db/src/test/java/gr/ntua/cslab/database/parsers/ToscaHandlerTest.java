@@ -2,6 +2,10 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.database.parsers;
@@ -12,12 +16,13 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
 import org.junit.Test;
-import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
+import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplicationJ;
 
 /**
  *
  * @author cmantas
  */
+@Ignore
 public class ToscaHandlerTest {
     
     public ToscaHandlerTest() {
@@ -37,7 +42,7 @@ public class ToscaHandlerTest {
             //stores the application Deployment in the database
             tp.storeDeployment();
             
-            System.out.println(exportApplication(tp.getApplication()).toString(3));
+            System.out.println(exportApplicationJ(tp.getApplication()).toString(3));
             
             tp.removeDeployment();
             //removes the application description from the database

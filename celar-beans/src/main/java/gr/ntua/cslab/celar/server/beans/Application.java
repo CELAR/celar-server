@@ -1,30 +1,39 @@
 package gr.ntua.cslab.celar.server.beans;
 
-import java.sql.Timestamp;
-
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Entity representing an entry in the Application table 
  * @author cmantas
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class Application extends ReflectiveEntity {
     /**
      * The application fields
      */
-    public String id, description; /*the description*/
-    public Timestamp submitted;
+    public String id, description;
+    public MyTimestamp submitted;
     public int user_Id;
-    int unique_Id, major_Version, minor_Version;
+    public int unique_Id, major_Version, minor_Version;
 
     /**
      * The default constructor
      */
     public Application() {
         super();
-        id="0 ";
     }
     
 
+    /**
+     * Copy constructor
+     * @param app 
+     */
+   public Application(Application app) {
+        super(app);
+    }
+        
     /**
      * Creates an Application assuming that all its fields are known
      * @param uniqueId
@@ -34,14 +43,14 @@ public class Application extends ReflectiveEntity {
      * @param submitted
      * @param user 
      */
-    public Application(int uniqueId, int majorVersion, int minorVersion, String description, Timestamp submitted, User user) {
+    public Application(int uniqueId, int majorVersion, int minorVersion, String description, MyTimestamp submitted, User user) {
         this.description = description;
         this.submitted = submitted;
         this.user_Id = user.id;
         this.unique_Id = uniqueId;
         this.major_Version = majorVersion;
         this.minor_Version = minorVersion;
-        this.id = makeStringID(uniqueId, majorVersion, minorVersion);
+        setId();
     }
     
    /**
@@ -51,7 +60,7 @@ public class Application extends ReflectiveEntity {
     * @param submitted
     * @param user 
     */
-    public Application(String description, Timestamp submitted, User user) {
+    public Application(String description, MyTimestamp submitted, User user) {
         this(0,0,0, description, submitted, user);
     }
     
@@ -63,7 +72,7 @@ public class Application extends ReflectiveEntity {
     * @param user 
     */
     public Application(String description, User user) {
-        this(0,0,0, description, new Timestamp(System.currentTimeMillis()), user);
+        this(0,0,0, description, new MyTimestamp(System.currentTimeMillis()), user);
     }
     
     /**
@@ -74,7 +83,7 @@ public class Application extends ReflectiveEntity {
      * @param user 
      */
     public Application(int majorVersion, int minorVersion, String description, User user) {
-        this(0,majorVersion,minorVersion, description, new Timestamp(System.currentTimeMillis()), user);
+        this(0,majorVersion,minorVersion, description, new MyTimestamp(System.currentTimeMillis()), user);
     }
     
     /**
@@ -84,6 +93,10 @@ public class Application extends ReflectiveEntity {
     public String getDescription() {
         return description;
     }
+    
+    public void setDescription(String d) {
+        description = d;
+    }
 
     /**
      * The String id of the application
@@ -91,19 +104,59 @@ public class Application extends ReflectiveEntity {
  uniqueID.major_Version.minor_Version
      */
     public String getId() {
-        return id;
+        return makeStringID(unique_Id, major_Version, minor_Version);
     }
 
     /**
      * Returns the timestamp of when this Application was submitted
      * @return 
      */
-    public Timestamp getSubmitted() {
+    public MyTimestamp getSubmitted() {
         return submitted;
     }
+    
+   public void setSubmitted(MyTimestamp s) {
+        submitted = s;
+    }
 
-    public int getUserId() {
+
+    public int getUser_Id() {
         return user_Id;
+    }
+
+    public void setUser_Id(int user_Id) {
+        this.user_Id = user_Id;
+    }
+
+    public int getUnique_Id() {
+        return unique_Id;
+    }
+
+    public void setUnique_Id(int unique_Id) {
+        this.unique_Id = unique_Id;
+        setId();
+    }
+
+    public int getMajor_Version() {
+        return major_Version;
+    }
+
+    public void setMajor_Version(int major_Version) {
+        this.major_Version = major_Version;
+        setId();
+    }
+
+    public int getMinor_Version() {
+        return minor_Version;        
+    }
+
+    public void setMinor_Version(int minor_Version) {
+        this.minor_Version = minor_Version;
+        setId();
+    }
+    
+    private void setId(){
+        id = makeStringID(unique_Id, major_Version, minor_Version);
     }
     
     
@@ -123,18 +176,18 @@ public class Application extends ReflectiveEntity {
         return rv;
     }
     
-    public int[] breakId(){
-        int[] rv =new int[3];
-        int di;
-        String s = new String(id);
-        for(int i=0; i <3; i++){
-            di= s.indexOf(".");
-            di= di==-1?s.length():di;
-            rv[i] = Integer.parseInt(s.substring(0, di));
-            if (di==s.length()) break;
-            s=s.substring(di+1, s.length());
-        }        
-        return rv;
-    }
+//    public int[] breakId(){
+//        int[] rv =new int[3];
+//        int di;
+//        String s = new String(id);
+//        for(int i=0; i <3; i++){
+//            di= s.indexOf(".");
+//            di= di==-1?s.length():di;
+//            rv[i] = Integer.parseInt(s.substring(0, di));
+//            if (di==s.length()) break;
+//            s=s.substring(di+1, s.length());
+//        }        
+//        return rv;
+//    }
     
 }

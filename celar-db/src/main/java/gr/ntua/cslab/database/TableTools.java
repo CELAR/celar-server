@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gr.ntua.cslab.database;
 
 import java.util.Map;
@@ -24,6 +18,7 @@ public final class TableTools {
         tableNames.put("ResourceType", "RESOURCE_TYPE");
         tableNames.put("Spec", "SPECS");
         tableNames.put("Metric", "METRICS");
+        tableNames.put("Resource", "RESOURCES");
         
     }
     
