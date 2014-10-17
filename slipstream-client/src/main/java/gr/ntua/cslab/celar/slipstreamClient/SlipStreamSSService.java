@@ -235,6 +235,7 @@ public class SlipStreamSSService {
 
 	public HashMap<String,String> getDeploymentIPs(String deploymentID) throws Exception{
 		logger.info("Getting deployment ips for deploymentID: "+deploymentID);
+		logger.info("URL: "+url+"/run/"+deploymentID+"?media=xml");
 		String ret = httpsGet(url+"/run/"+deploymentID+"?media=xml");
 		if(ret.startsWith("<!DOCTYPE html>")){
 			return new HashMap<>();
