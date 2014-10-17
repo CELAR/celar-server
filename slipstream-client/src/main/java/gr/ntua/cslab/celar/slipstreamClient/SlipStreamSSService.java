@@ -442,6 +442,7 @@ public class SlipStreamSSService {
 
 	public SlipStreamSSService(String user, String password, String url) throws ValidationException {
 		super();
+		logger.info("Init ssService user: "+user+" password: "+password+" url: "+url);
 		this.user = user;
 		this.password = password;
 		this.url = url;
