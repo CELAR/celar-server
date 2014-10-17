@@ -169,9 +169,9 @@ public class SlipStreamSSService {
 		}
 		Map<String, String>  ret = executeCommand(command);
 
-		if(!ret.get("error").equals("")){
+		/*if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
-		}
+		}*/
 		return true;
 	}
 	
