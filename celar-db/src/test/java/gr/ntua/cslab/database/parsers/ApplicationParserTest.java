@@ -34,7 +34,7 @@ import org.junit.runners.MethodSorters;
  * @author cmantas
  */
 
-//@Ignore
+@Ignore
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ApplicationParserTest {
     
