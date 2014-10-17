@@ -308,7 +308,8 @@ public class SlipStreamSSService {
 			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--cookie", cookie,"-X", "DELETE", "-k", "-D", "-"};
 		}
 		else{	
-			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			//command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			command = new String[] {"ss-node-remove", "--endpoint", url, "-u", user, "-p", password, deploymnetId, type, ids};
 		}
 		Map<String, String> ret = executeCommand(command);
 		/*if(!ret.get("error").equals("")){
@@ -334,9 +335,12 @@ public class SlipStreamSSService {
             }
             String ids = "";
             for(int i=0;i<number;i++) {
-                ids+=vmsToBeDeleted.get(i);
+            	String id =vmsToBeDeleted.get(i);
+            	String s = id.substring(id.indexOf('.')+1, id.length());
+            	System.out.println(s);
+                ids+=s;
                 if(i!=number-1) {
-                    ids+=",";
+                    ids+=" ";
                 }
             }
             this.removeVM(deploymnetId, type, ids);
