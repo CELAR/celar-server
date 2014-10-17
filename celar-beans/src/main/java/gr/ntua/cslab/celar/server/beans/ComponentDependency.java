@@ -1,12 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * The dummy entity includes all the constructors and methods any DBIDEntity should have
- * @author cmantas
- */
-
-/**
- * Entity representing a ComponentDependency 
+ * Represents a 'Component Dependency' entity as it is stored in celarDB
  * @author cmantas
  */
 public class ComponentDependency extends ReflectiveEntity{

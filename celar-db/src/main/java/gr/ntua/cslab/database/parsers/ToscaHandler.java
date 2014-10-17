@@ -183,9 +183,9 @@ public class ToscaHandler {
 
 
 
-    public void storeDeployment() throws Exception {
+    public void storeDeployment(String deploymentId) throws Exception {
         
-        deployment = new Deployment(app);
+        deployment = new Deployment(app, deploymentId);
         store(deployment);
         
         for (Entry<Module, List<Component>> e : moduleComponents.entrySet()) {

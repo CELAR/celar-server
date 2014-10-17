@@ -1,7 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * Represents an entity in the 'User' table
+ * Represents a 'User' entity as it is stored in celarDB
  * @author cmantas
  */
 public class User extends IDEntity{
@@ -20,7 +20,7 @@ public class User extends IDEntity{
      * Creates an User entity given its id
      * (retrieves the rest of the fields from the DB)
      * @param id
-     * @throws DBException in case no Entity is found with the given ID in this table
+     * @throws Exception in case no Entity is found with the given ID in this table
      */
     public User(int id) throws Exception{
         super(id);

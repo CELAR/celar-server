@@ -1,7 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * The ModuleDependency Entity
+ * Represents a 'Module Dependency' entity as it is stored in celarDB
  * @author cmantas
  */
 public class ModuleDependency extends ReflectiveEntity{

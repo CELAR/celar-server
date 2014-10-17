@@ -1,11 +1,9 @@
 package gr.ntua.cslab.celar.server.beans;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *  The Metric entity 
+ * Represents a 'Metric' entity as it is stored in celarDB
  * @author cmantas
  */
 @XmlRootElement

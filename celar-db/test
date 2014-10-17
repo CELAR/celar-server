@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<applicationInfo>
+    <description>test_application</description>
+    <major_Version>0</major_Version>
+    <minor_Version>0</minor_Version>
+    <submitted>
+        <nanos>645000000</nanos>
+        <longTime>1413543473645</longTime>
+    </submitted>
+    <unique_Id>1</unique_Id>
+    <user_Id>4</user_Id>
+    <modules>
+        <id>4</id>
+        <name>test_module</name>
+        <application_Id>0000000001.000.000</application_Id>
+        <components>
+            <id>4</id>
+            <module_Id>4</module_Id>
+            <resource_Type_Id>4</resource_Type_Id>
+            <description>test module</description>
+            <resources>
+                <id>3</id>
+                <component_Id>4</component_Id>
+                <provided_Resource_Id>4</provided_Resource_Id>
+                <start_Time>
+                    <nanos>657000000</nanos>
+                    <longTime>1413543473657</longTime>
+                </start_Time>
+                <deployment_Id>525214388</deployment_Id>
+            </resources>
+        </components>
+    </modules>
+</applicationInfo>

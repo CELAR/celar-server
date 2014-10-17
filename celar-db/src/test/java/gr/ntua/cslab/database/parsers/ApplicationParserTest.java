@@ -52,8 +52,7 @@ public class ApplicationParserTest {
     static Deployment depl;
     
     
-    @Test
-    public void test_00_createBaseline(){
+    public static void createBaseline(){
         try{
             
         chris = new User("chris");
@@ -75,9 +74,10 @@ public class ApplicationParserTest {
         store(module);
         component = new Component(module, "test module", vm);
         store(component);
-        depl = new Deployment(app);
+        depl = new Deployment(app, ""+(new java.util.Random()).nextInt());
         store(depl);
         resource = new Resource(depl, component, tinyVM);
+        System.out.println(resource);
         store(resource);
         
         } catch(Exception e){
@@ -86,8 +86,9 @@ public class ApplicationParserTest {
         }
     }
     
-    @Test
-    public void test_99_clear() throws DBException{
+    
+    
+    public static void clear() throws DBException{
             System.out.println("------> Clearing the DB ");
             
             delete(resource);
@@ -110,9 +111,7 @@ public class ApplicationParserTest {
     
     static JSONObject appDescriptionJson;
 
-    @Test
-    @Ignore
-    public void test_01_exportApplicationDescriptionJson() throws Exception {
+    public static void exportApplicationDescriptionJson() throws Exception {
        
         //export the application description to a JSONObject
         appDescriptionJson = exportApplicationDescriptionJ(app);
@@ -121,8 +120,7 @@ public class ApplicationParserTest {
 
     }
     
-    @Test
-    public void test_02_exportApplicationDescriptionObject() throws Exception {
+    public static void exportApplicationDescriptionObject() throws Exception {
      
         //export the application description to a JSONObject
         System.out.println("here");
@@ -132,6 +130,13 @@ public class ApplicationParserTest {
         FileOutputStream fo = new FileOutputStream("test");
         ai.marshal(fo);
         fo.close();
+        
+    }
+    
+    public  static void main(String args[]) throws Exception{
+        createBaseline();
+        exportApplicationDescriptionObject();
+        clear();
         
     }
 
