@@ -96,6 +96,7 @@ public class Entities {
 
             // Create an application structure
                 app = new Application("test_application", user);
+                System.out.println("storiing app");
                 store(app);
                 //app = new Application (app.getId());
                 System.out.println(app);

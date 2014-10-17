@@ -1,10 +1,14 @@
 package gr.ntua.cslab.celar.server.beans;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 
 /**
  * A DBEntity that has a unique, auto-increment integer "id" as its primary key
  * @author cmantas
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class IDEntity  extends ReflectiveEntity{
 
     /**
@@ -19,10 +23,18 @@ public abstract class IDEntity  extends ReflectiveEntity{
      }
      
     /**
+     * Copy constructor
+     * @param ie
+     */
+   public IDEntity(IDEntity ie){
+        super(ie);
+    }
+     
+    /**
      * Creates a DBIDEntity given only its id
      * (retrieves the rest of the fields from the DB)
      * @param id
-     * @throws DBException in case no Entity is found with the given ID in this table
+     * @throws Exception in case no Entity is found with the given ID in this table
      */
      public IDEntity(int id) throws Exception{           
             if(factory!=null){

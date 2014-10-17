@@ -149,13 +149,17 @@ public class CSARParser implements Parser{
 
     
     private void handleRootComponent(TNodeTemplate component) throws Exception{
+
         //check if not actually a component
-        if(component.getType().toString().startsWith("substituteNode")) return;
+        Object type =component.getType();
+        if(type!=null && type.toString().startsWith("substituteNode")) return;
         //String componentName = component.getType().toString();
+        
         String componentName = component.getName();
         if(componentName==null) throw new Exception("Unnamed root component");
-        
         logger.debug("Handling root Component: " + componentName);
+        
+        
         //create a "fake" module with the same name as the component
         modules.add(componentName);
         String compId = component.getId();

@@ -3,18 +3,22 @@ package gr.ntua.cslab.database.parsers;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
-import gr.ntua.cslab.database.DBException;
-import static gr.ntua.cslab.database.EntityTools.toJSONObject;
 import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
+import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
+import gr.ntua.cslab.database.DBException;
+import static gr.ntua.cslab.database.EntityGetters.*;
+import static gr.ntua.cslab.database.EntityTools.toJSONObject;
 import java.sql.Timestamp;
 import java.util.List;
 import static org.apache.log4j.Level.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import static gr.ntua.cslab.database.EntityGetters.*;
+import java.util.LinkedList;
 
 /**
  *
@@ -70,37 +74,37 @@ public class ApplicationParser {
 //        return null;
 //    }
     
-    public static JSONObject exportApplicationDescription(Application app) throws Exception{
-        return exportApplication(app, new Timestamp(System.currentTimeMillis()), false);
+    public static JSONObject exportApplicationDescriptionJ(Application app) throws Exception{
+        return exportApplicationJ(app, new Timestamp(System.currentTimeMillis()), false);
     }
     
-    public static JSONObject exportApplication(Application app) throws Exception{
-        return exportApplication(app, new Timestamp(System.currentTimeMillis()), true);
+    public static JSONObject exportApplicationJ(Application app) throws Exception{
+        return exportApplicationJ(app, new Timestamp(System.currentTimeMillis()), true);
     }
 
-    public static JSONObject exportApplication(Application app, Timestamp ts, boolean includeResources) throws Exception {
+    public static JSONObject exportApplicationJ(Application app, Timestamp ts, boolean includeResources) throws Exception {
         JSONObject result = new JSONObject();  //top level json object
         JSONObject applicationJson = toJSONObject(app);
-        applicationJson.put("modules", exportApplicationModules(app, ts, includeResources));
+        applicationJson.put("modules", exportApplicationModulesJ(app, ts, includeResources));
         result.put("application", applicationJson);
         return result;
     }
 
-    public static JSONArray exportApplicationModules(Application app, Timestamp ts, boolean includeResources) throws Exception {
+    public static JSONArray exportApplicationModulesJ(Application app, Timestamp ts, boolean includeResources) throws Exception {
         List<Module> modules =   getModulesByApplication(app);
         JSONArray modulesJson = new JSONArray(); //json array of modules
         LOG.debug("Modules for "+app.getDescription()+" :"+modules);
         //iterate modules and add to json array 
         for (Module m : modules) {
             JSONObject moduleJson = toJSONObject(m);
-            moduleJson.put("components", exportModuleComponents(m, ts, includeResources));
+            moduleJson.put("components", exportModuleComponentsJ(m, ts, includeResources));
             modulesJson.put(moduleJson);
         }
         return modulesJson;
     }
     
     
-        public static JSONArray exportModuleComponents(Module m, Timestamp ts, boolean includeResources) throws Exception {
+        public static JSONArray exportModuleComponentsJ(Module m, Timestamp ts, boolean includeResources) throws Exception {
         List<Component> components = getComponentsByModule(m);
         LOG.debug("components for moduleid:" + m.getId() + " " + components);
 
@@ -110,18 +114,64 @@ public class ApplicationParser {
             JSONObject componentJson = toJSONObject(c);
             //inject the resource type name as "resource type"
             componentJson.put("resource_type", (new ResourceType(c.getResourceTypeId())).getTypeName());
-            if (includeResources) componentJson.put("resources", exportComponentResources(c, ts));
+            if (includeResources) componentJson.put("resources", exportComponentResourcesJ(c, ts));
             componentsJson.put(componentJson);
         }
         return componentsJson;
     }
     
-        public static JSONArray exportComponentResources(Component c, Timestamp ts) throws DBException{
+        public static JSONArray exportComponentResourcesJ(Component c, Timestamp ts) throws DBException{
            List<Resource> lr= getResourcesByComponent(c);
             JSONArray resourcesJson = new JSONArray();
             for(Resource r: lr) resourcesJson.put(toJSONObject(r));
 //            resourcesJson.put(lr);
             return resourcesJson;
         }
+    
+        
+    
+    public static ApplicationInfo exportApplicationDescription(Application app) throws Exception{
+        return exportApplication(app, new Timestamp(System.currentTimeMillis()), false);
+    }
+    
+    public static ApplicationInfo exportApplication(Application app) throws Exception{
+        return exportApplication(app, new Timestamp(System.currentTimeMillis()), true);
+    }
+
+
+    public static ApplicationInfo exportApplication(Application app, Timestamp ts, boolean includeResources) throws Exception {
+        ApplicationInfo rv = new ApplicationInfo(app);
+        rv.modules = exportApplicationModules(app, ts, includeResources);
+        return rv;
+    }
+
+    public static List<ModuleInfo> exportApplicationModules(Application app, Timestamp ts, boolean includeResources) throws Exception {
+        List<Module> modules =   getModulesByApplication(app);
+        List<ModuleInfo> rv = new LinkedList(); //json array of modules
+        LOG.debug("Modules for "+app.getDescription()+" :"+modules);
+        //iterate modules and add to json array 
+        for (Module m : modules) {
+            ModuleInfo mi =new ModuleInfo(m);
+            mi.components = exportModuleComponents(m, ts, includeResources);
+            rv.add(mi);
+        }
+        return rv;
+    }
+    
+    
+        public static List<ComponentInfo> exportModuleComponents(Module m, Timestamp ts, boolean includeResources) throws Exception {
+        List<Component> components = getComponentsByModule(m);
+        List<ComponentInfo> rv = new LinkedList();
+        LOG.debug("components for moduleid:" + m.getId() + " " + components);
+
+        //iterate components and add to json list
+        for (Component c : components) {
+            ComponentInfo ci = new ComponentInfo(c);            
+            if (includeResources) ci.resources= getResourcesByComponent(c);
+            rv.add(ci);
+        }
+        return rv;
+    }
+    
 
 }

@@ -29,7 +29,7 @@ public class EntityGetters {
      * @throws DBException 
      */
     public static List<Component> getComponentsByModule(Module module) throws DBException {
-        return EntityTools.<Component>getByField(Module.class,"MODULE_id", "" + module.getId());
+        return EntityTools.<Component>getByField(Component.class,"MODULE_id", "" + module.getId());
     }
     
     

@@ -1,6 +1,4 @@
 package gr.ntua.cslab.celar.server.beans;
-import java.sql.Timestamp;
-
 
 /**
  * The Resource entity
@@ -8,7 +6,7 @@ import java.sql.Timestamp;
  */
 public class Resource extends IDEntity{
     public int deployment_Id, component_Id, provided_Resource_Id;
-    public Timestamp start_Time, end_Time;
+    public MyTimestamp start_Time, end_Time;
     
     /**
      * Default constructor for all DBEntities
@@ -29,7 +27,7 @@ public class Resource extends IDEntity{
         component_Id = comp.getId();
         provided_Resource_Id = provRes.getId();
         end_Time = null;
-        start_Time = new Timestamp(System.currentTimeMillis());
+        start_Time = new MyTimestamp(System.currentTimeMillis());
         
     }
     

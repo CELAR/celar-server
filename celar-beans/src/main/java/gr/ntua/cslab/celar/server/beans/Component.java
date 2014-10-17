@@ -24,6 +24,15 @@ public class Component extends IDEntity{
     }
     
     /**
+     * Copy constructor
+     * @param c
+     * @throws java.lang.CloneNotSupportedException
+     */
+    public Component(Component c) throws CloneNotSupportedException{
+        super(c);
+    }
+    
+    /**
      * Creates a Component entity from its father Module, its father ResourceType
      * and a description
      * 

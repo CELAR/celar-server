@@ -1,6 +1,5 @@
 package gr.ntua.cslab.celar.server.beans;
 
-import java.sql.Timestamp;
 
 /**
  * The Deployment entity
@@ -9,7 +8,7 @@ import java.sql.Timestamp;
 
 public class Deployment extends IDEntity{
     public String application_Id;
-    public Timestamp start_Time ,end_Time;
+    public MyTimestamp start_Time ,end_Time;
     
     /**
      * Default constructor for all DBEntities
@@ -26,7 +25,7 @@ public class Deployment extends IDEntity{
         super();
         application_Id = app.getId();
         end_Time = null;
-        start_Time = new Timestamp(System.currentTimeMillis());
+        start_Time = new MyTimestamp(System.currentTimeMillis());
         
     }
 

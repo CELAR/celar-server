@@ -18,13 +18,12 @@ public class CSARParserTest {
     }
 
     
-     @Ignore
-     @org.junit.Test
-    public void test_01_showCase(){
+
+    public static void main(String args[]){
         
         try {
             //create a Parser instance
-  Parser tc  = new CSARParser("example.csar");
+  Parser tc  = new CSARParser("CassandraElasticitySubmission.csar");
             
 
             
@@ -58,17 +57,6 @@ public class CSARParserTest {
         }        
     }
     
-    @org.junit.Test
-    @Ignore
-    public void test_99_nonexisting_csar() {
-        try{
-            CSARParser tc = new CSARParser("asdffasdgpkoljasdf");
-        }
-        catch (Exception e){
-            //OK
-            return;}
-        fail("Did not catch innexistent file");
-        
-    }
+
     
 }

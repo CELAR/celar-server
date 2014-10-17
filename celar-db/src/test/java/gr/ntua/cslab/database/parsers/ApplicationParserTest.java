@@ -6,17 +6,17 @@
 
 package gr.ntua.cslab.database.parsers;
 
-import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.*;
+
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
-import gr.ntua.cslab.celar.server.beans.Module;
-import gr.ntua.cslab.celar.server.beans.ProvidedResource;
-import gr.ntua.cslab.celar.server.beans.ResourceType;
-import gr.ntua.cslab.celar.server.beans.Spec;
-import gr.ntua.cslab.celar.server.beans.User;
+import static gr.ntua.cslab.database.EntityTools.store;
+import static gr.ntua.cslab.database.EntityTools.store;
+import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.*;
+import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +33,8 @@ import org.junit.runners.MethodSorters;
  *
  * @author cmantas
  */
-@Ignore 
+
+//@Ignore
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ApplicationParserTest {
     
@@ -44,6 +45,11 @@ public class ApplicationParserTest {
     public static ProvidedResource tinyVM;
     public static Spec coreCount, ramSize;
     public static ResourceType vm;
+    public static  Module module;
+    public static Component component;
+    static Application app ;
+    static Resource resource;
+    static Deployment depl;
     
     
     @Test
@@ -63,6 +69,16 @@ public class ApplicationParserTest {
         store(coreCount);
         ramSize = new Spec(tinyVM, "ram", "2048");
         store(ramSize);
+        app = new Application("test_application", new MyTimestamp(System.currentTimeMillis()), chris);
+        store(app);
+        module = new Module("test_module", app);
+        store(module);
+        component = new Component(module, "test module", vm);
+        store(component);
+        depl = new Deployment(app);
+        store(depl);
+        resource = new Resource(depl, component, tinyVM);
+        store(resource);
         
         } catch(Exception e){
             e.printStackTrace();
@@ -73,11 +89,21 @@ public class ApplicationParserTest {
     @Test
     public void test_99_clear() throws DBException{
             System.out.println("------> Clearing the DB ");
+            
+            delete(resource);
             delete(coreCount);
             delete(ramSize);
             delete(tinyVM);
+            delete(component);
             delete(vm);
-            delete(chris);
+            delete(module);
+            delete(depl);
+            delete(app);
+            delete(chris);            
+
+            
+
+        
 
         
     }
@@ -85,20 +111,28 @@ public class ApplicationParserTest {
     static JSONObject appDescriptionJson;
 
     @Test
-    public void test_01_exportApplicationDescription() throws Exception {
-        Application app = new Application("test_application", new Timestamp(System.currentTimeMillis()), chris);
-        store(app);
-        Module module = new Module("test_module", app);
-        store(module);
-        Component component = new Component(module, "test module", vm);
-        store(component);
+    @Ignore
+    public void test_01_exportApplicationDescriptionJson() throws Exception {
+       
         //export the application description to a JSONObject
-        appDescriptionJson = exportApplicationDescription(app);
+        appDescriptionJson = exportApplicationDescriptionJ(app);
         System.out.println(appDescriptionJson.toString(3));
         
-        delete(component);
-        delete(module);
-        delete(app);
+
+    }
+    
+    @Test
+    public void test_02_exportApplicationDescriptionObject() throws Exception {
+     
+        //export the application description to a JSONObject
+        System.out.println("here");
+        ApplicationInfo ai = exportApplication(app);
+        System.out.println("Hello");
+        System.out.println(ai.toString(true));
+        FileOutputStream fo = new FileOutputStream("test");
+        ai.marshal(fo);
+        fo.close();
+        
     }
 
     
