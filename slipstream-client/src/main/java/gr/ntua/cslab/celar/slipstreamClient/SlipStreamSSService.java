@@ -522,6 +522,42 @@ public class SlipStreamSSService {
         baseParameters.add(parameter);*/
 	}
 	
+	public String patchExecuteScript(String script){
+		String jcatascopiaInit = "#!/bin/bash \n"
+				+ "ip=$(ss-get hostname) \n"
+				+ "hostname=$(hostname) \n"
+				+ "echo $ip $hostname >> /etc/hosts \n"
+				+ "SERVER_IP=$(ss-get orchestrator-Flexiant:hostname) \n"
+				+ "CELAR_REPO=http://snf-175960.vm.okeanos.grnet.gr \n"
+				+ "JC_VERSION=LATEST \n"
+				+ "JC_ARTIFACT=JCatascopia-Agent \n"
+				+ "JC_GROUP=eu.celarcloud.cloud-ms \n"
+				+ "JC_TYPE=tar.gz \n"
+				+ "DISTRO=$(eval cat /etc/*release) \n"
+				+ "if [[ \"$DISTRO\" == *Ubuntu* ]]; then \n"
+				+ "        apt-get update -y \n"
+				+ "        #download and install java \n"
+				+ "        apt-get install -y openjdk-7-jre-headless \n"
+				+ "fi \n"
+				+ "if [[ \"$DISTRO\" == *CentOS* ]]; then \n"
+				+ "        yum -y update \n"
+				+ "        yum install -y wget \n"
+				+ "        #download and install java \n"
+				+ "        yum -y install java-1.7.0-openjdk \n"
+				+ "fi \n"
+				+ "#download,install and start jcatascopia agent... \n"
+				+ "URL=\"$CELAR_REPO/nexus/service/local/artifact/maven/redirect?r=snapshots&g=$JC_GROUP&a=$JC_ARTIFACT&v=$JC_VERSION&p=$JC_TYPE\" \n"
+				+ "wget -O JCatascopia-Agent.tar.gz $URL \n"
+				+ "tar xvfz JCatascopia-Agent.tar.gz \n"
+				+ "eval \"sed -i 's/server_ip=.*/server_ip=$SERVER_IP/g' JCatascopia-Agent-*/JCatascopiaAgentDir/resources/agent.properties\" \n"
+				+ "cd JCatascopia-Agent-* \n"
+				+ "./installer.sh \n"
+				+ "cd .. \n"
+				+ "/etc/init.d/JCatascopia-Agent restart \n";
+		
+		return jcatascopiaInit+script;
+	}
+	
 	public List<ModuleParameter> getOutputParamsFromScript(String script) throws ValidationException{
 		List<ModuleParameter> ret = new ArrayList<ModuleParameter>();
 		String[] s = script.split("ss-set ");
