@@ -6,6 +6,7 @@ package gr.ntua.cslab.celar.server.beans;
  */
 public class MetricValue extends IDEntity{
     public int metrics_Id, resources_Id;
+    public MyTimestamp timestamp;
     
     /**
      * Default constructor for all DBEntities
@@ -28,6 +29,7 @@ public class MetricValue extends IDEntity{
     public MetricValue(Metric metric, Resource res){
         this.metrics_Id = metric.getId();
         this.resources_Id = res.getId();
+        this.timestamp = new MyTimestamp(System.currentTimeMillis());
     }
 
 

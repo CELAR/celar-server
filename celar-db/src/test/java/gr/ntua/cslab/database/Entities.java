@@ -2,47 +2,61 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package gr.ntua.cslab.database;
 
-import gr.ntua.cslab.celar.server.beans.Module;
-import gr.ntua.cslab.celar.server.beans.Component;
-import gr.ntua.cslab.celar.server.beans.Metric;
-import gr.ntua.cslab.celar.server.beans.ProvidedResource;
-import gr.ntua.cslab.celar.server.beans.User;
-import gr.ntua.cslab.celar.server.beans.Spec;
-import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Deployment;
+import gr.ntua.cslab.celar.server.beans.Metric;
+import gr.ntua.cslab.celar.server.beans.MetricValue;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.Resource;
+import gr.ntua.cslab.celar.server.beans.ResourceType;
+import gr.ntua.cslab.celar.server.beans.Spec;
+import gr.ntua.cslab.celar.server.beans.User;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
+import java.sql.Timestamp;
 import java.util.List;
-import static org.junit.Assert.assertTrue;
+import java.util.Random;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 /**
  *
  * @author cmantas
  */
-@Ignore 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class Entities {
 
-    ResourceType resourceType;
-    ProvidedResource providedResource;
-    Spec spec1, spec2;
-    User user;
-    Application app;
-    Component component;
-
-    @Test
-    //@Ignore
-    public void test_00_showOff() {
+    static ResourceType resourceType;
+    static ProvidedResource providedResource;
+    static Spec spec1, spec2;
+    static User user;
+    static Application app;
+    static Component component;
+    static Metric metric;
+    static Module module;
+    static Deployment depl;
+    
+    static Random random = new Random();
+    
+    public static void createApplicationStructure() {
         try {
 
             String username = "ggian";
@@ -100,7 +114,7 @@ public class Entities {
                 store(app);
                 //app = new Application (app.getId());
                 System.out.println(app);
-                Module module = new Module("test_module", app);
+                module = new Module("test_module", app);
                 store(module);
                 component = new Component(module, "test module", resourceType);
                 store(component);
@@ -108,20 +122,41 @@ public class Entities {
                 System.out.println(new Component(component.getId()));
                 assertTrue(component.equals(new Component(component.getId())));
                 
-                Metric metric = new Metric(component);
+                metric = new Metric(component);
                 store(metric);
                 assertTrue(metric.equals( new Metric(metric.getId())));
-//            
-//            //==========  This creates a structured JSON. Maybe not useful... I dunno.=================    
-//                //export the application description to a JSONObject
-//                    JSONObject appDescriptionJson = ApplicationParser.exportApplicationDescription(app);
-//                    System.out.println(appDescriptionJson.toString(3));
-//            //============================================================================================
-//                    
-//            /*  delete the applciation structure
-//                note that we delete the "child" fields first so as not to cause
-//                any foreign key violations
-//            */            
+        
+        } catch (Exception ex) {
+            System.out.println(ex);
+            fail("failed to create resources");
+        }
+    }
+    
+    public static void testDeployment() throws Exception{
+        //================ Actual deployment testing ==============
+            depl = new Deployment(app, ""+random.nextInt());
+            store(depl);
+            assertTrue(depl.equals(getDeploymentById(depl.getId())));
+            
+            Resource res = new Resource(depl, component, providedResource);
+            store(res);
+            res = new Resource(res.getId());
+            System.out.println(res);
+            assertTrue(res.equals(new Resource(res.getId())));
+            
+            //metric value testing
+            MetricValue mv = new MetricValue(metric, res);
+            store(mv);
+            List<MetricValue> mvl = getMetricValue( metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+            System.out.println("Metric Values: "+mvl);
+            
+            
+            delete(mv);            
+            delete(res);            
+            delete(depl);
+    }
+    
+    public static void delete_structure() throws DBException{
                 delete(metric);
                 delete(component);
                 delete(module);
@@ -134,85 +169,28 @@ public class Entities {
                 delete(resourceType);
 //
             //delete the user
+                delete(user);                delete(metric);
+                delete(component);
+                delete(module);
+                delete(app);
+//
+            // delete resources. etc
+                delete(spec1);
+                delete(spec2);
+                delete(providedResource);
+                delete(resourceType);
+//
+            //delete the user
                 delete(user);
-        } catch (Exception ex) {
-            System.out.println(ex);
-            fail("failed to create resources");
-        }
     }
-    
 
-    @Test
-    public void test_01_testDeployment(){
-        try {
-            
-            //================ Prep =========================
-            user = new User("name");
-            store(user);
-//            app = new Application("test_application", user);
-//            app.store();
-//            
-//            Timestamp t = app.submitted;
-//            app.submitted = null;
-//            app.fromFieldMap(app.getFieldMap());
-//            System.out.println("DONE");
-//            app.submitted = t;
-//            
-//            Module module = new Module("test_module", app);
-//            module.store();
-//            
-//            Module module2 = new Module("test_module2", app);
-//            module2.store();
-//            
-//            ModuleDependency mdep = new ModuleDependency(module, module2);
-//            mdep.store();
-//            
-//            resourceType = new ResourceType("VM_IMAGE");
-//            resourceType.store();
-//            providedResource = new ProvidedResource("sample_vm_image", resourceType);
-//            providedResource.store();
-//            
-//            component = new Component(module, "test module", resourceType);
-//            component.store();
-//            Metric metric = new Metric(component);
-//            metric.store();
-//            
-//            //================ Actual deployment testing ==============
-//            Deployment depl = new Deployment(app);
-//            depl.store();
-//            assertTrue(depl.equals(new Deployment(depl.getId())));
-//            
-//            Resource res = new Resource(depl, component, providedResource);
-//            res.store();
-//            res = new Resource(res.getId());
-//            System.out.println(res);
-//            assertTrue(res.equals(new Resource(res.getId())));
-//            
-//            //metric value testing
-//            MetricValue mv = new MetricValue(metric, res);
-//            mv.store();
-//            mv = new MetricValue(mv.getId());
-//            
-//            
-//            mv.delete();
-//            
-//            res.delete();            
-//            depl.delete();
-//            //=================  TearDown ====================
-//            providedResource.delete();
-//            metric.delete();
-//            component.delete();
-//            resourceType.delete();
-//            mdep.delete();
-//            module2.delete();
-//            module.delete();
-//            app.delete();
-            delete(user);
-            
-        } catch (DBException ex) {
-            System.out.println(ex);
-            fail("failed the test deployment");
-        }
+
+    
+    
+    public static void main(String args[]) throws Exception{
+        createApplicationStructure();
+        testDeployment();
+        delete_structure();
     }
 
 }

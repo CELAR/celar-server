@@ -1,17 +1,21 @@
 package gr.ntua.cslab.database;
 
-import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.User;
-import gr.ntua.cslab.celar.server.beans.MetricValue;
-import gr.ntua.cslab.celar.server.beans.Spec;
-import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
+import gr.ntua.cslab.celar.server.beans.MetricValue;
+import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
+import gr.ntua.cslab.celar.server.beans.Spec;
+import gr.ntua.cslab.celar.server.beans.User;
+import gr.ntua.cslab.database.DBTools.Constrain;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
@@ -21,6 +25,10 @@ import org.apache.log4j.Logger;
 
 public class EntityGetters {
     private static final Logger LOG = Logger.getLogger(EntityGetters.class.getName());
+    private static final DBFactory factory = new DBFactory();
+    
+    
+    
     
         /**
      * Returns a list of Components that have the given Module as their father
@@ -46,6 +54,13 @@ public class EntityGetters {
         return EntityTools.<MetricValue>getByField(MetricValue.class, "METRICS_id", ""+m.getId());
     }
     
+     public static List<MetricValue> getMetricValue(Metric m, Timestamp start, Timestamp finish){
+        List<DBTools.Constrain> lc= new java.util.LinkedList();
+        lc.add(new Constrain("timestamp", "> ",""+start));
+        lc.add(new Constrain("timestamp", "<",""+finish));
+        return EntityTools.<MetricValue>getByConstrains(MetricValue.class, lc, false);
+    }
+    
     /**
      * Returns a list of all the metric values associated with the given Metric between the given timestamps
      * @param m
@@ -64,7 +79,7 @@ public class EntityGetters {
      * 
      * @param type the ResourceType father of all the ProvidedResources returned
      * @return 
-     * @throws gr.ntua.cslab.db_entities.DBException 
+     * @throws gr.ntua.cslab.database.DBException 
     */
     public static List<ProvidedResource> getProvidedResourceByType(ResourceType type) throws DBException{
         List<ProvidedResource> rv = new java.util.LinkedList();
@@ -97,7 +112,7 @@ public class EntityGetters {
      * 
      * @param name
      * @return a List of Users
-     * @throws gr.ntua.cslab.db_entities.DBException 
+     * @throws gr.ntua.cslab.database.DBException
     */
     public static User getUserByName(String name) throws DBException{
         List<User> list = EntityTools.getByField(User.class, "name", name);
@@ -145,9 +160,9 @@ public class EntityGetters {
     
     public static List<Integer> getProvidedResourceIDsByProperty(String property, String value){
         List<DBTools.Constrain> lc= new java.util.LinkedList();
-        DBTools.Constrain prop = new DBTools.Constrain("property", property);
+        Constrain prop = new DBTools.Constrain("property", property);
         lc.add(prop);
-        DBTools.Constrain val = new DBTools.Constrain("value", value);
+        Constrain val = new DBTools.Constrain("value", value);
         lc.add(val);
         List<Integer> rv = new java.util.LinkedList();
         for(Object e: EntityTools.getByConstrains(Spec.class, lc, false)){
@@ -186,7 +201,7 @@ public class EntityGetters {
      * 
      * @param c the Comp
      * @return 
-     * @throws gr.ntua.cslab.db_entities.DBException 
+     * @throws gr.ntua.cslab.database.DBException 
     */
     public static List<Resource> getResourcesByComponent(Component c) throws DBException{
         List<Resource> list = EntityTools.getByField(Resource.class, "COMPONENT_id", ""+c.getId());
@@ -199,7 +214,7 @@ public class EntityGetters {
      * 
      * @param type
      * @return 
-     * @throws gr.ntua.cslab.db_entities.DBException 
+     * @throws gr.ntua.cslab.database.DBException 
     */
     public static ResourceType getResourceTypeByName(String type) throws DBException{
         List<ResourceType> list = EntityTools.getByField(ResourceType.class, "type", type);
@@ -209,4 +224,11 @@ public class EntityGetters {
         return list.get(0);
 
     }
+    
+    public static Deployment getDeploymentById(String id){
+        Deployment rv = new Deployment();
+        factory.createById(rv, id);
+        return rv;
+    }
+    
 }
