@@ -169,9 +169,9 @@ public class SlipStreamSSService {
 		}
 		Map<String, String>  ret = executeCommand(command);
 
-		if(!ret.get("error").equals("")){
+		/*if(!ret.get("error").equals("")){
 			throw new Exception(ret.get("error"));
-		}
+		}*/
 		return true;
 	}
 	
@@ -235,6 +235,7 @@ public class SlipStreamSSService {
 
 	public HashMap<String,String> getDeploymentIPs(String deploymentID) throws Exception{
 		logger.info("Getting deployment ips for deploymentID: "+deploymentID);
+		logger.info("URL: "+url+"/run/"+deploymentID+"?media=xml");
 		String ret = httpsGet(url+"/run/"+deploymentID+"?media=xml");
 		if(ret.startsWith("<!DOCTYPE html>")){
 			return new HashMap<>();
@@ -308,7 +309,8 @@ public class SlipStreamSSService {
 			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--cookie", cookie,"-X", "DELETE", "-k", "-D", "-"};
 		}
 		else{	
-			command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			//command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			command = new String[] {"ss-node-remove", "--endpoint", url, "-u", user, "-p", password, deploymnetId, type, ids};
 		}
 		Map<String, String> ret = executeCommand(command);
 		/*if(!ret.get("error").equals("")){
@@ -334,9 +336,12 @@ public class SlipStreamSSService {
             }
             String ids = "";
             for(int i=0;i<number;i++) {
-                ids+=vmsToBeDeleted.get(i);
+            	String id =vmsToBeDeleted.get(i);
+            	String s = id.substring(id.indexOf('.')+1, id.length());
+            	System.out.println(s);
+                ids+=s;
                 if(i!=number-1) {
-                    ids+=",";
+                    ids+=" ";
                 }
             }
             this.removeVM(deploymnetId, type, ids);
@@ -438,6 +443,7 @@ public class SlipStreamSSService {
 
 	public SlipStreamSSService(String user, String password, String url) throws ValidationException {
 		super();
+		logger.info("Init ssService user: "+user+" password: "+password+" url: "+url);
 		this.user = user;
 		this.password = password;
 		this.url = url;
@@ -460,7 +466,7 @@ public class SlipStreamSSService {
 		baseImages = new HashMap<>();
 		HashMap<String,String> temp = new HashMap<String, String>();
 		temp.put("Flexiant", "81aef2d3-0291-38ef-b53a-22fcd5418e60");
-		temp.put("okeanos", "fe31fced-a3cf-49c6-b43b-f58f5235ba45");
+		temp.put("okeanos", "ed17f4cf-c333-4fc4-b0ff-0765607c1323");
 		temp.put("stratuslab", "HZTKYZgX7XzSokCHMB60lS0wsiv");
 		baseImages.put("ubuntu-12.04", temp);
 		
@@ -514,6 +520,42 @@ public class SlipStreamSSService {
         parameter = new ModuleParameter(parameterName, "", description);
         parameter.setCategory("Output");
         baseParameters.add(parameter);*/
+	}
+	
+	public String patchExecuteScript(String script){
+		String jcatascopiaInit = "#!/bin/bash \n"
+				+ "ip=$(ss-get hostname) \n"
+				+ "hostname=$(hostname) \n"
+				+ "echo $ip $hostname >> /etc/hosts \n"
+				+ "SERVER_IP=$(ss-get orchestrator-Flexiant:hostname) \n"
+				+ "CELAR_REPO=http://snf-175960.vm.okeanos.grnet.gr \n"
+				+ "JC_VERSION=LATEST \n"
+				+ "JC_ARTIFACT=JCatascopia-Agent \n"
+				+ "JC_GROUP=eu.celarcloud.cloud-ms \n"
+				+ "JC_TYPE=tar.gz \n"
+				+ "DISTRO=$(eval cat /etc/*release) \n"
+				+ "if [[ \"$DISTRO\" == *Ubuntu* ]]; then \n"
+				+ "        apt-get update -y \n"
+				+ "        #download and install java \n"
+				+ "        apt-get install -y openjdk-7-jre-headless \n"
+				+ "fi \n"
+				+ "if [[ \"$DISTRO\" == *CentOS* ]]; then \n"
+				+ "        yum -y update \n"
+				+ "        yum install -y wget \n"
+				+ "        #download and install java \n"
+				+ "        yum -y install java-1.7.0-openjdk \n"
+				+ "fi \n"
+				+ "#download,install and start jcatascopia agent... \n"
+				+ "URL=\"$CELAR_REPO/nexus/service/local/artifact/maven/redirect?r=snapshots&g=$JC_GROUP&a=$JC_ARTIFACT&v=$JC_VERSION&p=$JC_TYPE\" \n"
+				+ "wget -O JCatascopia-Agent.tar.gz $URL \n"
+				+ "tar xvfz JCatascopia-Agent.tar.gz \n"
+				+ "eval \"sed -i 's/server_ip=.*/server_ip=$SERVER_IP/g' JCatascopia-Agent-*/JCatascopiaAgentDir/resources/agent.properties\" \n"
+				+ "cd JCatascopia-Agent-* \n"
+				+ "./installer.sh \n"
+				+ "cd .. \n"
+				+ "/etc/init.d/JCatascopia-Agent restart \n";
+		
+		return jcatascopiaInit+script;
 	}
 	
 	public List<ModuleParameter> getOutputParamsFromScript(String script) throws ValidationException{

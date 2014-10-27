@@ -167,7 +167,7 @@ public class Application {
                     	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Execute script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
-                		Target t = new Target(Target.EXECUTE_TARGET, prop.getValue().toString());
+                		Target t = new Target(Target.EXECUTE_TARGET, ServerStaticComponents.ssService.patchExecuteScript(prop.getValue().toString()));
                 		targets.add(t);
                     }
                     else if (prop.getKey().toString().contains("Add")) {
