@@ -2,6 +2,8 @@ package gr.ntua.cslab.celar.server.beans.structured;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -9,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author cmantas
  */
 @XmlRootElement
-//@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public class ApplicationInfo extends Application{
     
     public List<ModuleInfo> modules = new java.util.LinkedList();

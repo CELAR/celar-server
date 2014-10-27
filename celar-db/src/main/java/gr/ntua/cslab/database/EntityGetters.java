@@ -231,4 +231,10 @@ public class EntityGetters {
         return rv;
     }
     
+    public static Application getApplicationById(String id){
+        Application rv = new Application();
+        factory.createById(rv, id);
+        return rv;
+    }
+    
 }
