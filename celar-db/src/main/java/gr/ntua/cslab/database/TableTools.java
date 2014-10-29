@@ -19,6 +19,9 @@ public final class TableTools {
         tableNames.put("Spec", "SPECS");
         tableNames.put("Metric", "METRICS");
         tableNames.put("Resource", "RESOURCES");
+        tableNames.put("ApplicationInfo", "Application");
+        tableNames.put("ModuleInfo", "MODULE");
+        tableNames.put("ComponentInfo", "COMPONENT");
         
     }
     

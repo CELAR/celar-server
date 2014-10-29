@@ -2,10 +2,18 @@ package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import static gr.ntua.cslab.celar.server.beans.Application.makeStringID;
+import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.ComponentDependency;
 import gr.ntua.cslab.celar.server.beans.IDEntity;
 import gr.ntua.cslab.celar.server.beans.IDEntityFactory;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.ModuleDependency;
 import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
+import gr.ntua.cslab.celar.server.beans.Resource;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
+import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
 import gr.ntua.cslab.database.DBTools.Constrain;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
@@ -90,10 +98,14 @@ public final class EntityTools {
             for (Field f : current.getFields()) {
                 try {
                     String name = f.getName();
-                    String value = fieldMap.get(name.toLowerCase());
+                    String value = fieldMap.get(name);
+                    if (value==null) value = fieldMap.get(name.toLowerCase());
                     Class type = f.getType();
                     //System.out.println("setting "+name+" ("+type.getName()+"): "+value);
-                    if (value==null) continue;
+                    if (value==null){
+                        LOG.debug("Null value for: "+name);
+                        continue;
+                    }
                     if(type==String.class)
                         f.set(e, value);
                     else if(type==int.class)
@@ -184,11 +196,61 @@ public final class EntityTools {
     public static void delete(ReflectiveEntity entity) throws DBException {
         DBTools.doDelete(TableTools.getTableName(entity.getClass()), entity.getFieldMap());
     }
+    
+    /**
+     * Deletes the entity from the table based on all its fields;
+     * @param entity
+     * @throws DBException 
+     */
+    public static void delete(IDEntity entity) throws DBException {
+        DBTools.doDeleteID(TableTools.getTableName(entity.getClass()), entity.getId());
+    }
 
     
     public static void store(IDEntity ie) throws DBException{
         Map m = ie.getFieldMap();
         ie.setId( DBTools.insertIDData(TableTools.getTableName(ie.getClass()), m));
+    }
+    
+    /**
+     * Removes all deployments of the current application
+     * @param a 
+     */
+    public static void removeDeployments(Application a){
+        
+    }
+    
+    /**
+     * Remove any aspect of the application
+     */
+    public static void removeApplication(ApplicationInfo ai) throws DBException{
+        //for all modules
+        for(ModuleInfo m: ai.getModules()){
+            //for all components
+            for(ComponentInfo c: m.getComponents()){
+                for(Resource r: c.resources) delete(r);
+                delete(c);
+            }
+            delete(m);
+        }
+//        //delete component dependencies
+//        for(ComponentDependency cd: componentDependencies){
+//            delete(cd);
+//        }
+//        //delete module dependencies
+//        for(ModuleDependency md: moduleDependencies){
+//            delete(md);
+//        }
+//        //delete components and modules
+//        for (Module m : modules) {
+//            for (Component c : moduleComponents.get(m)) {
+//                delete(c);
+//            }
+//           delete(m);
+//        }        
+//        delete(app);
+        
+        LOG.info("Removed the Application: "+ai.getDescription());
     }
   
 

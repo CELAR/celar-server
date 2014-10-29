@@ -1,39 +1,36 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
-import com.sixsq.slipstream.exceptions.ValidationException;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationServerInfo;
 import com.sixsq.slipstream.persistence.Authz;
 import com.sixsq.slipstream.persistence.DeploymentModule;
 import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
-
-import gr.ntua.cslab.celar.server.daemon.Main;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
 import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfoList;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationServerInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfoList;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
-import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
-
+import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
+import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
+import gr.ntua.cslab.database.parsers.ToscaHandler;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -41,16 +38,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.xml.ws.WebServiceException;
-
 import org.apache.log4j.Logger;
-
 import tools.CSARParser;
 import tools.Parser;
+
 
 /**
  *
@@ -62,20 +56,16 @@ public class Application {
     public Logger logger = Logger.getLogger(Application.class);
     
     
-    @GET
-    public ApplicationInfoList getApplications() {
-        return ApplicationCache.getApplications();
-    }
+//    @GET
+//    public ApplicationInfoList getApplications() {
+//        return ApplicationCache.getApplications();
+//    }
     // IS calls
 
     @GET
     @Path("{id}/")
-    public ApplicationInfo getApplicationInfo(@PathParam("id") String id) {
-        ApplicationInfo info = new ApplicationInfo();
-        info.setId(id);
-        info.setDescription("Hello world :)");
-        info.setSubmitted(new Date().getTime());
-        info.setVersion("1.1.0");
+    public ApplicationInfo getApplicationInfo(@PathParam("id") String id) throws Exception {
+        ApplicationInfo info = exportApplication(getApplicationById(id));
         return info;
     }
 
@@ -90,9 +80,6 @@ public class Application {
             @DefaultValue("Null") @QueryParam("component_description") String componentDescription,
             @DefaultValue("Null") @QueryParam("provided_resource_id") String providedResourceId) {
         List<ApplicationInfo> list = new LinkedList<>();
-        list.add(new ApplicationInfo("ID1", submittedStart + 100, description, "1.0.0"));
-        list.add(new ApplicationInfo("ID2", submittedStart + 200, description, "1.2.0"));
-        list.add(new ApplicationInfo("ID3", submittedStart + 1000, description, "0.2.0"));
         return list;
     }
 
@@ -100,10 +87,6 @@ public class Application {
     @Path("{id}/description/")
     public ApplicationInfo getApplicationDescription(@PathParam("id") String id) {
         ApplicationInfo info = new ApplicationInfo();
-        info.setId(id);
-        info.setDescription("This xml will be replaced by a TOSCA (or CSAR??) file...");
-        info.setSubmitted(new Date().getTime());
-        info.setVersion("1.1.0");
         return info;
     }
 
@@ -111,30 +94,16 @@ public class Application {
     @Path("describe/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public ApplicationInfo describe(@Context HttpServletRequest request, InputStream input) throws IOException, Exception {
-        // fetching csar file and store it to local fs
-        String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
-        byte[] buffer = new byte[1024];
-        OutputStream file = new FileOutputStream(filename);
-        
-        int count, sum = 0;
-
-        while ((count = input.read(buffer)) != -1) {
-            sum+=count;
-            file.write(buffer, 0, count);
-        }
-
-        file.flush();
-        file.close();
-        Logger.getLogger(Application.class).info("Read CSAR file (" + sum + " bytes)");
-        input.close();
-
+// fetching csar file and store it to local fs
+        String tempFileName = storeFile(input, "temp-csar-describe");
         //create a Parser instance
-        Parser tc = new CSARParser(filename);
-
+        Parser tc = new CSARParser(tempFileName);
+        
         //application name and version
         //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
         String ssApplicationName = tc.getAppName();
         logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
+        System.out.println(ServerStaticComponents.ssService);
         String appName = ServerStaticComponents.ssService.createApplication(ssApplicationName, tc.getAppVersion());
         HashMap<String, Node> nodes = new HashMap<String, Node>();
 
@@ -213,16 +182,18 @@ public class Application {
         deployment.setNodes(nodes);
 
         ServerStaticComponents.ssService.putModule(deployment);
-
-        ApplicationInfo info = new ApplicationInfo();
-        info.setCsarFilePath(filename);
-        info.setId(UUID.randomUUID().toString());
-        info.setSubmitted(System.currentTimeMillis());
-        info.setVersion("1.0");
-        info.setDescription("No description for now dude!");
-        info.setSlipstreamName(name);
-
-        ApplicationCache.insertApplication(info);
+        //store the description in  the DB
+        ToscaHandler th = new ToscaHandler(tc);
+        th.storeDescription();
+        
+        ApplicationInfo info = exportApplication(th.getApplication());
+        
+        //extra information for SlipStream
+        ApplicationServerInfo  serverInfo = new ApplicationServerInfo(info);
+        serverInfo.setCsarFilePath(tempFileName);
+        serverInfo.setSlipstreamName(name);
+        
+        ApplicationCache.insertApplication(serverInfo);
 
         return info;
     }
@@ -230,32 +201,17 @@ public class Application {
     @POST
     @Path("{id}/deploy/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public DeploymentInfo launchDeployment(@PathParam("id") String applicationId, InputStream input) throws Exception {
-
-        // fetching csar file and store it to local fs
-        String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
-        byte[] buffer = new byte[1024];
-        OutputStream file = new FileOutputStream(filename);
-        
-        int count, sum = 0;
-
-        while ((count = input.read(buffer)) != -1) {
-            sum+=count;
-            file.write(buffer, 0, count);
-        }
-
-        file.flush();
-        file.close();
-        Logger.getLogger(Application.class).info("Read CSAR file (" + sum + " bytes)");
-        input.close();
+    public ApplicationInfo launchDeployment(@PathParam("id") String applicationId, InputStream input) throws Exception {
+        String tempFileName = storeFile(input, "temp-csar-deploy");
 
         // parse TOSCA and give params to deployment
         
-        ApplicationInfo app = ApplicationCache.getApplicationById(applicationId);
+        ApplicationServerInfo app = ApplicationCache.getApplicationById(applicationId);
 
         Map<String, String> params = new HashMap<>();
         //create a Parser instance
-        Parser tc = new CSARParser(filename);
+        Parser tc = new CSARParser(tempFileName);
+        ToscaHandler tp = new ToscaHandler(tc);
         //iterate through modules
         for (String module : tc.getModules()) {
             logger.info("\t" + module);
@@ -275,15 +231,9 @@ public class Application {
         
         String deploymentID = ServerStaticComponents.ssService.launchApplication(app.getSlipstreamName(), params);
 
-        DeploymentInfo deployment = new DeploymentInfo();
-        deployment.setDeploymentID(deploymentID);
-        deployment.setApplication(app);
-        deployment.setStartTime(System.currentTimeMillis());
-        deployment.setEndTime(-1);
-        deployment.setState(ServerStaticComponents.ssService.getDeploymentState(deploymentID));
-        deployment.setDescription(params.toString());
-        DeploymentCache.addDeployment(deployment);
-        return deployment;
+        ApplicationInfo ai =  tp.storeDeployment(app, deploymentID);
+        System.out.println(ai.getAllResources());
+        return ai;
     }
 
     @GET
@@ -291,5 +241,52 @@ public class Application {
     public DeploymentInfoList getDeploymentsByApplicationId(@PathParam("id") String applicationId) {
         List<DeploymentInfo> res = DeploymentCache.getDeploymentsByApplication(applicationId);
         return new DeploymentInfoList(res);
+    }
+    
+    private String storeFile(InputStream input, String prefix) {
+        try {
+            java.nio.file.Path tempFile = Files.createTempFile(prefix, null);
+            long bytes = Files.copy(input, tempFile, REPLACE_EXISTING);
+            input.close();
+            logger.info("Copied " + bytes + " bytes to " + tempFile);
+            return tempFile.toString();
+        } catch (IOException ioe) {
+            logger.error("Failed to store the temp file");
+            ioe.printStackTrace();
+        }
+        return null;
+    }
+    
+    @POST
+    @Path("describe2/")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    public ApplicationInfo describe2(@Context HttpServletRequest request, InputStream input) throws Exception {
+        // fetching csar file and store it to local fs
+        String tempFileName = storeFile(input, "temp-csar-describe");
+        //creates the tosca handler object from a scar file path
+        ToscaHandler tp = new ToscaHandler(tempFileName);
+        //stores the application Description in the database
+        tp.storeDescription();
+        //construct the application description from the database and return it
+        return exportApplication(tp.getApplication());
+    }
+    
+    @POST
+    @Path("deploy2/")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    public ApplicationInfo deploy2(@Context HttpServletRequest request, String applicationId, InputStream input) throws Exception {
+        // fetching csar file and store it to local fs
+        String tempFileName = storeFile(input, "temp-csar-deploy");
+        //creates the tosca handler object from a scar file path
+        ToscaHandler tp = new ToscaHandler(tempFileName);
+        
+        //Dummy deploymentID
+        String deploymentId = "" + (new java.util.Random()).nextInt();
+        //stores the application Deployment in the database
+        gr.ntua.cslab.celar.server.beans.Application app = getApplicationById(applicationId);
+        ApplicationInfo ai =  tp.storeDeployment(app, deploymentId);
+        System.out.println(ai.getAllResources());
+        return ai;
+
     }
 }

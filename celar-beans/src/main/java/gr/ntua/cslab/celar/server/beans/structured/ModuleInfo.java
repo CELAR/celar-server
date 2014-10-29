@@ -32,7 +32,9 @@ public class ModuleInfo extends Module{
    public void addComponent(ComponentInfo c){
        components.add(c);
    }
-
-
+   
+   public List<ComponentInfo> getComponents(){
+       return components;
+   }
        
 }

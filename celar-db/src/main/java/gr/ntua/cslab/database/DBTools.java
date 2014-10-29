@@ -104,7 +104,6 @@ public class DBTools extends DBConnectable{
      */
     public static int insertIDData(String tableName, Map<String, String> data) throws DBException {
         data.put("id", "DEFAULT");
-            
         String query = SQLTools.insertSQL(tableName, data);
         LOG.debug(query);
         try {
@@ -138,7 +137,7 @@ public class DBTools extends DBConnectable{
             set.close();
             return result;
         } catch (SQLException ex) {
-            System.out.println(ex);
+            LOG.error(ex);
             ex.printStackTrace();
             return null;
         }
@@ -150,7 +149,7 @@ public class DBTools extends DBConnectable{
      *
      * @param tableName
      * @param fields
-     * @throws gr.ntua.cslab.db_entities.DBException
+     * @throws gr.ntua.cslab.database.DBException
      */
     public static void doDelete(String tableName, Map<String, String> fields) throws DBException {
         String sql = SQLTools.deleteSQL(tableName, fields);
@@ -162,7 +161,7 @@ public class DBTools extends DBConnectable{
      *
      * @param tableName
      * @param id
-     * @throws gr.ntua.cslab.db_entities.DBException
+     * @throws gr.ntua.cslab.database.DBException
      */
     public static void doDeleteID(String tableName, int id) throws DBException {
         String sql = SQLTools.deleteSQL(tableName, "id", "'" + id + "'");
@@ -177,7 +176,7 @@ public class DBTools extends DBConnectable{
      * @param whereStatement an SQL condition to be added after "WHERE" clause
      * command
      * @return a List of mappings of ColumnNames--> Values
-     * @throws gr.ntua.cslab.db_entities.DBException in case of an error in the query
+     * @throws gr.ntua.cslab.database.DBException
      */
     public static List<Map<String, String>> doSelect(String tableName, String whereStatement) throws DBException {
         String query = SQLTools.selectSQL(tableName, whereStatement);

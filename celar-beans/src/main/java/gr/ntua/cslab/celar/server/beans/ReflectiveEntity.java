@@ -61,7 +61,7 @@ public abstract class ReflectiveEntity {
                     String name = f.getName();
                     if(f.get(this)==null) continue;
                     String value = f.get(this).toString();
-                    rv.put(name, value.toLowerCase());
+                    rv.put(name, value);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -150,7 +150,7 @@ public abstract class ReflectiveEntity {
         String sindent = indent>0?"|":"";
         sindent  += (new String(new char[indent]).replace("\0"," |"));
         String  i = sindent+ (indent>0?" ":"");
-        String s = i+this.getClass().getSimpleName()+"\n";
+        String s = i+"/*"+this.getClass().getSimpleName()+"\n";
         
         sindent  =indent>0? "| "+sindent+"--":"|--";
         indent = indent+1;

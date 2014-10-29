@@ -103,7 +103,7 @@ public class Application extends ReflectiveEntity {
  uniqueID.major_Version.minor_Version
      */
     public String getId() {
-        return makeStringID(unique_Id, major_Version, minor_Version);
+        return id;
     }
 
     /**

@@ -10,12 +10,17 @@ import gr.ntua.cslab.celar.server.beans.ProvidedResource;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.User;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
+import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
 import gr.ntua.cslab.database.DBException;
+import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.getProvidedResourceByFlavorInfo;
 import static gr.ntua.cslab.database.EntityGetters.getResourceTypeByName;
 import static gr.ntua.cslab.database.EntityGetters.getUserByName;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
+import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +48,10 @@ public class ToscaHandler {
     public ToscaHandler(String csarFilePath) throws Exception{
        //create the parser object
         parser = new CSARParser(csarFilePath);
+    }
+    
+    public ToscaHandler(Parser parser){
+        this.parser=parser;
     }
     
     public Module getModuleByName(String moduleName){
@@ -153,7 +162,7 @@ public class ToscaHandler {
             //handle each module
             Module m = handleModule(moduleName);
             //iterate through components
-            for (String componentName : parser.getModuleComponents(moduleName)) {              
+            for (String componentName : parser.getModuleComponents(moduleName)) {
                 //handle each component
                 Component c= handleComponent(m, componentName, "VM_IMAGE");
                 
@@ -183,14 +192,19 @@ public class ToscaHandler {
 
 
 
-    public void storeDeployment(String deploymentId) throws Exception {
-        
+
+    
+    public ApplicationInfo storeDeployment(Application app, String deploymentId) throws Exception {
+        ApplicationInfo ai = exportApplication(app);
+
+        //create deployment
         deployment = new Deployment(app, deploymentId);
         store(deployment);
-        
-        for (Entry<Module, List<Component>> e : moduleComponents.entrySet()) {
-            for (Component component : e.getValue()) {
-                Map<String, String> componentProperties = parser.getComponentProperties(component.getDescription());
+        //for each module
+        for (ModuleInfo m : ai.getModules()) {
+            //for each components
+            for (ComponentInfo c : m.getComponents()) {
+                Map<String, String> componentProperties = parser.getComponentProperties(c.getDescription());
                 //retreive the characteristics of the flavor
                 int vcpus = 1, ram = 1024, disk = 20;
                 String flavorString =  componentProperties.get("flavor");
@@ -213,15 +227,17 @@ public class ToscaHandler {
                 List<ProvidedResource> flavors = getProvidedResourceByFlavorInfo(vcpus, ram, disk);
                 if(flavors.isEmpty()) throw new Exception("No flavors matching the requirements ("+flavorString+")");
                 ProvidedResource provRes = flavors.get(0);
+                
                 //add the required resources
                 for (int i = 0; i < count; i++) {
-                    Resource res = new Resource(deployment, component, provRes);
+                    Resource res = new Resource(deployment, c, provRes);
                     resources.add(res);
                     store(res);
+                    c.resources.add(res);
                 }
-
             }
         }
+        return ai;
     }
 
     public Application getApplication(){

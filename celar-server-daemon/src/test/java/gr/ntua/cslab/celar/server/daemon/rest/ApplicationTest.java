@@ -11,6 +11,7 @@ import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.*;
+import java.io.FileInputStream;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
@@ -138,6 +139,15 @@ public class ApplicationTest {
 //        ApplicationInfo info = dummy.getApplicationInfo(app.getId());
 //        System.out.println(info.toString(true));
 //        delete_structure();
+        
+        FileInputStream csar = new FileInputStream("../celar-db/testApp09.csar");
+        ApplicationInfo ai = dummy.describe2(null, csar);
+        
+        
+        csar = new FileInputStream("../celar-db/testApp09.csar");
+        ai = dummy.deploy2(null, ai.getId(), csar);
+        System.out.println(ai.toString(true));
+        removeApplication(ai);
     }
 
 }

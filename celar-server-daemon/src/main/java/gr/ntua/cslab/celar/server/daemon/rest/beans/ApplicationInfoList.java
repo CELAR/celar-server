@@ -1,6 +1,6 @@
 
-package gr.ntua.cslab.celar.server.daemon.rest.beans.application;
-
+package gr.ntua.cslab.celar.server.daemon.rest.beans;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

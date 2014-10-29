@@ -1,7 +1,9 @@
 package gr.ntua.cslab.celar.server.daemon.cache;
 
-import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfo;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.application.ApplicationInfoList;
+
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationInfoList;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationServerInfo;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +13,7 @@ import java.util.List;
  */
 public class ApplicationCache {
     
-    private static List<ApplicationInfo> applications;
+    private static List<ApplicationServerInfo> applications;
     
     
     public static void allocateCache() {
@@ -21,7 +23,7 @@ public class ApplicationCache {
      * Insert a new application description into the Application cachel=.
      * @param application 
      */
-    public static void insertApplication(ApplicationInfo application) {
+    public static void insertApplication(ApplicationServerInfo application) {
         ApplicationCache.applications.add(application);
     }
     
@@ -31,15 +33,15 @@ public class ApplicationCache {
      * @param id
      * @return 
      */
-    public static ApplicationInfo getApplicationById(String id) {
-        for(ApplicationInfo a : applications) {
+    public static ApplicationServerInfo getApplicationById(String id) {
+        for(ApplicationServerInfo a : applications) {
             if(a.getId().equals(id))
                 return a;
         }
         return null;
     }
     
-    public static ApplicationInfoList getApplications() {
-        return new ApplicationInfoList(applications);
-    }
+//    public static ApplicationInfoList getApplications() {
+//        return new ApplicationInfoList(applications);
+//    }
 }
