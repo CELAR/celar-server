@@ -9,6 +9,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * This is the father of all the celar entities.
@@ -17,6 +19,7 @@ import javax.xml.bind.Unmarshaller;
  * entity and check for equality
  * @author cmantas
  */
+@XmlAccessorType(XmlAccessType.PROPERTY)
 public abstract class ReflectiveEntity {
     
     /**

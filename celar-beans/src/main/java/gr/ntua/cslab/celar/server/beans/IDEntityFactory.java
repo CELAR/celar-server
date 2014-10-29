@@ -1,7 +1,8 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- *
+ * Implementations of this interface should be able to create an entity from its Id by
+ * loading the rest of the fields from a persistent store
  * @author cmantas
  */
 public interface IDEntityFactory {

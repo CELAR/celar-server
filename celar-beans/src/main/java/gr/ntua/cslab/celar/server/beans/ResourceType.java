@@ -1,7 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- *
+ * Represents a 'ResourceType' entity as it is stored in celarDB
  * @author cmantas
  */
 public class ResourceType extends IDEntity{

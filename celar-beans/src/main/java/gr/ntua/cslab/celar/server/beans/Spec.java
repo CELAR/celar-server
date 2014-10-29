@@ -1,7 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- *
+ * Represents a 'Spec' entity as it is stored in celarDB
  * @author cmantas
  */
 public class Spec extends IDEntity {

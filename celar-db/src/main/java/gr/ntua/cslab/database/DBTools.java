@@ -247,8 +247,9 @@ public class DBTools extends DBConnectable{
      * @param id
      * @return a Map of ColumnName->Value for this entry
      */
-    public static Map<String, String> doSelectByID(String tableName, int id) {
-        String query = SQLTools.selectSQL(tableName, "id=" + id);
+    public static Map<String, String> doSelectByID(String tableName, Object id) {
+        String query = SQLTools.selectSQL(tableName, "id='" + id+"'");
+        
         LOG.debug(query);
         try {
             Map<String, String> result = new java.util.TreeMap();

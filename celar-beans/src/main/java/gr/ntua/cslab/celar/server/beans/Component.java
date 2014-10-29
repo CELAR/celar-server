@@ -1,7 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * Entity representing an Entry in the Component table
+ * Represents a 'Component' entity as it is stored in celarDB
  * @author cmantas
  */
 public class Component extends IDEntity{

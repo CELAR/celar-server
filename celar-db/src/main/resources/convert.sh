@@ -12,7 +12,7 @@ mysqldump -u root celardb --compatible=postgresql > celardb_compatible.sql
 
 #convert it to a psql script and remove
 python db_converter.py celardb_compatible.sql celardb.psql
-#rm celardb_compatible.sql
+rm celardb_compatible.sql
 
 #convert a data type
 sed -i "s/bytea/text/g" celardb.psql 

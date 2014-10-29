@@ -1,10 +1,9 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * The provided resource entity
+ * Represents a 'Provided Resource' entity as it is stored in celarDB
  * @author cmantas
  */
-
 public class ProvidedResource  extends IDEntity{
         /**
          * The values of the table fields

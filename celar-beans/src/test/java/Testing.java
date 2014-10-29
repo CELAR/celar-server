@@ -15,18 +15,24 @@ import gr.ntua.cslab.celar.server.beans.Spec;
 import gr.ntua.cslab.celar.server.beans.User;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
+import gr.ntua.cslab.celar.server.beans.structured.EntityList;
 import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 /**
  *
  * @author cmantas
  */
 
 public class Testing {
+    
+    
 
     
     public static void main(String args[]) throws CloneNotSupportedException, JAXBException, FileNotFoundException, IOException{
@@ -61,6 +67,9 @@ public class Testing {
                 app.marshal(fo);
                 fo.close();
                 
+
+                
+                
                 FileInputStream fi = new FileInputStream("test");
 //                ReflectiveEntity appIn = ReflectiveEntity.unmarshal(fi);
 //                System.out.println(appIn);
@@ -74,6 +83,20 @@ public class Testing {
                 
 //                    Metric metric = new Metric(component);
 //                    metric.marshal(System.out);
+
+                
+                //write out
+                fo = new FileOutputStream("test_list");
+                EntityList tl = new EntityList();
+                tl.contents.add(tl);
+                tl.contents.add(tl);
+                tl.marshal(fo);
+                fo.close();
+                fi = new FileInputStream("test_list");
+                tl = new EntityList();
+                tl.unmarshal(fi);
+                System.out.println(tl);
+                fi.close();
     }
     
 }

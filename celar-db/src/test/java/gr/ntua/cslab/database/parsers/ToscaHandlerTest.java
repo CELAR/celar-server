@@ -40,7 +40,7 @@ public class ToscaHandlerTest {
             tp.storeDescription();
             
             //stores the application Deployment in the database
-            tp.storeDeployment();
+            tp.storeDeployment(""+(new java.util.Random()).nextInt());
             
             System.out.println(exportApplicationJ(tp.getApplication()).toString(3));
             

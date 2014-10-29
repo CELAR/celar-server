@@ -112,6 +112,7 @@ public class Application {
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public ApplicationInfo describe(@Context HttpServletRequest request, InputStream input) throws IOException, Exception {
         // fetching csar file and store it to local fs
+        //TODO tmp file
         String filename = "/tmp/csar/" + System.currentTimeMillis() + ".csar";
         byte[] buffer = new byte[1024];
         OutputStream file = new FileOutputStream(filename);

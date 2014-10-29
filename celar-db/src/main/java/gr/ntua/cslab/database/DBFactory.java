@@ -8,6 +8,7 @@ package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.celar.server.beans.IDEntity;
 import gr.ntua.cslab.celar.server.beans.IDEntityFactory;
+import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
 import java.util.Map;
 
 /**
@@ -16,8 +17,14 @@ import java.util.Map;
  */
 public class DBFactory implements IDEntityFactory{
     
-    public void create(IDEntity c, int id){        
+    @Override
+    public  void create(IDEntity c, int id){        
+        createById(c, id); 
+    }
+    
+    
+    public void createById(ReflectiveEntity c, Object id){
         Map fields = DBTools.doSelectByID(TableTools.getTableName(c.getClass()), id);
-        EntityTools.fromFieldMap(c, fields); 
+        EntityTools.fromFieldMap(c, fields);
     }
 }

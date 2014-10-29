@@ -57,12 +57,9 @@ public final class EntityTools {
      * @throws DBException in case of an error
      */
     public static void store(Application app) throws DBException {
-        System.out.println("Storeing application");
         int appId = app.getUnique_Id();
         if(appId==0){
-            System.out.println("looking for new id");
              String prevMax = DBTools.maxValue(TableTools.getTableName(app.getClass()), "unique_id");
-             System.out.println("prev max: "+prevMax);
              int uniqueId = prevMax!=null? Integer.parseInt(prevMax)+1:1;
              app.setUnique_Id(uniqueId);
              

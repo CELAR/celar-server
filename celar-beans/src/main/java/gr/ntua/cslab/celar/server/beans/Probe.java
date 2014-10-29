@@ -1,7 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * The Probe entity
+ * Represents a 'User' entity as it is stored in celarDB
  * @author cmantas
  */
 public class Probe extends ReflectiveEntity{

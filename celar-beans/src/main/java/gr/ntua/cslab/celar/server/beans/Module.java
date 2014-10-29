@@ -1,7 +1,7 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * Entity representing an entry in the Module table 
+ * Represents a 'Module' entity as it is stored in celarDB
  * @author cmantas
  */
 public class Module extends IDEntity{
@@ -43,5 +43,9 @@ public class Module extends IDEntity{
         super(id);
     }
     
+    /**
+     * Returns the name of this Module
+     * @return 
+     */
     public String getName(){ return this.name;}
 }

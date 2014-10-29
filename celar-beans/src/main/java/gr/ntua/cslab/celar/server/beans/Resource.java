@@ -1,12 +1,13 @@
 package gr.ntua.cslab.celar.server.beans;
 
 /**
- * The Resource entity
+ * Represents a 'Resource' entity as it is stored in celarDB
  * @author cmantas
  */
 public class Resource extends IDEntity{
-    public int deployment_Id, component_Id, provided_Resource_Id;
+    public int component_Id, provided_Resource_Id;
     public MyTimestamp start_Time, end_Time;
+    public String deployment_Id;
     
     /**
      * Default constructor for all DBEntities
