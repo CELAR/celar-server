@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import com.sixsq.slipstream.exceptions.ValidationException;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationServerInfo;
 import com.sixsq.slipstream.persistence.Authz;
 import com.sixsq.slipstream.persistence.DeploymentModule;
@@ -8,12 +9,15 @@ import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.daemon.Main;
 import gr.ntua.cslab.celar.server.daemon.cache.ApplicationCache;
 import gr.ntua.cslab.celar.server.daemon.cache.DeploymentCache;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationServerInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfo;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfoList;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
+import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
+
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
 import gr.ntua.cslab.database.parsers.ToscaHandler;
@@ -24,13 +28,16 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -38,13 +45,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.xml.ws.WebServiceException;
+
 import org.apache.log4j.Logger;
+
 import tools.CSARParser;
 import tools.Parser;
-
 
 /**
  *
@@ -103,7 +113,6 @@ public class Application {
         //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
         String ssApplicationName = tc.getAppName();
         logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
-        System.out.println(ServerStaticComponents.ssService);
         String appName = ServerStaticComponents.ssService.createApplication(ssApplicationName, tc.getAppVersion());
         HashMap<String, Node> nodes = new HashMap<String, Node>();
 

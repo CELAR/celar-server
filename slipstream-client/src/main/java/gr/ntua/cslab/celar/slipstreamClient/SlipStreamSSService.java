@@ -245,7 +245,8 @@ public class SlipStreamSSService {
 			SAXParser parser = parserFactor.newSAXParser();
 			SAXStateHandler handler = new SAXStateHandler();
 			parser.parse(new ByteArrayInputStream(ret.getBytes(StandardCharsets.UTF_8)),handler);
-			return handler.ips;
+			logger.info(handler.getIps());
+			return handler.getIps();
 		}
 	}	
 	
@@ -660,4 +661,6 @@ public class SlipStreamSSService {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	
+    
 }
