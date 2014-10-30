@@ -12,6 +12,7 @@ import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.*;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
@@ -32,6 +33,7 @@ public class ApplicationTest {
     static Metric metric;
     static Module module;
     static gr.ntua.cslab.celar.server.beans.Deployment depl;
+    static Application dummy = new Application();
     
     static Random random = new Random();
     
@@ -131,23 +133,32 @@ public class ApplicationTest {
     }
 
 
+    static void testCSAR(String filename) throws Exception{
+
+        
+        FileInputStream csar = new FileInputStream(filename);
+        ApplicationInfo ai = dummy.describe2(null, csar);
+        csar = new FileInputStream(filename);
+        ai = dummy.deploy2(null, ai.getId(), csar);
+        //System.out.println(ai.toString(true));
+        ai.marshal(System.out);
+        removeApplication(ai);
+    }
     
     
     public static void main(String args[]) throws Exception{
         createApplicationStructure();
-        Application dummy = new Application();
+        
 //        ApplicationInfo info = dummy.getApplicationInfo(app.getId());
 //        System.out.println(info.toString(true));
-//        delete_structure();
+//        ApplicationInfo ai =dummy.getApplicationInfo(app.id);
+//        System.out.println(ai.toString(true));
         
-        FileInputStream csar = new FileInputStream("../celar-db/testApp09.csar");
-        ApplicationInfo ai = dummy.describe2(null, csar);
+        testCSAR("../celar-db/testApp09.csar");
+        delete_structure();        
         
         
-        csar = new FileInputStream("../celar-db/testApp09.csar");
-        ai = dummy.deploy2(null, ai.getId(), csar);
-        System.out.println(ai.toString(true));
-        removeApplication(ai);
+  
     }
 
 }

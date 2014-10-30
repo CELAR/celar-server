@@ -4,6 +4,13 @@ import psycopg2
 from kamaki.clients.astakos import AstakosClient
 from kamaki.clients.cyclades import CycladesClient
 from logging import getLogger, ERROR
+from sys import argv
+
+if len(argv)<2:
+	print "Please define a host"
+	exit()
+HOST=argv[1]
+print "Using host: "+HOST
 
 
 # init synneffo  stuff
@@ -19,7 +26,7 @@ cyclades_client = CycladesClient(CYCLADES_URL, TOKEN)
 
 # connect to db
 
-db = psycopg2.connect(host="localhost", user="celaruser", password="celar-user", database="celardb")
+db = psycopg2.connect(host=HOST, user="celaruser", password="celar-user", database="celardb")
 cursor = db.cursor()
 
 
