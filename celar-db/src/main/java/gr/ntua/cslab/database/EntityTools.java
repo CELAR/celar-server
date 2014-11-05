@@ -4,8 +4,11 @@ import gr.ntua.cslab.celar.server.beans.Application;
 import static gr.ntua.cslab.celar.server.beans.Application.makeStringID;
 import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.ComponentDependency;
+import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.IDEntity;
 import gr.ntua.cslab.celar.server.beans.IDEntityFactory;
+import gr.ntua.cslab.celar.server.beans.Metric;
+import gr.ntua.cslab.celar.server.beans.MetricValue;
 import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.ModuleDependency;
 import gr.ntua.cslab.celar.server.beans.MyTimestamp;
@@ -15,6 +18,8 @@ import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
 import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
 import gr.ntua.cslab.database.DBTools.Constrain;
+import static gr.ntua.cslab.database.EntityGetters.getDeploymentResources;
+import static gr.ntua.cslab.database.EntityGetters.getMetricValueByMetric;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.LinkedList;
@@ -93,6 +98,7 @@ public final class EntityTools {
     
         
     public static <T extends ReflectiveEntity> void fromFieldMap(ReflectiveEntity e, Map<String, String> fieldMap) {
+        if (fieldMap==null) return;
         Class current = e.getClass();
 //        while (current != ReflectiveEntity.class && current!=null) {
             for (Field f : current.getFields()) {
@@ -203,6 +209,10 @@ public final class EntityTools {
      * @throws DBException 
      */
     public static void delete(IDEntity entity) throws DBException {
+        if (entity.getId()==0){
+            LOG.error("Tried to delete a(n) "+entity.getClass().getSimpleName()+" with an id of 0");
+            return;
+        }
         DBTools.doDeleteID(TableTools.getTableName(entity.getClass()), entity.getId());
     }
 
@@ -217,11 +227,36 @@ public final class EntityTools {
      * @param a 
      */
     public static void removeDeployments(Application a){
-        
+        throw new UnsupportedOperationException("not implemented");
+    }
+    
+    /**
+     * Removes all the used resources and deletes the deployment
+     * @param dep The 
+     * @throws gr.ntua.cslab.database.DBException 
+     */
+    public static void removeDeployment(Deployment dep) throws DBException {
+        if(dep.id==null){
+            LOG.info("Skipping deletion of deployment with id=0");
+            return;
+        }
+        for (Resource r : getDeploymentResources(dep)) {
+            //for all metrics
+             for (Metric m: EntityTools.<Metric>getByField(Metric.class, "COMPONENT_id", "" + r.component_Id)){
+                 for(MetricValue mv: getMetricValueByMetric(m)){
+                     delete(mv);
+                 }
+                 delete(m);
+             }
+            delete(r);
+        }
+        delete(dep);
+        LOG.info("Removed Deployment( " + dep.id + ")");
     }
     
     /**
      * Remove any aspect of the application
+     * @param ai
      */
     public static void removeApplication(ApplicationInfo ai) throws DBException{
         //for all modules

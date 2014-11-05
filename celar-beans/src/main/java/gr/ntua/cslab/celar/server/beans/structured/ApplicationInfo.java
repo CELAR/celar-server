@@ -44,16 +44,12 @@ public class ApplicationInfo extends Application{
         modules = m;
     }
     
-    public List<Resource> getAllResources(){
-        List<Resource> rv = new java.util.LinkedList<>();
-        for(ModuleInfo mi: modules)
-            for(ComponentInfo ci: mi.components)
-                rv.addAll(ci.resources);
-        return rv;
-    }
-    
     public static void main(String args[]) throws Exception{
 
+    }
+
+    public String getSlipstreamName() {
+        return description+"_"+id;
     }
 
 }

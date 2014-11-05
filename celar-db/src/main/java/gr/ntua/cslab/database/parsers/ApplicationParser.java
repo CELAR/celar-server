@@ -3,22 +3,24 @@ package gr.ntua.cslab.database.parsers;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
+import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
 import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.toJSONObject;
 import java.sql.Timestamp;
+import java.util.LinkedList;
 import java.util.List;
 import static org.apache.log4j.Level.*;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.util.LinkedList;
 
 /**
  *
@@ -130,36 +132,41 @@ public class ApplicationParser {
     
         
     
-    public static ApplicationInfo exportApplicationDescription(Application app) throws Exception{
-        return exportApplication(app, new Timestamp(System.currentTimeMillis()), false);
-    }
     
-    public static ApplicationInfo exportApplication(Application app) throws Exception{
-        return exportApplication(app, new Timestamp(System.currentTimeMillis()), true);
+    public static DeployedApplication exportApplication(Application app, String deploymentId) throws Exception{
+        return  exportDeployedApplication(app, new Timestamp(System.currentTimeMillis()), deploymentId);
     }
 
 
-    public static ApplicationInfo exportApplication(Application app, Timestamp ts, boolean includeResources) throws Exception {
+    public static DeployedApplication exportDeployedApplication(Application app, Timestamp ts, String deploymentId) throws Exception {
+        Deployment dep = getDeploymentById(deploymentId);
+        DeployedApplication rv = new DeployedApplication(app, dep);
+        rv.modules = exportApplicationModules(app, ts, dep);
+        return rv;
+    }
+        
+    public static ApplicationInfo exportApplication(Application app) throws Exception {
         ApplicationInfo rv = new ApplicationInfo(app);
-        rv.modules = exportApplicationModules(app, ts, includeResources);
+        Deployment dep =null;
+        rv.modules = exportApplicationModules(app, null, dep);
         return rv;
     }
 
-    public static List<ModuleInfo> exportApplicationModules(Application app, Timestamp ts, boolean includeResources) throws Exception {
+    public static List<ModuleInfo> exportApplicationModules(Application app, Timestamp ts, Deployment dep) throws Exception {
         List<Module> modules =   getModulesByApplication(app);
         List<ModuleInfo> rv = new LinkedList(); //json array of modules
         LOG.debug("Modules for "+app.getDescription()+" :"+modules);
         //iterate modules and add to json array 
         for (Module m : modules) {
             ModuleInfo mi =new ModuleInfo(m);
-            mi.components = exportModuleComponents(m, ts, includeResources);
+            mi.components = exportModuleComponents(m, ts, dep);
             rv.add(mi);
         }
         return rv;
     }
     
     
-        public static List<ComponentInfo> exportModuleComponents(Module m, Timestamp ts, boolean includeResources) throws Exception {
+        public static List<ComponentInfo> exportModuleComponents(Module m, Timestamp ts, Deployment dep) throws Exception {
         List<Component> components = getComponentsByModule(m);
         List<ComponentInfo> rv = new LinkedList();
         LOG.debug("components for moduleid:" + m.getId() + " " + components);
@@ -167,7 +174,7 @@ public class ApplicationParser {
         //iterate components and add to json list
         for (Component c : components) {
             ComponentInfo ci = new ComponentInfo(c);            
-            if (includeResources) ci.resources= getResourcesByComponent(c);
+            if (dep!=null) ci.resources= getResources(c, dep);
             rv.add(ci);
         }
         return rv;

@@ -41,7 +41,7 @@ public class Testing {
         ProvidedResource providedResource = new ProvidedResource("sample_vm_image", resourceType);
         Spec spec1 = new Spec(providedResource, "cpu_count", "2");
 
-        ApplicationInfo app = new ApplicationInfo(new Application("test_application", user));
+        ApplicationInfo app = new ApplicationInfo(new Application("test_application", user, "/dummy/location"));
 //                app.marshal(System.out);
 
         ModuleInfo module = new ModuleInfo(new Module("test_module", app));

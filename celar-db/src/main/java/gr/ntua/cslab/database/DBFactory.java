@@ -18,13 +18,15 @@ import java.util.Map;
 public class DBFactory implements IDEntityFactory{
     
     @Override
-    public  void create(IDEntity c, int id){        
+    public  void create(IDEntity c, int id) throws Exception{        
         createById(c, id); 
     }
     
     
-    public void createById(ReflectiveEntity c, Object id){
+    public void createById(ReflectiveEntity c, Object id) throws Exception{
         Map fields = DBTools.doSelectByID(TableTools.getTableName(c.getClass()), id);
+        if (fields==null)
+            throw new Exception("There is no "+c.getClass().getSimpleName()+" with an id="+id);
         EntityTools.fromFieldMap(c, fields);
     }
 }

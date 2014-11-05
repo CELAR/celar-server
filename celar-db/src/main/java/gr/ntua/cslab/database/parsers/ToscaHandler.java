@@ -12,6 +12,7 @@ import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.User;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
+import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
 import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
@@ -108,7 +109,7 @@ public class ToscaHandler {
         int i= v.indexOf(".");
         int mjv = Integer.parseInt(v.substring(0, i));
         int mnv = Integer.parseInt(v.substring(i+1, v.length()));
-        app = new Application(mjv, mnv, name, user);
+        app = new Application(mjv, mnv, name, user, parser.getDescriptionFile());
         store(app);
     }
     
@@ -194,12 +195,14 @@ public class ToscaHandler {
 
 
     
-    public ApplicationInfo storeDeployment(Application app, String deploymentId) throws Exception {
-        ApplicationInfo ai = exportApplication(app);
+    public DeployedApplication storeDeployment(Application app, String deploymentId, String orchestratorIP) throws Exception {
+        
 
         //create deployment
-        deployment = new Deployment(app, deploymentId);
+        deployment = new Deployment(app, deploymentId, orchestratorIP);
         store(deployment);
+        DeployedApplication ai = exportApplication(app, deploymentId);
+        ai.deployment=deployment;
         //for each module
         for (ModuleInfo m : ai.getModules()) {
             //for each components

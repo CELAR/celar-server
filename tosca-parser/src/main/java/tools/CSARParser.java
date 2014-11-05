@@ -41,7 +41,8 @@ public class CSARParser implements Parser{
      private List<String[]> componentDependencies = new java.util.LinkedList();
      private Path tempDir=null;
      String name, version; 
-    private String toscaContents;
+     private String toscaContents;
+     public String descriptionFile;
     
     
     /***
@@ -56,6 +57,7 @@ public class CSARParser implements Parser{
      * @throws Exception 
      */
     public CSARParser(String csarFileName) throws Exception{
+        descriptionFile=csarFileName;
         tempDir = Tools.extractCsar(csarFileName);
         Map<String, String> toscaProps = Tools.getToscaMeta(tempDir);
         String toscaPath = toscaProps.get("Name");
@@ -406,6 +408,11 @@ public class CSARParser implements Parser{
         System.out.println(tc.getToscaContents());
        
 
+    }
+
+    @Override
+    public String getDescriptionFile() {
+        return this.descriptionFile;
     }
 
 

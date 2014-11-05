@@ -11,6 +11,7 @@ USE `celardb` ;
 CREATE  TABLE IF NOT EXISTS `celardb`.`USERS` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NULL ,
+  `iaas_credentials` TEXT NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
@@ -26,6 +27,7 @@ CREATE  TABLE IF NOT EXISTS `celardb`.`APPLICATION` (
   `description` TEXT NULL ,
   `submitted` TIMESTAMP NULL ,
   `USER_id` INT NULL ,
+  `description_file_location` TEXT NULL ,
   PRIMARY KEY (`id`) ,
   CONSTRAINT `fk_APPLICATION_1`
     FOREIGN KEY (`USER_id` )
@@ -87,10 +89,11 @@ ENGINE = InnoDB;
 -- Table `celardb`.`DEPLOYMENT`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `celardb`.`DEPLOYMENT` (
-  `id` INT NOT NULL ,
+  `id` VARCHAR(45) NOT NULL ,
   `APPLICATION_id` VARCHAR(18) NOT NULL ,
   `start_time` TIMESTAMP NULL ,
   `end_time` TIMESTAMP NULL ,
+  `orchestrator_IP` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) ,
   CONSTRAINT `fk_DEPLOYMENT_APPLICATION1`
     FOREIGN KEY (`APPLICATION_id` )
@@ -121,7 +124,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `celardb`.`RESOURCES` (
   `id` INT NOT NULL ,
-  `DEPLOYMENT_id` INT NOT NULL ,
+  `DEPLOYMENT_id` VARCHAR(45) NOT NULL ,
   `COMPONENT_id` INT NULL ,
   `PROVIDED_RESOURCE_id` INT NULL ,
   `start_time` TIMESTAMP NULL ,
@@ -189,6 +192,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `celardb`.`METRICS` (
   `id` INT NOT NULL ,
+  `Name` VARCHAR(45) NULL ,
   `COMPONENT_id` INT NOT NULL ,
   `timestamp` TIMESTAMP NULL ,
   PRIMARY KEY (`id`) ,

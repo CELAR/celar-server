@@ -163,11 +163,12 @@ public abstract class ReflectiveEntity {
                 if (f.get(this) == null) {
                     continue;
                 }
-                if (f.get(this) instanceof List) {
+                if (value instanceof List) {
                     lists.add(f);
                     continue;
                 }
-                s += sindent+name+":"+value.toString()+"\n";
+                if (value instanceof ReflectiveEntity) s += ((ReflectiveEntity) value).toString(indent+1);
+                else s += sindent+name+":"+value.toString()+"\n";
 
             }
             //print data in lists

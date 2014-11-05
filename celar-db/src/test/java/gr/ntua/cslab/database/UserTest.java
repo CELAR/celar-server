@@ -52,7 +52,7 @@ public class UserTest {
         User user = new User("christos");
         try {
             store(user);
-            User user2 = new User(user.getId());
+            User user2 = new User(user.getId(), user.iaas_credentials );
             assertTrue("retrieved user does not equal stored", user2.equals(user));
             
             User user3 = getUserByName("christos");

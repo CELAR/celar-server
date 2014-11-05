@@ -6,7 +6,7 @@ service postgresql restart
 
 
 # drop and re-create the DB
-echo "DROP DATABASE celardb;" | psql -U celaruser postgres &>/dev/null
+echo "DROP DATABASE celardb;" | psql -U celaruser postgres 
 echo "CREATE DATABASE celardb;" | psql -U celaruser postgres >/dev/null
 
 

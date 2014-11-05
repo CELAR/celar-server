@@ -37,7 +37,7 @@ cursor.execute("DELETE FROM PROVIDED_RESOURCE WHERE TRUE")
 
 
 # add 'VM_FLAVOR' entry on the RESOURCE_TYPE table
-cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (1, 'VM_FLAVOR')"  )
+cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (DEFAULT, 'VM_FLAVOR')"  )
 
 # itreate through all available flavors and insert data in the DB
 for flav in cyclades_client.list_flavors()[:10]:
@@ -56,7 +56,7 @@ for flav in cyclades_client.list_flavors()[:10]:
 
 
 # add 'VM_IMAGE' entry on the RESOURCE_TYPE table
-cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (2, 'VM_IMAGE')"  )
+cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (DEFAULT, 'VM_IMAGE')"  )
 # itreate through all available images and insert data in the DB
 for img in cyclades_client.list_images()[:10]:
     # #insert into  PROVIDED_RESOURCE table

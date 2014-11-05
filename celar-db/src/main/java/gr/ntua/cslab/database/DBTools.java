@@ -256,7 +256,8 @@ public class DBTools extends DBConnectable{
             ResultSet rs = statement.executeQuery(query);
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
-            rs.next();
+            if (!rs.next()) return null;
+            
             for (int i = 1; i < columnCount + 1; i++) {
                 String name = rsmd.getColumnName(i);
                 String value = SQLTools.decode(rs.getString(name));
@@ -264,7 +265,7 @@ public class DBTools extends DBConnectable{
             }
             return result;
         } catch (SQLException ex) {
-            System.err.println("Query failed: \n" + query);
+            LOG.error("Query failed: \n" + query);
             ex.printStackTrace();
         }
         return null;

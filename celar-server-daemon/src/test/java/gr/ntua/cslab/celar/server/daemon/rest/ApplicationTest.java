@@ -2,6 +2,18 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.celar.server.daemon.rest;
@@ -24,7 +36,7 @@ import static org.junit.Assert.*;
  */
 public class ApplicationTest {
     
-        static ResourceType resourceType;
+    static ResourceType resourceType;
     static ProvidedResource providedResource;
     static Spec spec1, spec2;
     static gr.ntua.cslab.celar.server.beans.User user;
@@ -33,11 +45,11 @@ public class ApplicationTest {
     static Metric metric;
     static Module module;
     static gr.ntua.cslab.celar.server.beans.Deployment depl;
-    static Application dummy = new Application();
+    static Applications dummy = new Applications();
     
     static Random random = new Random();
     
-        public static void createApplicationStructure() {
+        public static void create() throws Exception{
         try {
 
             String username = "ggian";
@@ -64,14 +76,14 @@ public class ApplicationTest {
                 store(spec2);
 
             // Create an application structure
-                app = new gr.ntua.cslab.celar.server.beans.Application("test_application", user);
+                app = new Application("test_application", user);
                 store(app);
                 module = new Module("test_module", app);
                 store(module);
                 component = new Component(module, "test module", resourceType);
                 store(component);
                 
-                metric = new Metric(component);
+                metric = new Metric(component, "my metric");
                 store(metric);
         
         } catch (Exception ex) {
@@ -80,31 +92,9 @@ public class ApplicationTest {
         }
     }
     
-    public static void testDeployment() throws Exception{
-        //================ Actual deployment testing ==============
-            depl = new gr.ntua.cslab.celar.server.beans.Deployment(app, ""+random.nextInt());
-            store(depl);
-            assertTrue(depl.equals(getDeploymentById(depl.getId())));
-            
-            Resource res = new Resource(depl, component, providedResource);
-            store(res);
-            res = new Resource(res.getId());
-            System.out.println(res);
-            assertTrue(res.equals(new Resource(res.getId())));
-            
-            //metric value testing
-            MetricValue mv = new MetricValue(metric, res);
-            store(mv);
-            List<MetricValue> mvl = getMetricValue( metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
-            System.out.println("Metric Values: "+mvl);
-            
-            
-            delete(mv);            
-            delete(res);            
-            delete(depl);
-    }
+
     
-    public static void delete_structure() throws DBException{
+    public static void destroy() throws DBException{
                 delete(metric);
                 delete(component);
                 delete(module);
@@ -137,9 +127,9 @@ public class ApplicationTest {
 
         
         FileInputStream csar = new FileInputStream(filename);
-        ApplicationInfo ai = dummy.describe2(null, csar);
+        ApplicationInfo ai = dummy.describe(null, csar);
         csar = new FileInputStream(filename);
-        ai = dummy.deploy2(null, ai.getId(), csar);
+        ai = Applications.launchDeployment(null, ai.getId(), csar);
         //System.out.println(ai.toString(true));
         ai.marshal(System.out);
         removeApplication(ai);
@@ -147,7 +137,7 @@ public class ApplicationTest {
     
     
     public static void main(String args[]) throws Exception{
-        createApplicationStructure();
+        create();
         
 //        ApplicationInfo info = dummy.getApplicationInfo(app.getId());
 //        System.out.println(info.toString(true));
@@ -155,7 +145,7 @@ public class ApplicationTest {
 //        System.out.println(ai.toString(true));
         
         testCSAR("../celar-db/testApp09.csar");
-        delete_structure();        
+        destroy();        
         
         
   

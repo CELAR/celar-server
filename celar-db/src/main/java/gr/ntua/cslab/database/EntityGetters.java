@@ -209,6 +209,35 @@ public class EntityGetters {
 
     }
     
+    /** Gets the Resources by a component and deployment
+     * 
+     * @param c the Comp
+     * @param dep
+     * @return 
+     * @throws gr.ntua.cslab.database.DBException 
+    */
+    public static List<Resource> getResources(Component c, Deployment dep) throws DBException{
+        List<Constrain> cl= new java.util.LinkedList();
+        cl.add(new Constrain("COMPONENT_id", ""+c.getId()));
+        cl.add(new Constrain("DEPLOYMENT_id", ""+dep.getId()));
+        List<Resource> list = EntityTools.getByConstrains(Resource.class, cl, false);
+        return list;
+
+    }
+    
+    /** Gets the Resources by a component and deployment
+     * 
+     * @param dep the deployment whose resources we are getting
+     * @return 
+     * @throws gr.ntua.cslab.database.DBException 
+    */
+    public static List<Resource> getDeploymentResources(Deployment dep) throws DBException{
+        List<Constrain> cl= new java.util.LinkedList();
+        cl.add(new Constrain("DEPLOYMENT_id", ""+dep.getId()));
+        List<Resource> list = EntityTools.getByConstrains(Resource.class, cl, false);
+        return list;
+    }
+    
         /**
      * Gets the resource type with the specified String type (assumed unique)
      * 
@@ -225,13 +254,13 @@ public class EntityGetters {
 
     }
     
-    public static Deployment getDeploymentById(String id){
+    public static Deployment getDeploymentById(String id) throws Exception{
         Deployment rv = new Deployment();
         factory.createById(rv, id);
         return rv;
     }
     
-    public static Application getApplicationById(String id){
+    public static Application getApplicationById(String id) throws Exception{
         Application rv = new Application();
         factory.createById(rv, id);
         return rv;
