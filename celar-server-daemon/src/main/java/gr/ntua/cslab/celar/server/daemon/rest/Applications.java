@@ -124,7 +124,7 @@ public class Applications {
                     for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
                         if (prop.getKey().toString().equals("VMI")) {
                             logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
-                            imModule.setModuleReference(ssService.getImageReference("ubuntu-12.04"));
+                            imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString()));
                         } else if (prop.getKey().toString().equals("executeScript")) {
                             logger.info("\t\t\t" + prop.getKey());
                             logger.debug("Execute script: " + prop.getValue().toString());
@@ -212,8 +212,10 @@ public class Applications {
         
         
         //TODO deployment ID
-        String deploymentId = "" + (new java.util.Random()).nextInt();
-        //String deploymentId = ssService.launchApplication(app.getSlipstreamName(), params);
+        String deploymentId;
+        if(ssService==null) deploymentId= "" + (new java.util.Random()).nextInt();
+        else deploymentId = ssService.launchApplication(app.getSlipstreamName(), params);
+        
         //TODO orchestrator IP 
         DeployedApplication ai =  tp.storeDeployment(app, deploymentId,"??IP??");
         return ai;

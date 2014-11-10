@@ -34,7 +34,7 @@ public class UserTest {
     
     @Test
     public void test_03_store_delete(){
-        User user = new User("christos");
+        User user = new User("christos", "dummy cred");
         try {
             store(user);
             delete(user);
@@ -49,10 +49,10 @@ public class UserTest {
     
     @Test
     public void test_03_retrieve() throws Exception{
-        User user = new User("christos");
+        User user = new User("christos", "dummy cred");
         try {
             store(user);
-            User user2 = new User(user.getId(), user.iaas_credentials );
+            User user2 = new User(user.getId() );
             assertTrue("retrieved user does not equal stored", user2.equals(user));
             
             User user3 = getUserByName("christos");

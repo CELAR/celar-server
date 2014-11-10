@@ -22,9 +22,8 @@ public class User extends IDEntity{
      * @param id
      * @throws Exception in case no Entity is found with the given ID in this table
      */
-    public User(int id, String iaas_credentials) throws Exception{
+    public User(int id) throws Exception{
         super(id);
-        this.iaas_credentials = iaas_credentials;
     }
     
     
@@ -32,8 +31,9 @@ public class User extends IDEntity{
      * Creates a User entity by its name
      * @param name 
      */
-    public User(String name){
+    public User(String name, String iaas_credential){
         this.name=name;
+        this.iaas_credentials =iaas_credential;
     }
     
 }

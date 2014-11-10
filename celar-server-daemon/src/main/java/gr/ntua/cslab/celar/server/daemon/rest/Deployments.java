@@ -5,12 +5,14 @@ import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
+import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
 import static gr.ntua.cslab.database.EntityTools.removeDeployment;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -38,12 +40,14 @@ public class Deployments {
         logger.info("Get deployment: "+deploymentID);
         Deployment dep =  getDeploymentById(deploymentID);;
         States state = null;
-        //TODO get state
-//      state = ServerStaticComponents.ssService.getDeploymentState(deploymentID);
+        if(ssService!=null){
+            state = ssService.getDeploymentState(deploymentID);
+            //TODO manage Orchestrator and VMs IPs?
+            HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
+            //dep.setDescription(ips.toString());
+        }
         dep.setState(state);
-        //TODO what is this?
-//      HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
-//    	dep.setDescription(ips.toString());
+
         return dep;
     }
 	
@@ -65,8 +69,9 @@ public class Deployments {
     public static String terminateDeployment(@PathParam("id") String deploymentID) throws Exception {
         logger.info("Terminating deployment: "+deploymentID);
         Deployment dep = getDeploymentById(deploymentID);
-        //TODO terminate SlipStream
-    	//ServerStaticComponents.ssService.terminateApplication(deploymentID);
+    	if (ssService!=null){
+            ssService.terminateApplication(deploymentID);
+        }
         removeDeployment(dep);    	
         return "OK";
     }

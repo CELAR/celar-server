@@ -262,7 +262,7 @@ public final class EntityTools {
         //for all modules
         for(ModuleInfo m: ai.getModules()){
             //for all components
-            for(ComponentInfo c: m.getComponents()){
+            for(ComponentInfo c: m.components){
                 for(Resource r: c.resources) delete(r);
                 delete(c);
             }

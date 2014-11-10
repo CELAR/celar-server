@@ -53,7 +53,7 @@ public class ApplicationParserTest {
     public static void createBaseline(){
         try{
             
-        chris = new User("chris");
+        chris = new User("chris", "dummy cred");
         store(chris);        
         //create, save and retrieve a resource type
         vm = new ResourceType("VM_FLAVOR");

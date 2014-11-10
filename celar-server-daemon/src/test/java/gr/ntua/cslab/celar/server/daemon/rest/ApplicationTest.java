@@ -55,7 +55,7 @@ public class ApplicationTest {
             String username = "ggian";
             
             //create a user entity
-                user = new gr.ntua.cslab.celar.server.beans.User(username);
+                user = new gr.ntua.cslab.celar.server.beans.User(username, "dummy cred");
             //store him in the DB. Now he has an id
                 store(user);
            //you can retrieve an entity by its id (if it has one)
@@ -76,7 +76,7 @@ public class ApplicationTest {
                 store(spec2);
 
             // Create an application structure
-                app = new Application("test_application", user);
+                app = new Application("test_application", user, "dummy");
                 store(app);
                 module = new Module("test_module", app);
                 store(module);

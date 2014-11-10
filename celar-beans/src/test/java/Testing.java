@@ -36,7 +36,7 @@ public class Testing {
     public static void main(String args[]) throws CloneNotSupportedException, JAXBException, FileNotFoundException, IOException {
 
         //create a user entity
-        User user = new User("takis");
+        User user = new User("takis", "dummy cred");
         ResourceType resourceType = new ResourceType("VM_IMAGE");
         ProvidedResource providedResource = new ProvidedResource("sample_vm_image", resourceType);
         Spec spec1 = new Spec(providedResource, "cpu_count", "2");

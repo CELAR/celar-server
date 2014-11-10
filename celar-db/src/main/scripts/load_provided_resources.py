@@ -16,7 +16,7 @@ print "Using host: "+HOST
 # init synneffo  stuff
 
 AUTHENTICATION_URL="https://accounts.okeanos.grnet.gr/identity/v2.0"
-TOKEN="s2ltU4XSpKf3rnng76mjZFc9zxkKpwrpMd11OMIgiZ8"
+TOKEN="C3-Y2yBdIE--O3vhBkRqRseP8aY5zKKbHifuYaZImkM"
 synnefo_user = AstakosClient(AUTHENTICATION_URL, TOKEN)
 synnefo_user.logger.setLevel(ERROR)
 getLogger().setLevel(ERROR)
@@ -37,7 +37,10 @@ cursor.execute("DELETE FROM PROVIDED_RESOURCE WHERE TRUE")
 
 
 # add 'VM_FLAVOR' entry on the RESOURCE_TYPE table
-cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (DEFAULT, 'VM_FLAVOR')"  )
+rv = cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (DEFAULT, 'VM_FLAVOR')")
+
+print rv
+exit()
 
 # itreate through all available flavors and insert data in the DB
 for flav in cyclades_client.list_flavors()[:10]:

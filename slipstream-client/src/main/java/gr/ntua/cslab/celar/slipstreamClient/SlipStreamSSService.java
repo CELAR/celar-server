@@ -369,6 +369,7 @@ public class SlipStreamSSService {
 	}
 	
 	public String getImageReference(String imageName) throws Exception {
+		logger.info("Getting image reference: "+imageName);
 		String reference = baseImageReferences.get(imageName);
 		if(reference!=null)
 			return reference;
@@ -389,8 +390,11 @@ public class SlipStreamSSService {
 		module.setAuthz(auth);
 		HashMap<String, String> imageIds = baseImages.get(imageName);
 		if(imageIds==null){
-			logger.error("No imageIDs for image with name: "+imageName);
-			throw new Exception("No imageIDs for image with name: "+imageName);
+			imageIds = new HashMap<String, String>();
+			imageIds.put("Flexiant", imageName);
+			imageIds.put("okeanos", imageName);
+			//logger.error("No imageIDs for image with name: "+imageName);
+			//throw new Exception("No imageIDs for image with name: "+imageName);
 		}
 		
 		Set<CloudImageIdentifier> cloudImageIdentifiers = new HashSet<CloudImageIdentifier>();

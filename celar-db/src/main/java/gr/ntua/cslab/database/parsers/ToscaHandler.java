@@ -98,7 +98,7 @@ public class ToscaHandler {
     private void handleUser() throws DBException{
          user = getUserByName("celar-user");
         if (user==null){
-            user = new User("celar-user");
+            user = new User("celar-user","dummy cred");
             store(user);
         }
     }
@@ -206,7 +206,7 @@ public class ToscaHandler {
         //for each module
         for (ModuleInfo m : ai.getModules()) {
             //for each components
-            for (ComponentInfo c : m.getComponents()) {
+            for (ComponentInfo c : m.components) {
                 Map<String, String> componentProperties = parser.getComponentProperties(c.getDescription());
                 //retreive the characteristics of the flavor
                 int vcpus = 1, ram = 1024, disk = 20;

@@ -6,6 +6,7 @@ import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
 import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
@@ -264,6 +265,16 @@ public class EntityGetters {
         Application rv = new Application();
         factory.createById(rv, id);
         return rv;
+    }
+    
+    public static List<Application> searchApplication(long submittedStart, long submittedEnd,
+            String description, int userid,  String moduleName, String componentDescription,
+            String providedResourceId){
+        List<Constrain> cl= new java.util.LinkedList();
+        cl.add(new Constrain("submitted", ">",""+new MyTimestamp(submittedStart)));
+        
+        List<Application> list = EntityTools.getByConstrains(Application.class, cl, false);
+        return list;
     }
     
 }

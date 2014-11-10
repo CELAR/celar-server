@@ -45,7 +45,7 @@ public class Entities {
             String username = "ggian";
             
             //create a user entity
-                user = new User(username);
+                user = new User(username, "dummy_cred");
 
             //the user has not been given an id yet (0)
                 System.out.println("User.id=" + user.getId());
@@ -56,7 +56,7 @@ public class Entities {
 
             //you can retrieve an entity by its id (if it has one)
                 System.out.println("retrieving user");
-                user = new User(user.getId(), "dummy credentials");
+                user = new User(user.getId());
                 System.out.println("Retrieved "+user);
                 
                 
