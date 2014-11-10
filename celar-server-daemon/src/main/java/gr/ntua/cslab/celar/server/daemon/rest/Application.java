@@ -162,7 +162,7 @@ public class Application {
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
                     if (prop.getKey().toString().equals("VMI")) {
                     	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
-                    	imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("ubuntu-12.04"));
+                    	imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference(prop.getValue().toString()));
                     } 
                     else if (prop.getKey().toString().equals("executeScript")) {
                     	logger.info("\t\t\t"+prop.getKey());
