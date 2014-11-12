@@ -37,6 +37,12 @@ status() {
     fi
 }
 
+init() {
+    pip install kamaki &>/dev/null
+    pip install psycopg2 &>/dev/null
+    java -Dname=celar-server -cp $CLASSPATH  gr.ntua.cslab.celar.server.daemon.Init &
+}
+
 case $1 in
     start)
         start;
@@ -49,6 +55,9 @@ case $1 in
     ;;
     status)   
         status;
+    ;;
+    init)   
+        init;
     ;;
     *)      
         echo "$0 {start|stop|status|restart}"

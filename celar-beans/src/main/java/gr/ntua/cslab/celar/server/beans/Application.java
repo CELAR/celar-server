@@ -208,4 +208,8 @@ public class Application extends ReflectiveEntity {
 //        return rv;
 //    }
     
+    
+    public String getSlipstreamName() {
+        return description+"_"+id;
+    }
 }

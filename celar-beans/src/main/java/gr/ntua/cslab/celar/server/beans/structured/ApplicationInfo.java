@@ -48,8 +48,4 @@ public class ApplicationInfo extends Application{
 
     }
 
-    public String getSlipstreamName() {
-        return description+"_"+id;
-    }
-
 }

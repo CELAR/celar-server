@@ -18,6 +18,7 @@ public class ApplicationInfoList {
     private List<ApplicationInfo> applications;
 
     public ApplicationInfoList() {
+        applications = new java.util.LinkedList();
     }
 
     public ApplicationInfoList(List<ApplicationInfo> applications) {

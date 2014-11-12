@@ -6,11 +6,14 @@ import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
+import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
+import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationInfoList;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfoList;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
+import static gr.ntua.cslab.database.EntityGetters.searchApplication;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
 import gr.ntua.cslab.database.parsers.ToscaHandler;
 import java.io.IOException;
@@ -72,16 +75,21 @@ public class Applications {
 
     @GET
     @Path("search/")
-    public List<ApplicationInfo> searchApplicationsByProperty(
+    public ApplicationInfoList searchApplicationsByProperty(
             @DefaultValue("0") @QueryParam("submitted_start") long submittedStart,
             @DefaultValue("0") @QueryParam("submitted_end") long submittedEnd,
             @DefaultValue("Null") @QueryParam("description") String description,
             @DefaultValue("0") @QueryParam("user_id") int userid,
             @DefaultValue("Null") @QueryParam("module_name") String moduleName,
             @DefaultValue("Null") @QueryParam("component_description") String componentDescription,
-            @DefaultValue("Null") @QueryParam("provided_resource_id") String providedResourceId) {
-        List<ApplicationInfo> list = new LinkedList<>();
-        return list;
+            @DefaultValue("Null") @QueryParam("provided_resource_id") String providedResourceId) throws Exception {
+        ApplicationInfoList rv = new ApplicationInfoList();
+        List<Application> apps= searchApplication(submittedStart, submittedEnd,
+                description ,userid, moduleName, componentDescription, providedResourceId);
+        for(Application a: apps){
+            rv.getApplications().add(new ApplicationInfo(a));
+        }
+        return rv;
     }
 
 
@@ -93,11 +101,14 @@ public class Applications {
         String tempFileName = storeFile(input, "temp-csar-describe");
         //create a Parser instance
         Parser tc = new CSARParser(tempFileName);
+        //store the description in  the DB
+        ToscaHandler th = new ToscaHandler(tc);
+        th.storeDescription();
         
         if(ssService!=null){
             //application name and version
             //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
-            String ssApplicationName = tc.getAppName();
+            String ssApplicationName = th.getApplication().getSlipstreamName();
             logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
             String appName = ssService.createApplication(ssApplicationName, tc.getAppVersion());
             HashMap<String, Node> nodes = new HashMap();
@@ -173,9 +184,7 @@ public class Applications {
 
             ssService.putModule(deployment);
         }
-        //store the description in  the DB
-        ToscaHandler th = new ToscaHandler(tc);
-        th.storeDescription();
+
 
         ApplicationInfo info = exportApplication(th.getApplication());
         return info;

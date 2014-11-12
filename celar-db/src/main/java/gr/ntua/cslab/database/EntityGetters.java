@@ -8,11 +8,13 @@ import gr.ntua.cslab.celar.server.beans.MetricValue;
 import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.Spec;
 import gr.ntua.cslab.celar.server.beans.User;
 import gr.ntua.cslab.database.DBTools.Constrain;
+import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
@@ -269,12 +271,24 @@ public class EntityGetters {
     
     public static List<Application> searchApplication(long submittedStart, long submittedEnd,
             String description, int userid,  String moduleName, String componentDescription,
-            String providedResourceId){
-        List<Constrain> cl= new java.util.LinkedList();
-        cl.add(new Constrain("submitted", ">",""+new MyTimestamp(submittedStart)));
-        
-        List<Application> list = EntityTools.getByConstrains(Application.class, cl, false);
-        return list;
+            String providedResourceId) throws Exception{
+        List<Constrain> constrains= new LinkedList();
+        constrains.add(new Constrain("submitted", ">",""+new MyTimestamp(submittedStart)));
+        if(submittedEnd!=0) constrains.add(new Constrain("submitted", "<",""+new MyTimestamp(submittedEnd)));
+        if(description!=null) constrains.add(new Constrain("Application.description",description));
+        if(userid!=0) constrains.add(new Constrain("user_id",""+userid));
+        if(moduleName!=null) constrains.add(new Constrain("Module.name",moduleName));
+        if(componentDescription!=null) constrains.add(new Constrain("Component.description",componentDescription));
+
+        List<Class> classes = new LinkedList();
+        classes.add(Application.class);
+        classes.add(Module.class);
+        classes.add(Component.class);
+        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
+        List<Application> rv = new LinkedList();
+        for(List<ReflectiveEntity> line: lines)
+            rv.add((Application)line.get(0));
+        return rv;
     }
     
 }

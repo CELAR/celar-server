@@ -88,12 +88,14 @@ public class SQLTools {
      * Returns an sql string doing a SELECT over the table. This is a naive
      * implementation, as the parameter must be a valid sql "WHERE" statement.
      *
+     * @param fields
      * @param tableName
      * @param whereStatement
      * @return
      */
-    public static String selectSQL(String tableName, String whereStatement) {
-        return "SELECT * FROM " + tableName + " WHERE " + whereStatement + ";";
+    public static String selectSQL(String fields, String tableName, String whereStatement) {
+        if(fields==null) fields = "*";
+        return "SELECT "+fields+" FROM " + tableName + " WHERE " + whereStatement + ";";
     }
 
     /**

@@ -139,18 +139,10 @@ public class ApplicationTest {
     public static void main(String args[]) throws Exception{
         create();
         
-//        ApplicationInfo info = dummy.getApplicationInfo(app.getId());
-//        System.out.println(info.toString(true));
-//        ApplicationInfo ai =dummy.getApplicationInfo(app.id);
-//        System.out.println(ai.toString(true));
-        
-        testCSAR("../celar-db/testApp09.csar");
-        destroy();        
-        
-        
-  
-    }
 
+
+}
+    
 }
     
     

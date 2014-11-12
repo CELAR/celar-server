@@ -5,7 +5,13 @@
  */
 package gr.ntua.cslab.database;
 import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.MyTimestamp;
+import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.EntityGetters.searchApplication;
+import static gr.ntua.cslab.database.EntityTools.joinedTableName;
+import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.util.List;
 
 /**
@@ -14,6 +20,8 @@ import java.util.List;
  */
 public class SearchApp extends Entities{
     
+
+    
     public static void main(String args[]) throws Exception{
         createApplicationStructure();
         
@@ -21,8 +29,11 @@ public class SearchApp extends Entities{
 //            long submittedStart, long submittedEnd,
 //            String description, int userid,  String moduleName, String componentDescription,
 //            String providedResourceId){
-        List<Application> result = searchApplication(0, 0, null,0, null, null, null);
+        List<Application> result = searchApplication(0, System.currentTimeMillis(),
+                app.description,user.id, module.name, component.description, null);
+        
         System.out.println(result);
+
         
         
         delete_structure();

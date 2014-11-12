@@ -116,6 +116,13 @@
 		    <release>${BUILD_NUMBER}.${package.os}</release>
                     <requires>
                         <require>java-1.7.0-openjdk</require>
+                        <require>postgresql-server</require>
+                        <require>postgresql</require>
+                        <require>python</require>
+                        <require>pip</require>
+                        <require>python-devel</require>
+                        <require>postgresql-devel</require>
+                        <require>gcc</require>                          
                     </requires>
                     <mappings>
                         <mapping>
