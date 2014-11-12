@@ -40,4 +40,5 @@ create_service
 
 /bin/rm $CELAR_SERVER_HOME/lib/slf4j-jdk14-1.4.2.jar
 
+chkconfig --add celar-server
 service celar-server start;
