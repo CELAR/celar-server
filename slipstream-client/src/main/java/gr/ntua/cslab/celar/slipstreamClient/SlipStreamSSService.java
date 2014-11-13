@@ -62,7 +62,35 @@ public class SlipStreamSSService {
 		}
 		return null;
 	}*/
-    
+	public String writeToFile(String script) throws IOException{
+		logger.debug(script);
+		BufferedWriter writer = null;
+		String file = "/tmp/script.sh";
+		
+		try
+		{
+		    writer = new BufferedWriter( new FileWriter(file));
+		    writer.write( script);
+
+		}
+		catch ( IOException e)
+		{
+		}
+		finally
+		{
+		    try
+		    {
+		        if ( writer != null)
+		        writer.close( );
+		    }
+		    catch ( IOException e)
+		    {
+		    	throw e;
+		    }
+		}
+		return file;
+	}
+	
 	private String writeXML(String xml) throws IOException{
 		logger.debug(xml);
 		BufferedWriter writer = null;
@@ -346,8 +374,45 @@ public class SlipStreamSSService {
                 }
             }
             this.removeVM(deploymnetId, type, ids);
-	}
-
+        }
+        
+        public List<String> removeVMIDs(String deploymnetId, String type, int number) throws Exception {
+//    		logger.info("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
+                HashMap<String,String> ips = this.getDeploymentIPs(deploymnetId);
+                List<String> vmsToBeDeleted = new ArrayList<>(number);
+                for(Entry<String,String> vm : ips.entrySet()) {
+                    if(vm.getKey().startsWith(type) && vmsToBeDeleted.size()<number) {
+                        vmsToBeDeleted.add(vm.getKey().split(":")[0]); // keeping only the identifier, no the "hostname" keyword
+                    }
+                }
+                return vmsToBeDeleted;
+    	}
+        
+        public void removeVMswithIDs(String deploymnetId, List<String> vmsToBeDeleted, String type) throws Exception {
+            String ids = "";
+            int number = vmsToBeDeleted.size();
+            for(int i=0;i<number;i++) {
+            	String id =vmsToBeDeleted.get(i);
+            	String s = id.substring(id.indexOf('.')+1, id.length());
+            	System.out.println(s);
+                ids+=s;
+                if(i!=number-1) {
+                    ids+=" ";
+                }
+            }
+            this.removeVM(deploymnetId, type, ids);
+    	}
+        
+        public List<String> translateIPs(String deploymnetId, List<String> ids) throws Exception {
+                HashMap<String,String> ips = this.getDeploymentIPs(deploymnetId);
+                List<String> ret = new ArrayList<String>();
+                for(String key : ids) {
+                	ret.add(ips.get(key));
+                }
+                return ret;
+    	}
+        
+        
 	public void waitForReadyState(String deploymnetId) throws Exception {
 		logger.info("Waiting for ready state deploymentID: "+deploymnetId);
 		while(true){

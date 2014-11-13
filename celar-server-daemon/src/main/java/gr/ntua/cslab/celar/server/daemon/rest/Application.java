@@ -178,16 +178,19 @@ public class Application {
                 		Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
                 		targets.add(t);
                     }
-                    else if (prop.getKey().toString().contains("Remove")) {
+                    /*else if (prop.getKey().toString().contains("Remove")) {
                     	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Remove script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
                 		Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
                 		targets.add(t);
-                    }
+                    }*/
                     else if (prop.getKey().toString().equals("flavor")) {
                     	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
                     	parameters.addAll(ServerStaticComponents.ssService.createFlavorParameters(prop.getValue().toString()));
+                    }
+                    else{
+                    	logger.info("\t\t\t"+prop.getKey());
                     }
                 }
                 imModule.setTargets(targets);
