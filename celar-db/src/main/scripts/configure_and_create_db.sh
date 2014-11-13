@@ -4,6 +4,7 @@ password=apassword124
 
 #trust local users
 sed -i "s/local   all         all                               ident/local   all         all                               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
+sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
 
 #restart to apply changes
 service postgresql restart
@@ -15,7 +16,7 @@ echo "create user $user password '$password';" | psql -U postgres &>/dev/null
 # drop and re-create the DB
 echo "DROP DATABASE celardb;
     CREATE DATABASE celardb
-;" | psql -U celaruser postgres >/dev/null
+;" | psql -U celaruser postgres 
 
 
 

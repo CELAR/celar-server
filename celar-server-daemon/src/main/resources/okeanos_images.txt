@@ -1,0 +1,82 @@
+5ed5a29b-292c-4fe0-b32c-2e2b65628635 ubuntu
+b4713f20-3a41-4eaf-81ae-88698c18b3e8 Archlinux
+5583fed1-5273-4c64-9e32-3fbe476bd7b7 ubuntu
+917ee618-c03a-4473-9024-9448e12890c1 Ubuntu-10.04
+90554939-41c9-42e6-b654-1e167743c950 ubuntu
+505dcadb-d978-4f2b-ba68-02fc69fb50a8 Advcomparch@CSLab 2012-2013
+9f82e379-b111-4f72-8fbf-4fb37aa5ccc9 BackTrack 5 R3
+15feb8ee-98b1-4a9f-b048-1f5b287d8bcc egi-accounting-portal
+c9f3980d-6a82-4121-b24e-d7b5f29a4a00 archlinux
+0f12a5e0-5369-4bed-abd6-5b03d87cc5da ubuntu server 12.04 + asterisk voip server
+545d36df-53da-46bd-86ed-759ac3eb1995 Ubuntu-server-13.04
+e9ec7d24-96a1-412d-8e05-569bac5744a4 scientificlinux
+01a4b2f1-2acd-4031-8801-3d94ebe3f4d4 Ubuntu orchestrator
+8ff7d98a-9beb-46d2-8977-39b29443a7b2 openBSD5
+b26866dd-4626-4c12-85e3-9435048dd8a7 openBSD53
+493e78e9-f469-4a71-abea-4d50db71f535 OPENBSD54
+0e399015-8723-4c78-8198-75bdf693cdde ckan_2_1-debian_7_1
+4a65772b-98fd-43b3-b3b9-cd083849e63b arch
+83c4c2d5-50b4-4400-b95d-3d10a760e8d6 Dartha Ubuntu
+d0ae1af2-eac0-453e-bb2e-720b10a2e2d4 Dartha ubuntu
+890d0d9c-f9f6-4643-bc9d-f6eb387573a1 Openfiler ESA 2.99
+ca446474-a846-45ab-b8b9-7bcd41e7c905 Mageia-3
+2953ee6f-7dac-4173-9c13-19a0b87162f9 xubuntu
+f00b0d29-62f4-46db-a78e-370d596fc553 okeanos-is
+726090b4-00d2-4f44-bb32-83429181bee3 mininet-test1
+f0ebd2e4-1a27-450e-8c83-e8d350c0dc24 mininet-test2
+88e185c5-fd22-452a-943d-de230d4a3be9 mininet_netman2014
+749b641d-46cc-4abe-9ff2-76d745b9214d Worker clone
+0099593e-4f6d-48bf-8f03-0cec7fabb05b master_clone
+f6db8d72-1ddc-4272-889b-a51ab1d0b5a2 HMMY-tools v1.1 (Release)
+3ea05769-7ec3-4795-bf18-67a2cbd6a07f pfsense
+1966f2b4-be70-4d69-874f-bb76e9aa0313 AristeiaUoM
+64a65ad6-c4ef-4052-bc19-67480815219e Advcomparch@CSLab 2013-2014
+5042d1cb-3f0a-436c-be71-beafda1d86f3 Lubuntu
+67e92726-e274-4ce9-8431-76111b14a2dc SL-6.5-x86_64-minimal
+34da7d52-ea8b-441c-bea1-cc0a684e1cd8 archlinux-2014.06.21
+b5340ff7-9eb2-4fb4-aa92-d33aecfca6f8 oracle-linux-5.10
+430c24b4-5c75-4d38-88a9-eb95cebe27f8 cassandra_deb_3.8
+433b0442-4314-4f6f-8893-0e29b1ca0d75 MatUbuntu
+2f14f66c-59a6-43bd-9948-59d431cc47b8 treeThreader
+1d841696-018b-4c68-8c06-bc634069152e treeThreader
+f04c455e-8305-4971-91f6-821dd29e031d archlinux-2014.07.21
+3a9840e5-a58e-484d-8fa4-c4aeee142542 boot2docker-1.2.0
+fe31fced-a3cf-49c6-b43b-f58f5235ba45 CELAR-Ubuntu-14.04-LTS
+278b0f33-cc19-42e0-80b2-fd59358aa2a6 CELAR-SCAN-Scheduler-Ubuntu-14.04-LTS
+0e550831-5a37-4379-afc1-a47db310fc4c CentOS 6
+f1bb1a2f-30ab-4074-aca7-0429ca4dc074 CentOS 7
+01ab983f-a85a-4d8e-af69-9a2d948619f0 Debian Base (OldStable)
+b7113a83-4ec6-4bea-9010-f971c2c4b1ed Fedora
+0cef8a06-2542-47d0-af5c-1b1041dde3f3 Kubuntu LTS (old)
+567f8251-a4cc-4b80-bf08-f115c7df15b6 Kubuntu LTS
+cbba7cad-9945-4af3-9f5a-3a2f83067422 NetBSD
+2e16ea31-e7f4-48f1-87f7-b3e15cc2d701 OpenBSD
+dd9d04bc-0021-4fa8-828b-80300a687099 Oracle Linux 6
+ed17f4cf-c333-4fc4-b0ff-0765607c1323 Ubuntu Desktop LTS (old)
+5df9032f-2149-4a35-aeec-7b7489ef1fb7 Ubuntu Desktop LTS
+a11070bc-845f-4304-9d54-2ea1277ddd64 Ubuntu Server LTS (old)
+5e85d36b-d841-41ff-ae73-8ac155b5d22b Ubuntu Server LTS
+722c713c-d65d-4468-a460-41c66708bc65 openSUSE Desktop
+10b79e4d-9362-4f30-9223-3105c9a84bce Debian Base
+ea595f8d-599d-49c0-b6c8-8e1d8a1c11ef Debian Desktop
+9fb25382-b538-4af7-9e13-92c1c3596014 Windows Server 2008 R2
+a9d20935-7b46-4608-bf70-79f0d4099a48 Windows Server 2012 R2
+327f16f5-1a39-4e7a-9dbb-c1878bde8e48 Windows Server 2012
+d3ecf3ba-6b6d-41f5-8d90-cf53c1874ed3 vmcatcher-CERNVM-3.3.0-40GB-disk1
+ba164479-610e-4d64-ac3e-e4188fa7e547 vmcatcher-ScientificLinux-65-minimal-disk1
+0f97f946-0e8f-46f8-90f5-9e16fb3cc36c vmcatcher-CentOS-65-minimal-disk1
+acde50fc-1d41-463a-afa2-a6f33bc16124 vmcatcher-UbuntuServer-14.04-LTS-disk1
+20840fce-cb93-4f20-983f-879d7f8454c0 Windows 7 Professional
+725fa597-7409-4597-bc55-d1b3cde53467 vmcatcher-wuwj01_141020
+d0765578-61a5-4d9b-bd91-75d67d1dee19 FreeBSD
+44d04344-8698-462b-9165-3c0895419f1f CELAR-Windows-Server-2012-R2-v3
+5b1ac218-1cdf-4286-8000-09991bd07752 CELAR-Ubuntu-14.04-LTS-v2
+fdcc2ba9-656f-4d89-8407-123a7ad7840e dummyvm
+1948828d-edc2-41f1-b6ff-0eacbcd72ba8 vmcatcher-DCIBridge-local-cloud-3.6.3.2
+b7afb67b-1553-42c8-a512-5e491e3d7db0 CELAR-SCAN-Scheduler-Ubuntu-14.04-LTS
+f4f53b8c-e104-4f3b-93e9-53e9fdc915b8 vmcatcher-dummyvm
+56902f6e-00ab-42f6-b1e3-b8ff3992b49a vmcatcher-UbuntuServer-12.04-x86_64-base-disk1
+1b574e3a-ae7f-414d-b492-e636b786f961 CentOS Base Images
+da89ff2f-05e4-46cb-9f49-404e998fa8c3 Centos-CELAR-Orchestrator
+e3e8a14a-ebae-4375-9477-44eeff34396b naskos_debian_hbase
+43864d6b-e9d8-47cf-88dc-a099ee095078 Ubuntu-CELAR-Base

@@ -1,5 +1,6 @@
 package tools;
 
+import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -17,9 +18,20 @@ public class CSARParserTest {
     public CSARParserTest() {
     }
 
-    
+            
+      static Map<String, String> getScripts(Map<String, String> in){
+            Map<String, String>  rv = new java.util.TreeMap();
+            for(String k: in.keySet()){
+                if(k.endsWith("Script")){
+                    rv.put(k.substring(0, k.indexOf("Script")), in.get(k));
+                }
+            }
+            return rv;
+        }
 
     public static void main(String args[]){
+        
+
         
         try {
             //create a Parser instance
@@ -48,6 +60,7 @@ public class CSARParserTest {
                     for(Entry prop: tc.getComponentProperties(component).entrySet()){
                         System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
                     }
+                    System.out.println(getScripts(tc.getComponentProperties(component)));
                 }
             }
             

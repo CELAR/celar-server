@@ -119,7 +119,7 @@
                         <require>postgresql-server</require>
                         <require>postgresql</require>
                         <require>python</require>
-                        <require>pip</require>
+                        <require>python-pip</require>
                         <require>python-devel</require>
                         <require>postgresql-devel</require>
                         <require>gcc</require>                          
