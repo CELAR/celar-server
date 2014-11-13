@@ -48,6 +48,7 @@ public class Init {
               System.out.println(line);
             }
             br.close();
+            System.out.println("DONE init");
         } catch (Exception e){
             e.printStackTrace();
         } 

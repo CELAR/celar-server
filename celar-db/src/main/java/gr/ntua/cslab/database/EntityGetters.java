@@ -279,7 +279,7 @@ public class EntityGetters {
         if(userid!=0) constrains.add(new Constrain("user_id",""+userid));
         if(moduleName!=null) constrains.add(new Constrain("Module.name",moduleName));
         if(componentDescription!=null) constrains.add(new Constrain("Component.description",componentDescription));
-
+        LOG.info("Searching for constrains: "+constrains);
         List<Class> classes = new LinkedList();
         classes.add(Application.class);
         classes.add(Module.class);

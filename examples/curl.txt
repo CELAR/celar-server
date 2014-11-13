@@ -1,5 +1,5 @@
 #describe
-curl http://localhost:8080/application/describe/ --data-binary @testApp09.csar -X POST -H "Content-Type: application/octet-stream" -ik
+curl http://localhost:8080/application/describe/ --data-binary @test1.csar -X POST -H "Content-Type: application/octet-stream" -ik
 
 #get description
 curl http://localhost:8080/application/0000000009.001.000

@@ -75,14 +75,14 @@ public class Applications {
 
     @GET
     @Path("search/")
-    public ApplicationInfoList searchApplicationsByProperty(
+    public static ApplicationInfoList searchApplicationsByProperty(
             @DefaultValue("0") @QueryParam("submitted_start") long submittedStart,
             @DefaultValue("0") @QueryParam("submitted_end") long submittedEnd,
-            @DefaultValue("Null") @QueryParam("description") String description,
-            @DefaultValue("0") @QueryParam("user_id") int userid,
-            @DefaultValue("Null") @QueryParam("module_name") String moduleName,
-            @DefaultValue("Null") @QueryParam("component_description") String componentDescription,
-            @DefaultValue("Null") @QueryParam("provided_resource_id") String providedResourceId) throws Exception {
+            @QueryParam("description") String description,
+            @QueryParam("user_id") int userid,
+            @QueryParam("module_name") String moduleName,
+            @QueryParam("component_description") String componentDescription,
+            @QueryParam("provided_resource_id") String providedResourceId) throws Exception {
         ApplicationInfoList rv = new ApplicationInfoList();
         List<Application> apps= searchApplication(submittedStart, submittedEnd,
                 description ,userid, moduleName, componentDescription, providedResourceId);

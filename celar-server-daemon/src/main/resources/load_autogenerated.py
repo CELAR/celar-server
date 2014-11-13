@@ -59,8 +59,8 @@ if __name__ == "__main__":
 
 
     # add 'VM_FLAVOR' entry on the RESOURCE_TYPE table
-    cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (1, 'VM_FLAVOR')")
-
+    cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (DEFAULT, 'VM_FLAVOR') returning id")
+    type_table_id = cursor.fetchone()[0]
 
     # itreate through all available flavors and insert data in the DB
     for flav in flavors:
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         ram= flav['ram'];cores= flav['vcpus']; disk=flav['disk']
 
         # #insert flavors into  PROVIDED_RESOURCE table
-        cursor.execute("INSERT INTO PROVIDED_RESOURCE VALUES (DEFAULT , 1, '%s') returning id" % (flav_id))
+        cursor.execute("INSERT INTO PROVIDED_RESOURCE VALUES (DEFAULT , %d, '%s') returning id" % (type_table_id, flav_id))
         resources_table_id = cursor.fetchone()[0]
 
         #insert into SPEC Description table
@@ -78,11 +78,12 @@ if __name__ == "__main__":
 
 
     # add 'VM_IMAGE' entry on the RESOURCE_TYPE table
-    cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (2, 'VM_IMAGE')"  )
+    cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (DEFAULT, 'VM_IMAGE')  returning id"  )
+    type_table_id = cursor.fetchone()[0]
     # itreate through all available images and insert data in the DB
     for img in images:
         # #insert into  PROVIDED_RESOURCE table
-        cursor.execute("INSERT INTO PROVIDED_RESOURCE VALUES (DEFAULT , 2, '%s') returning id" % ( img[0]))
+        cursor.execute("INSERT INTO PROVIDED_RESOURCE VALUES (DEFAULT , %d, '%s') returning id" % ( type_table_id, img[0]))
         resources_table_id = cursor.fetchone()[0]
         #insert into SPEC Description table
         cursor.execute("""INSERT INTO SPECS VALUES (DEFAULT, %d, '%s','%s' ); """ %  ( resources_table_id,  "name", img[1] ))
@@ -95,22 +96,19 @@ if __name__ == "__main__":
     # Lookup everything
 
 
-    print "-------------------- RESOURCE TYPES ------------------------"
     cursor.execute("SELECT * FROM RESOURCE_TYPE")
     # get the number of rows in the resultset
     numrows = int(cursor.rowcount)
-    print str(numrows) + "Resource Types"
+    print "Added "+str(numrows) + " Resource Types"
 
-    print "-------------------- PROVIDED RESOURCES ------------------------"
     cursor.execute("SELECT * FROM PROVIDED_RESOURCE")
     numrows = int(cursor.rowcount)
-    print str(numrows) + "Provided Resources"
+    print "Added "+str(numrows) + " Provided Resources"
 
-    print "-------------------- SPECS ------------------------"
     #select all provided resources
     cursor.execute("SELECT * FROM SPECS")
     numrows = int(cursor.rowcount)
-    print str(numrows) + "Specs"
+    print "Added "+str(numrows) + " Specs"
 
     #close the cursor
     cursor.close()

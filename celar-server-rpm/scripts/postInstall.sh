@@ -32,6 +32,8 @@ configure_server(){
 create_service(){
 	/bin/ln -sv $CELAR_SERVER_HOME/bin/celar-server /etc/init.d/
 }
+
+echo Running Post-Install Script
 create_keystore;
 
 configure_server;
@@ -40,7 +42,6 @@ create_service
 
 /bin/rm $CELAR_SERVER_HOME/lib/slf4j-jdk14-1.4.2.jar
 
-service celar-server start;
 
 
 ############################################ DATABASE   
@@ -281,5 +282,7 @@ psql -U celaruser -d celardb -a -f db_temp &>/dev/null
 
 echo "CELAR DB is created"
 rm db_temp
+
+service celar-server start
 
 echo "ALL DONE"
