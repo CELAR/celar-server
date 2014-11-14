@@ -41,7 +41,7 @@ import com.sixsq.slipstream.util.SerializationUtil;
 
 
 public class SlipStreamSSService {
-	private String user, password, url, cookie, cookieFile;
+	private String user, password, url, cookie, cookieFile, connectorName;
 	private boolean cookieAuth;
     public  Logger logger = Logger.getLogger(SlipStreamSSService.class);
     public HashMap<String,String> baseImageReferences; //imageName-reference
@@ -456,7 +456,7 @@ public class SlipStreamSSService {
 		HashMap<String, String> imageIds = baseImages.get(imageName);
 		if(imageIds==null){
 			imageIds = new HashMap<String, String>();
-			imageIds.put("Flexiant", imageName);
+			imageIds.put(connectorName, imageName);
 			imageIds.put("okeanos", imageName);
 			//logger.error("No imageIDs for image with name: "+imageName);
 			//throw new Exception("No imageIDs for image with name: "+imageName);
@@ -517,8 +517,20 @@ public class SlipStreamSSService {
 		this.user = user;
 		this.password = password;
 		this.url = url;
+		this.connectorName="Flexiant";
 		init();
 	}
+	
+	public SlipStreamSSService(String user, String password, String url, String connectorName) throws ValidationException {
+		super();
+		logger.info("Init ssService user: "+user+" password: "+password+" url: "+url);
+		this.user = user;
+		this.password = password;
+		this.url = url;
+		this.connectorName=connectorName;
+		init();
+	}
+	
 	
 	public SlipStreamSSService(String user, String cookie, String url, Boolean cookieAuth) throws Exception {
 		super();
@@ -535,7 +547,7 @@ public class SlipStreamSSService {
 		baseImageReferences = new HashMap<String,String>();
 		baseImages = new HashMap<>();
 		HashMap<String,String> temp = new HashMap<String, String>();
-		temp.put("Flexiant", "81aef2d3-0291-38ef-b53a-22fcd5418e60");
+		temp.put(connectorName, "81aef2d3-0291-38ef-b53a-22fcd5418e60");
 		temp.put("okeanos", "ed17f4cf-c333-4fc4-b0ff-0765607c1323");
 		temp.put("stratuslab", "HZTKYZgX7XzSokCHMB60lS0wsiv");
 		baseImages.put("ubuntu-12.04", temp);
@@ -686,21 +698,21 @@ public class SlipStreamSSService {
 		parameter.setDefaultValue("default");
 		ret.add(parameter);
 		
-		parameterName = "Flexiant.ram";
+		parameterName = connectorName+".ram";
 		description = "ram";
 		value = ram;
 	
 		parameter = new ModuleParameter(parameterName, value, description);
-		parameter.setCategory("Flexiant");
+		parameter.setCategory(connectorName);
 		parameter.setDefaultValue(ram);
 		ret.add(parameter);
 		
-		parameterName = "Flexiant.cpu";
+		parameterName = connectorName+".cpu";
 		description = "cpu";
 		value = cpu;
 	
 		parameter = new ModuleParameter(parameterName, value, description);
-		parameter.setCategory("Flexiant");
+		parameter.setCategory(connectorName);
 		parameter.setDefaultValue(cpu);
 		ret.add(parameter);
 		
