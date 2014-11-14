@@ -394,7 +394,7 @@ public class SlipStreamSSService {
             for(int i=0;i<number;i++) {
             	String id =vmsToBeDeleted.get(i);
             	String s = id.substring(id.indexOf('.')+1, id.length());
-            	System.out.println(s);
+            	logger.info("ID: "+s);
                 ids+=s;
                 if(i!=number-1) {
                     ids+=" ";
@@ -407,7 +407,7 @@ public class SlipStreamSSService {
                 HashMap<String,String> ips = this.getDeploymentIPs(deploymnetId);
                 List<String> ret = new ArrayList<String>();
                 for(String key : ids) {
-                	ret.add(ips.get(key));
+                	ret.add(ips.get(key)+":hostname");
                 }
                 return ret;
     	}
