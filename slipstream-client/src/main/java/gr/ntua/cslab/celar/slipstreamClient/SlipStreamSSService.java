@@ -407,7 +407,7 @@ public class SlipStreamSSService {
                 HashMap<String,String> ips = this.getDeploymentIPs(deploymnetId);
                 List<String> ret = new ArrayList<String>();
                 for(String key : ids) {
-                	ret.add(ips.get(key)+":hostname");
+                	ret.add(ips.get(key+":hostname"));
                 }
                 return ret;
     	}
