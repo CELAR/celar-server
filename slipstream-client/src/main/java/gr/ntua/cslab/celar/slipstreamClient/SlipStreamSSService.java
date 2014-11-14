@@ -63,7 +63,7 @@ public class SlipStreamSSService {
 		return null;
 	}*/
 	public String writeToFile(String script) throws IOException{
-		logger.debug(script);
+		logger.info("writing file:" + script);
 		BufferedWriter writer = null;
 		String file = "/tmp/script.sh";
 		
