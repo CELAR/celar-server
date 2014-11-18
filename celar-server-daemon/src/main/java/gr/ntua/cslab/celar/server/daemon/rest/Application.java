@@ -160,9 +160,12 @@ public class Application {
                 List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                 Set<Target> targets = new HashSet<Target>();
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
-                    if (prop.getKey().toString().equals("VMI")) {
+                    if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                     	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
-                    	imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference(prop.getValue().toString()));
+                    	if(prop.getValue().toString().contains("Ubuntu"))                    	
+                    		imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("ubuntu-12.04"));
+                    	else
+                    		imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference(prop.getValue().toString()));
                     } 
                     else if (prop.getKey().toString().equals("executeScript")) {
                     	logger.info("\t\t\t"+prop.getKey());
@@ -171,23 +174,26 @@ public class Application {
                 		Target t = new Target(Target.EXECUTE_TARGET, ServerStaticComponents.ssService.patchExecuteScript(prop.getValue().toString()));
                 		targets.add(t);
                     }
-                    else if (prop.getKey().toString().contains("Add")) {
+                    else if (prop.getKey().toString().contains("scaleOut")) {
                     	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Add script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
                 		Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
                 		targets.add(t);
                     }
-                    else if (prop.getKey().toString().contains("Remove")) {
+                    /*else if (prop.getKey().toString().contains("Remove")) {
                     	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Remove script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
                 		Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
                 		targets.add(t);
-                    }
+                    }*/
                     else if (prop.getKey().toString().equals("flavor")) {
                     	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
                     	parameters.addAll(ServerStaticComponents.ssService.createFlavorParameters(prop.getValue().toString()));
+                    }
+                    else{
+                    	logger.info("\t\t\t"+prop.getKey());
                     }
                 }
                 imModule.setTargets(targets);

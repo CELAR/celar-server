@@ -41,7 +41,7 @@ import com.sixsq.slipstream.util.SerializationUtil;
 
 
 public class SlipStreamSSService {
-	private String user, password, url, cookie, cookieFile;
+	private String user, password, url, cookie, cookieFile, connectorName;
 	private boolean cookieAuth;
     public  Logger logger = Logger.getLogger(SlipStreamSSService.class);
     public HashMap<String,String> baseImageReferences; //imageName-reference
@@ -62,7 +62,35 @@ public class SlipStreamSSService {
 		}
 		return null;
 	}*/
-    
+	public String writeToFile(String script) throws IOException{
+		logger.info("writing file:" + script);
+		BufferedWriter writer = null;
+		String file = "/tmp/script.sh";
+		
+		try
+		{
+		    writer = new BufferedWriter( new FileWriter(file));
+		    writer.write( script);
+
+		}
+		catch ( IOException e)
+		{
+		}
+		finally
+		{
+		    try
+		    {
+		        if ( writer != null)
+		        writer.close( );
+		    }
+		    catch ( IOException e)
+		    {
+		    	throw e;
+		    }
+		}
+		return file;
+	}
+	
 	private String writeXML(String xml) throws IOException{
 		logger.debug(xml);
 		BufferedWriter writer = null;
@@ -346,8 +374,45 @@ public class SlipStreamSSService {
                 }
             }
             this.removeVM(deploymnetId, type, ids);
-	}
-
+        }
+        
+        public List<String> removeVMIDs(String deploymnetId, String type, int number) throws Exception {
+//    		logger.info("Removing vm: "+type+"."+ids+" from deployment: "+deploymnetId);
+                HashMap<String,String> ips = this.getDeploymentIPs(deploymnetId);
+                List<String> vmsToBeDeleted = new ArrayList<>(number);
+                for(Entry<String,String> vm : ips.entrySet()) {
+                    if(vm.getKey().startsWith(type) && vmsToBeDeleted.size()<number) {
+                        vmsToBeDeleted.add(vm.getKey().split(":")[0]); // keeping only the identifier, no the "hostname" keyword
+                    }
+                }
+                return vmsToBeDeleted;
+    	}
+        
+        public void removeVMswithIDs(String deploymnetId, List<String> vmsToBeDeleted, String type) throws Exception {
+            String ids = "";
+            int number = vmsToBeDeleted.size();
+            for(int i=0;i<number;i++) {
+            	String id =vmsToBeDeleted.get(i);
+            	String s = id.substring(id.indexOf('.')+1, id.length());
+            	logger.info("ID: "+s);
+                ids+=s;
+                if(i!=number-1) {
+                    ids+=" ";
+                }
+            }
+            this.removeVM(deploymnetId, type, ids);
+    	}
+        
+        public List<String> translateIPs(String deploymnetId, List<String> ids) throws Exception {
+                HashMap<String,String> ips = this.getDeploymentIPs(deploymnetId);
+                List<String> ret = new ArrayList<String>();
+                for(String key : ids) {
+                	ret.add(ips.get(key+":hostname"));
+                }
+                return ret;
+    	}
+        
+        
 	public void waitForReadyState(String deploymnetId) throws Exception {
 		logger.info("Waiting for ready state deploymentID: "+deploymnetId);
 		while(true){
@@ -391,7 +456,7 @@ public class SlipStreamSSService {
 		HashMap<String, String> imageIds = baseImages.get(imageName);
 		if(imageIds==null){
 			imageIds = new HashMap<String, String>();
-			imageIds.put("Flexiant", imageName);
+			imageIds.put(connectorName, imageName);
 			imageIds.put("okeanos", imageName);
 			//logger.error("No imageIDs for image with name: "+imageName);
 			//throw new Exception("No imageIDs for image with name: "+imageName);
@@ -452,8 +517,20 @@ public class SlipStreamSSService {
 		this.user = user;
 		this.password = password;
 		this.url = url;
+		this.connectorName="Flexiant";
 		init();
 	}
+	
+	public SlipStreamSSService(String user, String password, String url, String connectorName) throws ValidationException {
+		super();
+		logger.info("Init ssService user: "+user+" password: "+password+" url: "+url);
+		this.user = user;
+		this.password = password;
+		this.url = url;
+		this.connectorName=connectorName;
+		init();
+	}
+	
 	
 	public SlipStreamSSService(String user, String cookie, String url, Boolean cookieAuth) throws Exception {
 		super();
@@ -470,7 +547,7 @@ public class SlipStreamSSService {
 		baseImageReferences = new HashMap<String,String>();
 		baseImages = new HashMap<>();
 		HashMap<String,String> temp = new HashMap<String, String>();
-		temp.put("Flexiant", "81aef2d3-0291-38ef-b53a-22fcd5418e60");
+		temp.put(connectorName, "81aef2d3-0291-38ef-b53a-22fcd5418e60");
 		temp.put("okeanos", "ed17f4cf-c333-4fc4-b0ff-0765607c1323");
 		temp.put("stratuslab", "HZTKYZgX7XzSokCHMB60lS0wsiv");
 		baseImages.put("ubuntu-12.04", temp);
@@ -621,21 +698,21 @@ public class SlipStreamSSService {
 		parameter.setDefaultValue("default");
 		ret.add(parameter);
 		
-		parameterName = "Flexiant.ram";
+		parameterName = connectorName+".ram";
 		description = "ram";
 		value = ram;
 	
 		parameter = new ModuleParameter(parameterName, value, description);
-		parameter.setCategory("Flexiant");
+		parameter.setCategory(connectorName);
 		parameter.setDefaultValue(ram);
 		ret.add(parameter);
 		
-		parameterName = "Flexiant.cpu";
+		parameterName = connectorName+".cpu";
 		description = "cpu";
 		value = cpu;
 	
 		parameter = new ModuleParameter(parameterName, value, description);
-		parameter.setCategory("Flexiant");
+		parameter.setCategory(connectorName);
 		parameter.setDefaultValue(cpu);
 		ret.add(parameter);
 		
