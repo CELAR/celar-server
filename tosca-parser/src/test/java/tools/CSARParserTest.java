@@ -23,7 +23,7 @@ public class CSARParserTest {
         
         try {
             //create a Parser instance
-  Parser tc  = new CSARParser("CassandraElasticitySubmission.csar");
+  Parser tc  = new CSARParser("DataPlaySubmission.csary");
             
 
             
@@ -46,7 +46,10 @@ public class CSARParserTest {
                     
                     //component properties
                     for(Entry prop: tc.getComponentProperties(component).entrySet()){
-                        System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
+                        if(!prop.getKey().toString().toLowerCase().contains("script"))
+                            System.out.println("\t\t\t"+prop.getKey()+": "+prop.getValue());
+                        else
+                            System.out.println("\t\t\t"+prop.getKey()+": "+"[ some string script ");
                     }
                 }
             }
