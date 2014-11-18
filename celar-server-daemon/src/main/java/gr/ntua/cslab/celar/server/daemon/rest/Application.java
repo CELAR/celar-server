@@ -160,7 +160,7 @@ public class Application {
                 List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                 Set<Target> targets = new HashSet<Target>();
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
-                    if (prop.getKey().toString().equals("VMI")) {
+                    if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                     	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
                     	imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference(prop.getValue().toString()));
                     } 
@@ -171,7 +171,7 @@ public class Application {
                 		Target t = new Target(Target.EXECUTE_TARGET, ServerStaticComponents.ssService.patchExecuteScript(prop.getValue().toString()));
                 		targets.add(t);
                     }
-                    else if (prop.getKey().toString().contains("Add")) {
+                    else if (prop.getKey().toString().contains("scaleOut")) {
                     	logger.info("\t\t\t"+prop.getKey());
                         logger.debug("Add script: " + prop.getValue().toString());
                     	parameters.addAll(ServerStaticComponents.ssService.getOutputParamsFromScript(prop.getValue().toString()));
