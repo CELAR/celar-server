@@ -162,7 +162,10 @@ public class Application {
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
                     if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                     	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
-                    	imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference(prop.getValue().toString()));
+                    	if(prop.getValue().toString().contains("Ubuntu"))                    	
+                    		imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("Ubuntu 12.04.1 LTS"));
+                    	else
+                    		imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference(prop.getValue().toString()));
                     } 
                     else if (prop.getKey().toString().equals("executeScript")) {
                     	logger.info("\t\t\t"+prop.getKey());

@@ -550,7 +550,7 @@ public class SlipStreamSSService {
 		temp.put(connectorName, "81aef2d3-0291-38ef-b53a-22fcd5418e60");
 		temp.put("okeanos", "ed17f4cf-c333-4fc4-b0ff-0765607c1323");
 		temp.put("stratuslab", "HZTKYZgX7XzSokCHMB60lS0wsiv");
-		baseImages.put("Ubuntu 12.04.1 LTS", temp);
+		baseImages.put("ubuntu-12.04", temp);
 		
 		baseParameters = new ArrayList<ModuleParameter>();
 		/*String parameterName = "Flexiant.ram";
