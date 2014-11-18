@@ -166,8 +166,10 @@ public class Main {
 //        Logger.getLogger(Main.class.getName()).info(properties.toString());
         String username = ServerStaticComponents.properties.getProperty("slipstream.username"),
                 password = ServerStaticComponents.properties.getProperty("slipstream.password"),
-                slipstreamHost = ServerStaticComponents.properties.getProperty("slipstream.url");
+                slipstreamHost = ServerStaticComponents.properties.getProperty("slipstream.url"),
+        		connectorName = ServerStaticComponents.properties.getProperty("slipstream.connector.name");
+        Logger.getLogger(Main.class.getName()).info("Init ssService user: "+username+" password: "+password+" url: "+slipstreamHost+" connector: "+connectorName);
 
-        ServerStaticComponents.ssService = new SlipStreamSSService(username, password, slipstreamHost);
+        ServerStaticComponents.ssService = new SlipStreamSSService(username, password, slipstreamHost, connectorName);
     }
 }

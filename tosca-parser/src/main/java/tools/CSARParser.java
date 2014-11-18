@@ -238,16 +238,18 @@ public class CSARParser implements Parser{
         }
     }
 
-    private  void handleArtifact(TArtifactTemplate a) {
+    private  void handleArtifact(TArtifactTemplate a) throws Exception {
         String artifactId = a.getId();
         logger.debug("handling artifact: "+artifactId);
         Map<String, String> componentProps = null;
         String scriptName = null;
+        //in all the component pro
         for (Map.Entry<String, Map<String, String>> componentPropsEntry : componentsProperties.entrySet()) {
             for (Map.Entry<String, String> propertiesEntry : componentPropsEntry.getValue().entrySet()) {
                 if (propertiesEntry.getValue()!=null && propertiesEntry.getValue().equals(artifactId)) {
                     scriptName=propertiesEntry.getKey();
                     componentProps = componentPropsEntry.getValue();
+                    if(a.getArtifactReferences()==null) continue;
                     //assuming one artifact refference per artifact template
                     TArtifactReference ar = a.getArtifactReferences().getArtifactReference().get(0);
                     String scriptPath = ar.getReference();

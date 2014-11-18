@@ -283,6 +283,7 @@ psql -U celaruser -d celardb -a -f db_temp &>/dev/null
 echo "CELAR DB is created"
 rm db_temp
 
+chkconfig --add celar-server
 service celar-server start
 
 echo "ALL DONE"
