@@ -163,7 +163,7 @@ public class Application {
                     if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                     	logger.info("\t\t\t"+prop.getKey()+" : "+prop.getValue());
                     	if(prop.getValue().toString().contains("Ubuntu"))                    	
-                    		imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("Ubuntu 12.04.1 LTS"));
+                    		imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference("ubuntu-12.04"));
                     	else
                     		imModule.setModuleReference(ServerStaticComponents.ssService.getImageReference(prop.getValue().toString()));
                     } 
