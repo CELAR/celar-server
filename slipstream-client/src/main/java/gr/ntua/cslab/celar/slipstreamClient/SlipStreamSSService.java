@@ -609,7 +609,7 @@ public class SlipStreamSSService {
 				+ "ip=$(ss-get hostname) \n"
 				+ "hostname=$(hostname) \n"
 				+ "echo $ip $hostname >> /etc/hosts \n"
-				+ "SERVER_IP=$(ss-get orchestrator-Flexiant:hostname) \n"
+				+ "SERVER_IP=$(ss-get orchestrator-"+connectorName+":hostname) \n"
 				+ "CELAR_REPO=http://snf-175960.vm.okeanos.grnet.gr \n"
 				+ "JC_VERSION=LATEST \n"
 				+ "JC_ARTIFACT=JCatascopia-Agent \n"
