@@ -1,7 +1,7 @@
 
-package gr.ntua.cslab.celar.server.daemon.rest.beans;
+package gr.ntua.cslab.celar.server.beans.structured;
+import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
-import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -14,23 +14,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ApplicationInfoList extends ReflectiveEntity {
+public class ApplicationList extends ReflectiveEntity {
     
-    private List<ApplicationInfo> applications;
+    public List<Application> applications;
 
-    public ApplicationInfoList() {
+    public ApplicationList() {
         applications = new java.util.LinkedList();
     }
 
-    public ApplicationInfoList(List<ApplicationInfo> applications) {
+    public ApplicationList(List<Application> applications) {
         this.applications = applications;
     }
 
-    public List<ApplicationInfo> getApplications() {
+    public List<Application> getApplications() {
         return applications;
     }
 
-    public void setApplications(List<ApplicationInfo> applications) {
+    public void setApplications(List<Application> applications) {
         this.applications = applications;
     }
     

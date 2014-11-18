@@ -9,7 +9,7 @@ import com.sixsq.slipstream.persistence.Target;
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationInfoList;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationList;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfoList;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
@@ -75,7 +75,7 @@ public class Applications {
 
     @GET
     @Path("search/")
-    public static ApplicationInfoList searchApplicationsByProperty(
+    public static ApplicationList searchApplicationsByProperty(
             @DefaultValue("0") @QueryParam("submitted_start") long submittedStart,
             @DefaultValue("0") @QueryParam("submitted_end") long submittedEnd,
             @QueryParam("description") String description,
@@ -83,12 +83,14 @@ public class Applications {
             @QueryParam("module_name") String moduleName,
             @QueryParam("component_description") String componentDescription,
             @QueryParam("provided_resource_id") String providedResourceId) throws Exception {
-        ApplicationInfoList rv = new ApplicationInfoList();
+        ApplicationList rv = new ApplicationList();
         List<Application> apps= searchApplication(submittedStart, submittedEnd,
                 description ,userid, moduleName, componentDescription, providedResourceId);
         for(Application a: apps){
-            rv.getApplications().add(new ApplicationInfo(a));
+           
+            rv.applications.add(a);
         }
+         System.out.println(rv.applications);
         return rv;
     }
 

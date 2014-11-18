@@ -15,7 +15,6 @@ import gr.ntua.cslab.celar.server.beans.Spec;
 import gr.ntua.cslab.celar.server.beans.User;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.ComponentInfo;
-import gr.ntua.cslab.celar.server.beans.structured.EntityList;
 import gr.ntua.cslab.celar.server.beans.structured.ModuleInfo;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

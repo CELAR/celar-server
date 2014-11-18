@@ -21,3 +21,6 @@ curl http://localhost:8080/metrics/put/ --data-binary @metric_test -X POST -H "C
 
 #remove metric
 curl http://localhost:8080/metrics/remove/17
+
+#search
+curl http://localhost:8080/application/search?user_id=1

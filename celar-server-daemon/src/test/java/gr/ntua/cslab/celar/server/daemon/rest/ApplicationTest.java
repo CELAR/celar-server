@@ -20,12 +20,14 @@ package gr.ntua.cslab.celar.server.daemon.rest;
 
 import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.ApplicationInfoList;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationList;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
@@ -138,8 +140,18 @@ public class ApplicationTest {
     
     static void search() throws Exception{
 //        ApplicationInfoList ail = Applications.searchApplicationsByProperty(0, System.currentTimeMillis(),app.description,user.id, module.name, component.description, null);
-         ApplicationInfoList ail = Applications.searchApplicationsByProperty(0, 0,app.description,user.id, module.name, component.description, null);
+         ApplicationList ail = Applications.searchApplicationsByProperty(0, 0,app.description,user.id, module.name, component.description, null);
          ail.marshal(System.out);
+         
+         FileOutputStream fos = new FileOutputStream("testSearch");
+         ail.marshal(fos);
+         fos.close();
+         
+         InputStream is = new FileInputStream("testSearch");
+         ApplicationList al = new ApplicationList();
+         al.unmarshal(is);
+         
+         
     }
     
     
