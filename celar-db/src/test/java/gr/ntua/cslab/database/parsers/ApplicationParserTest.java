@@ -9,11 +9,9 @@ package gr.ntua.cslab.database.parsers;
 import gr.ntua.cslab.celar.server.beans.*;
 
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityTools.delete;
-import static gr.ntua.cslab.database.EntityTools.store;
-import static gr.ntua.cslab.database.EntityTools.store;
-import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.EntityTools.store;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.*;
 import java.io.FileOutputStream;
@@ -55,7 +53,7 @@ public class ApplicationParserTest {
     public static void createBaseline(){
         try{
             
-        chris = new User("chris");
+        chris = new User("chris", "dummy cred");
         store(chris);        
         //create, save and retrieve a resource type
         vm = new ResourceType("VM_FLAVOR");
@@ -68,13 +66,13 @@ public class ApplicationParserTest {
         store(coreCount);
         ramSize = new Spec(tinyVM, "ram", "2048");
         store(ramSize);
-        app = new Application("test_application", new MyTimestamp(System.currentTimeMillis()), chris);
+        app = new Application("test_application", new MyTimestamp(System.currentTimeMillis()), chris, "/dummy/csar");
         store(app);
         module = new Module("test_module", app);
         store(module);
         component = new Component(module, "test module", vm);
         store(component);
-        depl = new Deployment(app, ""+(new java.util.Random()).nextInt());
+        depl = new Deployment(app, ""+(new java.util.Random()).nextInt(), "1.2.3.4");
         store(depl);
         resource = new Resource(depl, component, tinyVM);
         System.out.println(resource);
@@ -124,7 +122,7 @@ public class ApplicationParserTest {
      
         //export the application description to a JSONObject
         System.out.println("here");
-        ApplicationInfo ai = exportApplication(app);
+        DeployedApplication ai = exportApplication(app, depl.getId());
         System.out.println("Hello");
         System.out.println(ai.toString(true));
         FileOutputStream fo = new FileOutputStream("test");

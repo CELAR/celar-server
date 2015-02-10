@@ -65,6 +65,8 @@ public interface Parser {
      */
     public String getToscaContents();
     
+    public String getDescriptionFile();
+    
     
     
 }

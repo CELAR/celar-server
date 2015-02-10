@@ -15,7 +15,10 @@ server.plain.port = 8080
 # SlipStream properties
 slipstream.username = ioannis
 slipstream.password = a1s2d3f4
+<<<<<<< HEAD
 slipstream.connector.name = Flexiant
+slipstream.url = https://109.231.121.23
+=======
 slipstream.url = https://109.231.121.23
 
 #IaaS properties

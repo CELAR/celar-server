@@ -24,10 +24,25 @@ CLASSPATH=$CLASSPATH:$(echo $LIB_DIR/*.jar | tr ' ' ':')
 CLASSPATH=$CLASSPATH:$CELAR_SERVER_HOME/celar-server.jar
 PIDFILE=/tmp/celar-server.pid
 
+
+init() {
+    pip install kamaki &>/dev/null
+    pip install psycopg2 &>/dev/null
+    java -Dname=celar-server -cp $CLASSPATH  gr.ntua.cslab.celar.server.daemon.Init &
+}
+
 start() {
+    echo Starting the Celar Server
     [ -f $PIDFILE ] && echo "CELAR Server already running ($(cat $PIDFILE))" && exit 0
     java -Dname=celar-server -cp $CLASSPATH  gr.ntua.cslab.celar.server.daemon.Main &
     echo $! > $PIDFILE;
+    #check if celar db exists and if not init
+    test=$(echo "SELECT * FROM RESOURCE_TYPE" | psql -U celaruser celardb | wc -l)
+    if [ "$test" = "4" ]; 
+    then  
+            echo "Will need to init the Database"
+            init;
+    fi
 }
 
 stop() {
@@ -58,6 +73,9 @@ case $1 in
     ;;
     status)   
         status;
+    ;;
+    init)   
+        init;
     ;;
     *)      
         echo "$0 {start|stop|status|restart}"

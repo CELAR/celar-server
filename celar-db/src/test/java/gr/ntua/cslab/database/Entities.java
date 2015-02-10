@@ -45,7 +45,7 @@ public class Entities {
             String username = "ggian";
             
             //create a user entity
-                user = new User(username);
+                user = new User(username, "dummy_cred");
 
             //the user has not been given an id yet (0)
                 System.out.println("User.id=" + user.getId());
@@ -92,7 +92,7 @@ public class Entities {
                 System.out.println(spl);
 
             // Create an application structure
-                app = new Application("test_application", user);
+                app = new Application("test_application", user, "dummy/csar/location");
                 System.out.println("storiing app");
                 store(app);
                 //app = new Application (app.getId());
@@ -105,7 +105,7 @@ public class Entities {
                 System.out.println(new Component(component.getId()));
                 assertTrue(component.equals(new Component(component.getId())));
                 
-                metric = new Metric(component);
+                metric = new Metric(component, "my metric");
                 store(metric);
                 assertTrue(metric.equals( new Metric(metric.getId())));
         
@@ -117,7 +117,7 @@ public class Entities {
     
     public static void testDeployment() throws Exception{
         //================ Actual deployment testing ==============
-            depl = new Deployment(app, ""+random.nextInt());
+            depl = new Deployment(app, ""+random.nextInt(), "1.2.3.4");
             store(depl);
             assertTrue(depl.equals(getDeploymentById(depl.getId())));
             

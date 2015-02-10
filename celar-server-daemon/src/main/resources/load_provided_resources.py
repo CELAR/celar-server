@@ -1,15 +1,25 @@
 #!/usr/bin/python	
 __author__ = 'cmantas'
+
+print "Loading resources"
+
 import psycopg2
 from kamaki.clients.astakos import AstakosClient
 from kamaki.clients.cyclades import CycladesClient
 from logging import getLogger, ERROR
+from sys import argv
+
+if len(argv)<2:
+	print "Please define a host"
+	exit()
+HOST=argv[1]
+print "Using host: "+HOST
 
 
 # init synneffo  stuff
 
 AUTHENTICATION_URL="https://accounts.okeanos.grnet.gr/identity/v2.0"
-TOKEN="s2ltU4XSpKf3rnng76mjZFc9zxkKpwrpMd11OMIgiZ8"
+TOKEN="C3-Y2yBdIE--O3vhBkRqRseP8aY5zKKbHifuYaZImkM"
 synnefo_user = AstakosClient(AUTHENTICATION_URL, TOKEN)
 synnefo_user.logger.setLevel(ERROR)
 getLogger().setLevel(ERROR)
@@ -19,7 +29,7 @@ cyclades_client = CycladesClient(CYCLADES_URL, TOKEN)
 
 # connect to db
 
-db = psycopg2.connect(host="localhost", user="celaruser", password="celar-user", database="celardb")
+db = psycopg2.connect(host=HOST, user="celaruser", password="celar-user", database="celardb")
 cursor = db.cursor()
 
 
@@ -30,7 +40,8 @@ cursor.execute("DELETE FROM PROVIDED_RESOURCE WHERE TRUE")
 
 
 # add 'VM_FLAVOR' entry on the RESOURCE_TYPE table
-cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (1, 'VM_FLAVOR')"  )
+cursor.execute("INSERT INTO RESOURCE_TYPE VALUES (1, 'VM_FLAVOR')")
+
 
 # itreate through all available flavors and insert data in the DB
 for flav in cyclades_client.list_flavors()[:10]:

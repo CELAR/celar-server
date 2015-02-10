@@ -1,2 +1,26 @@
-curl http://<celar server>:8080/application/describe/ --data-binary @test.csar -X POST -H "Content-Type: application/octet-stream" -ik
-curl http://<celar server>:8080/application/<app id>/deploy/ -ik
+#describe
+curl http://localhost:8080/application/describe/ --data-binary @test1.csar -X POST -H "Content-Type: application/octet-stream" -ik
+
+#get description
+curl http://localhost:8080/application/0000000001.001.000
+
+#deploy
+curl http://localhost:8080/application/0000000001.001.000/deploy--data-binary @test1.csar -X POST -H "Content-Type: application/octet-stream" -ik
+
+#get deployment
+curl http://localhost:8080/deployment/92120414/
+
+#get csar
+curl http://localhost:8080/deployment/92120414/tosca
+
+#terminate deployment
+curl http://localhost:8080/deployment/1272229021/terminate
+
+#add metric
+curl http://localhost:8080/metrics/put/ --data-binary @metric_test -X POST -H "Content-Type: application/octet-stream" -ik
+
+#remove metric
+curl http://localhost:8080/metrics/remove/17
+
+#search
+curl http://localhost:8080/application/search?user_id=1

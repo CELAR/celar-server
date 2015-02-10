@@ -9,7 +9,7 @@ public class User extends IDEntity{
     /**
      * the user name
      */
-    public String name;
+    public String name, iaas_credentials;
     
     /**
      * default constructor
@@ -31,8 +31,9 @@ public class User extends IDEntity{
      * Creates a User entity by its name
      * @param name 
      */
-    public User(String name){
+    public User(String name, String iaas_credential){
         this.name=name;
+        this.iaas_credentials =iaas_credential;
     }
     
 }

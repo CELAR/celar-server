@@ -2,9 +2,7 @@
 #use with care or find an alternative
 
 #load sql script to mysql
-echo "drop database celardb;" > tmp_drop.sql
-mysql -u root < tmp_drop.sql
-rm tmp_drop.sql
+echo "drop database celardb;" | mysql -u root 
 mysql -u root < celar_db.sql
 
 #export the db  to a "compatible" sql script

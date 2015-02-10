@@ -1,72 +1,21 @@
-#!/bin/bash
-
-RANDOM_PASSWORD=$(/bin/cat /dev/urandom | tr -dc 0-9a-zA-Z | head -c 16)
-CELAR_SERVER_HOME=/opt/celar/celar-server
-KEYSTORE_PATH=$CELAR_SERVER_HOME/keystore.jks
-CONF_FILE=$CELAR_SERVER_HOME/conf/celar-server.properties
-
-create_keystore(){
-/usr/bin/keytool -genkey \
--keyalg RSA \
--alias celar-server \
--keypass $RANDOM_PASSWORD \
--storepass $RANDOM_PASSWORD \
--keystore $KEYSTORE_PATH \
--validity 730 << EOF
-Giannis Giannakopoulos
-ATHENA
-CELAR
-Europe
-Europe
-EU
-yes
-EOF
-}
-
-configure_server(){
-/bin/sed -i 's|# server.ssl.keystore.path = |server.ssl.keystore.path = '$KEYSTORE_PATH'|' $CONF_FILE;
-/bin/sed -i "s/# server.ssl.keystore.password = /server.ssl.keystore.password = $RANDOM_PASSWORD/" $CONF_FILE
-/bin/sed -i "s/# server.ssl.port = 8443/server.ssl.port = 8443/" $CONF_FILE
-}
-
-create_service(){
-	/bin/ln -sv $CELAR_SERVER_HOME/bin/celar-server /etc/init.d/
-}
-
-echo Running Post-Install Script
-create_keystore;
-
-configure_server;
-
-create_service
-
-/bin/rm $CELAR_SERVER_HOME/lib/slf4j-jdk14-1.4.2.jar
-
-chkconfig --add celar-server
-service celar-server start;
-
-
-## DATABASE
-
 user=celaruser
-password=celar-user
+password=apassword124
 
 
 #trust local users
 sed -i "s/local   all         all                               ident/local   all         all                               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
-sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
 
 #restart to apply changes
 service postgresql restart
 
-service postgresql initdb &>/dev/null
+service postgres initdb
 
 #create user
 echo "create user $user password '$password';" | psql -U postgres &>/dev/null
 # drop and re-create the DB
 echo "DROP DATABASE celardb;
     CREATE DATABASE celardb
-;" | psql -U celaruser postgres >/dev/null
+;" | psql -U celaruser postgres 
 
 
 
@@ -280,11 +229,5 @@ COMMIT;
 
 EOF
 
-psql -U celaruser -d celardb -a -f db_temp &>/dev/null
-
-echo "CELAR DB is created"
+psql -U celaruser -d celardb -a -f db_temp 
 rm db_temp
-
-service celar-server start
-
-echo "ALL DONE"

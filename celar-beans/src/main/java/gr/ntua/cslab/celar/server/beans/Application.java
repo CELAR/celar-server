@@ -2,6 +2,7 @@ package gr.ntua.cslab.celar.server.beans;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Represents an 'Application' entity as it is stored in celarDB
@@ -13,6 +14,8 @@ public class Application extends ReflectiveEntity {
      * The application fields
      */
     public String id, description;
+    //@XmlTransient
+    public String description_file_location;
     public MyTimestamp submitted;
     public int user_Id;
     public int unique_Id, major_Version, minor_Version;
@@ -41,14 +44,16 @@ public class Application extends ReflectiveEntity {
      * @param description
      * @param submitted
      * @param user 
+     * @param description_file_location the location where the description file is stored in the celar server
      */
-    public Application(int uniqueId, int majorVersion, int minorVersion, String description, MyTimestamp submitted, User user) {
+    public Application(int uniqueId, int majorVersion, int minorVersion, String description, MyTimestamp submitted, User user, String description_file_location) {
         this.description = description;
         this.submitted = submitted;
         this.user_Id = user.id;
         this.unique_Id = uniqueId;
         this.major_Version = majorVersion;
         this.minor_Version = minorVersion;
+        this.description_file_location = description_file_location;
         setId();
     }
     
@@ -58,9 +63,10 @@ public class Application extends ReflectiveEntity {
     * @param description
     * @param submitted
     * @param user 
+     * @param description_file_location the location where the description file is stored in the celar server
     */
-    public Application(String description, MyTimestamp submitted, User user) {
-        this(0,0,0, description, submitted, user);
+    public Application(String description, MyTimestamp submitted, User user, String description_file_location) {
+        this(0,0,0, description, submitted, user, description_file_location);
     }
     
    /**
@@ -68,10 +74,22 @@ public class Application extends ReflectiveEntity {
     * The given version is 0.0, the uninqueId is automatically created and the 
     * timestamp is the current time
     * @param description
-    * @param user 
-    */
+    * @param user
+     * @param description_file_location the location where the description file is stored in the celar server
+     * */
+    public Application(String description, User user, String description_file_location) {
+        this(0,0,0, description, new MyTimestamp(System.currentTimeMillis()), user, description_file_location);
+    }
+    
+       /**
+    * Creates an application based on its description, and father User.
+    * The given version is 0.0, the uninqueId is automatically created and the 
+    * timestamp is the current time
+    * @param description
+    * @param user
+     * */
     public Application(String description, User user) {
-        this(0,0,0, description, new MyTimestamp(System.currentTimeMillis()), user);
+        this(0,0,0, description, new MyTimestamp(System.currentTimeMillis()), user, null);
     }
     
     /**
@@ -80,9 +98,10 @@ public class Application extends ReflectiveEntity {
      * @param minorVersion
      * @param description
      * @param user 
+     * @param description_file_location 
      */
-    public Application(int majorVersion, int minorVersion, String description, User user) {
-        this(0,majorVersion,minorVersion, description, new MyTimestamp(System.currentTimeMillis()), user);
+    public Application(int majorVersion, int minorVersion, String description, User user, String description_file_location) {
+        this(0,majorVersion,minorVersion, description, new MyTimestamp(System.currentTimeMillis()), user, description_file_location);
     }
     
     /**
@@ -103,7 +122,7 @@ public class Application extends ReflectiveEntity {
  uniqueID.major_Version.minor_Version
      */
     public String getId() {
-        return makeStringID(unique_Id, major_Version, minor_Version);
+        return id;
     }
 
     /**
@@ -189,4 +208,8 @@ public class Application extends ReflectiveEntity {
 //        return rv;
 //    }
     
+    
+    public String getSlipstreamName() {
+        return description+"_"+id;
+    }
 }

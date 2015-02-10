@@ -171,7 +171,9 @@ def parse(input_filename, output_filename):
             elif line.startswith("CONSTRAINT"):
                 line = line.replace("\"","")
                 foreign_key_lines.append("ALTER TABLE %s ADD CONSTRAINT %s DEFERRABLE INITIALLY DEFERRED" % (current_table, line.split("CONSTRAINT")[1].strip().rstrip(",")))
-                foreign_key_lines.append("CREATE INDEX ON %s %s" % (current_table, line.split("FOREIGN KEY")[1].split("REFERENCES")[0].strip().rstrip(",")))
+                #cmantas: name the index
+                index = line.split("FOREIGN KEY")[1].split("REFERENCES")[0].strip().rstrip(",")[1:-1]+current_table
+                foreign_key_lines.append("CREATE INDEX %s ON %s %s" % (index, current_table,line.split("FOREIGN KEY")[1].split("REFERENCES")[0].strip().rstrip(",")))
             elif line.startswith("UNIQUE KEY"):
                 line = line.replace("\"","")
                 creation_lines.append("UNIQUE (%s)" % line.split("(")[1].split(")")[0])

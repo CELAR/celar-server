@@ -128,4 +128,12 @@ public abstract class DBConnectable {
         }
     }
     
+    public static String getHost(){
+        return  HOST;
+    }
+    
+    public static String getPort(){
+        return PORT;
+    }
+    
 }

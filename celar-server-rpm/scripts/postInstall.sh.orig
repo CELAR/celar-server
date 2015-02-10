@@ -42,11 +42,13 @@ create_service
 
 /bin/rm $CELAR_SERVER_HOME/lib/slf4j-jdk14-1.4.2.jar
 
+<<<<<<< HEAD
 chkconfig --add celar-server
 service celar-server start;
+=======
 
 
-## DATABASE
+############################################ DATABASE   
 
 user=celaruser
 password=celar-user
@@ -288,3 +290,4 @@ rm db_temp
 service celar-server start
 
 echo "ALL DONE"
+>>>>>>> cf4209983b053282e675182de438b9dc510d370b

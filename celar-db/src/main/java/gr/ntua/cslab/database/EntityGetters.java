@@ -6,12 +6,15 @@ import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
 import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.Spec;
 import gr.ntua.cslab.celar.server.beans.User;
 import gr.ntua.cslab.database.DBTools.Constrain;
+import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
@@ -209,6 +212,35 @@ public class EntityGetters {
 
     }
     
+    /** Gets the Resources by a component and deployment
+     * 
+     * @param c the Comp
+     * @param dep
+     * @return 
+     * @throws gr.ntua.cslab.database.DBException 
+    */
+    public static List<Resource> getResources(Component c, Deployment dep) throws DBException{
+        List<Constrain> cl= new java.util.LinkedList();
+        cl.add(new Constrain("COMPONENT_id", ""+c.getId()));
+        cl.add(new Constrain("DEPLOYMENT_id", ""+dep.getId()));
+        List<Resource> list = EntityTools.getByConstrains(Resource.class, cl, false);
+        return list;
+
+    }
+    
+    /** Gets the Resources by a component and deployment
+     * 
+     * @param dep the deployment whose resources we are getting
+     * @return 
+     * @throws gr.ntua.cslab.database.DBException 
+    */
+    public static List<Resource> getDeploymentResources(Deployment dep) throws DBException{
+        List<Constrain> cl= new java.util.LinkedList();
+        cl.add(new Constrain("DEPLOYMENT_id", ""+dep.getId()));
+        List<Resource> list = EntityTools.getByConstrains(Resource.class, cl, false);
+        return list;
+    }
+    
         /**
      * Gets the resource type with the specified String type (assumed unique)
      * 
@@ -225,15 +257,37 @@ public class EntityGetters {
 
     }
     
-    public static Deployment getDeploymentById(String id){
+    public static Deployment getDeploymentById(String id) throws Exception{
         Deployment rv = new Deployment();
         factory.createById(rv, id);
         return rv;
     }
     
-    public static Application getApplicationById(String id){
+    public static Application getApplicationById(String id) throws Exception{
         Application rv = new Application();
         factory.createById(rv, id);
+        return rv;
+    }
+    
+    public static List<Application> searchApplication(long submittedStart, long submittedEnd,
+            String description, int userid,  String moduleName, String componentDescription,
+            String providedResourceId) throws Exception{
+        List<Constrain> constrains= new LinkedList();
+        constrains.add(new Constrain("submitted", ">",""+new MyTimestamp(submittedStart)));
+        if(submittedEnd!=0) constrains.add(new Constrain("submitted", "<",""+new MyTimestamp(submittedEnd)));
+        if(description!=null) constrains.add(new Constrain("Application.description",description));
+        if(userid!=0) constrains.add(new Constrain("user_id",""+userid));
+        if(moduleName!=null) constrains.add(new Constrain("Module.name",moduleName));
+        if(componentDescription!=null) constrains.add(new Constrain("Component.description",componentDescription));
+        LOG.info("Searching for constrains: "+constrains);
+        List<Class> classes = new LinkedList();
+        classes.add(Application.class);
+        classes.add(Module.class);
+        classes.add(Component.class);
+        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
+        List<Application> rv = new LinkedList();
+        for(List<ReflectiveEntity> line: lines)
+            rv.add((Application)line.get(0));
         return rv;
     }
     

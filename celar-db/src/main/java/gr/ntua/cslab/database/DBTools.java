@@ -104,7 +104,6 @@ public class DBTools extends DBConnectable{
      */
     public static int insertIDData(String tableName, Map<String, String> data) throws DBException {
         data.put("id", "DEFAULT");
-            
         String query = SQLTools.insertSQL(tableName, data);
         LOG.debug(query);
         try {
@@ -138,7 +137,7 @@ public class DBTools extends DBConnectable{
             set.close();
             return result;
         } catch (SQLException ex) {
-            System.out.println(ex);
+            LOG.error(ex);
             ex.printStackTrace();
             return null;
         }
@@ -150,7 +149,7 @@ public class DBTools extends DBConnectable{
      *
      * @param tableName
      * @param fields
-     * @throws gr.ntua.cslab.db_entities.DBException
+     * @throws gr.ntua.cslab.database.DBException
      */
     public static void doDelete(String tableName, Map<String, String> fields) throws DBException {
         String sql = SQLTools.deleteSQL(tableName, fields);
@@ -162,7 +161,7 @@ public class DBTools extends DBConnectable{
      *
      * @param tableName
      * @param id
-     * @throws gr.ntua.cslab.db_entities.DBException
+     * @throws gr.ntua.cslab.database.DBException
      */
     public static void doDeleteID(String tableName, int id) throws DBException {
         String sql = SQLTools.deleteSQL(tableName, "id", "'" + id + "'");
@@ -177,10 +176,10 @@ public class DBTools extends DBConnectable{
      * @param whereStatement an SQL condition to be added after "WHERE" clause
      * command
      * @return a List of mappings of ColumnNames--> Values
-     * @throws gr.ntua.cslab.db_entities.DBException in case of an error in the query
+     * @throws gr.ntua.cslab.database.DBException
      */
-    public static List<Map<String, String>> doSelect(String tableName, String whereStatement) throws DBException {
-        String query = SQLTools.selectSQL(tableName, whereStatement);
+    public static List<Map<String, String>> doSelect(String fields, String tableName, String whereStatement) throws DBException {
+        String query = SQLTools.selectSQL(fields, tableName, whereStatement);
         //try executing the query, else return null
         List<Map<String, String>> results = new java.util.LinkedList();
         ResultSet resultSet = executeQuery(query);
@@ -214,9 +213,27 @@ public class DBTools extends DBConnectable{
      * @throws DBException in case of an  error in the query
      */
     public static List<Map<String, String>> doSelectByField(String tablename, String field, String value) throws DBException {
-        return doSelect(tablename, ""+field + " ='" + value + "'");
+        return doSelect(null, tablename, ""+field + " ='" + value + "'");
     }
     
+    
+    public static String whereStatement (List<Constrain> constrains, boolean or){
+        String where="";
+        if(constrains==null || constrains.isEmpty()){
+            where="TRUE";
+        }
+        else{
+            Iterator<Constrain> ci = constrains.iterator();        
+            while(ci.hasNext()){
+                Constrain c = ci.next();
+                where += c;
+                if(ci.hasNext()){ 
+                    if(or) where+=" OR ";
+                    else where+=" AND ";}
+            }
+        }
+        return where;
+    }
     
     /***
      * Selects from the table or tuples that satisfy either all of the constrains, if or is false,
@@ -227,17 +244,14 @@ public class DBTools extends DBConnectable{
      * @return a List of mappings of ColumnNames--> Values
      * @throws DBException 
      */
-    public static List<Map<String, String>> doSelect(String tablename, List<Constrain> constrains, boolean or) throws DBException{
-        String where="";        
-        Iterator<Constrain> ci = constrains.iterator();        
-        while(ci.hasNext()){
-            Constrain c = ci.next();
-            where += c;
-            if(ci.hasNext()){ 
-                if(or) where+=" OR ";
-                else where+=" AND ";}
-        }
-        return doSelect(tablename, where);
+    public static List<Map<String, String>> doSelectAll(String tablename, List<Constrain> constrains, boolean or) throws DBException{
+        String where=whereStatement(constrains, or);
+        return doSelect(null, tablename, where);
+    }
+    
+    public static List<Map<String, String>> doSelectAll(String fields, String tablename, List<Constrain> constrains, boolean or) throws DBException{
+        String where=whereStatement(constrains, or);
+        return doSelect(fields, tablename, where);
     }
 
     /**
@@ -248,7 +262,7 @@ public class DBTools extends DBConnectable{
      * @return a Map of ColumnName->Value for this entry
      */
     public static Map<String, String> doSelectByID(String tableName, Object id) {
-        String query = SQLTools.selectSQL(tableName, "id='" + id+"'");
+        String query = SQLTools.selectSQL("*",tableName, "id='" + id+"'");
         
         LOG.debug(query);
         try {
@@ -257,7 +271,8 @@ public class DBTools extends DBConnectable{
             ResultSet rs = statement.executeQuery(query);
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
-            rs.next();
+            if (!rs.next()) return null;
+            
             for (int i = 1; i < columnCount + 1; i++) {
                 String name = rsmd.getColumnName(i);
                 String value = SQLTools.decode(rs.getString(name));
@@ -265,7 +280,7 @@ public class DBTools extends DBConnectable{
             }
             return result;
         } catch (SQLException ex) {
-            System.err.println("Query failed: \n" + query);
+            LOG.error("Query failed: \n" + query);
             ex.printStackTrace();
         }
         return null;

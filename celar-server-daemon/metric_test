@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<metric>
+    <id>0</id>
+    <name>my metricsss</name>
+    <component_ID>1</component_ID>
+    <timestamp>
+        <nanos>318000000</nanos>
+        <longTime>1415115118318</longTime>
+    </timestamp>
+</metric>

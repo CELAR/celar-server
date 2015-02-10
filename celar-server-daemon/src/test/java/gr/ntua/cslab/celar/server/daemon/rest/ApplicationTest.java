@@ -2,15 +2,32 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ *//*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 package gr.ntua.cslab.celar.server.daemon.rest;
 
 import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.beans.structured.ApplicationList;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Random;
@@ -22,7 +39,7 @@ import static org.junit.Assert.*;
  */
 public class ApplicationTest {
     
-        static ResourceType resourceType;
+    static ResourceType resourceType;
     static ProvidedResource providedResource;
     static Spec spec1, spec2;
     static gr.ntua.cslab.celar.server.beans.User user;
@@ -31,16 +48,17 @@ public class ApplicationTest {
     static Metric metric;
     static Module module;
     static gr.ntua.cslab.celar.server.beans.Deployment depl;
+    static Applications dummy = new Applications();
     
     static Random random = new Random();
     
-        public static void createApplicationStructure() {
+        public static void create() throws Exception{
         try {
 
             String username = "ggian";
             
             //create a user entity
-                user = new gr.ntua.cslab.celar.server.beans.User(username);
+                user = new gr.ntua.cslab.celar.server.beans.User(username, "dummy cred");
             //store him in the DB. Now he has an id
                 store(user);
            //you can retrieve an entity by its id (if it has one)
@@ -61,14 +79,14 @@ public class ApplicationTest {
                 store(spec2);
 
             // Create an application structure
-                app = new gr.ntua.cslab.celar.server.beans.Application("test_application", user);
+                app = new Application("test_application", user, "dummy");
                 store(app);
                 module = new Module("test_module", app);
                 store(module);
                 component = new Component(module, "test module", resourceType);
                 store(component);
                 
-                metric = new Metric(component);
+                metric = new Metric(component, "my metric");
                 store(metric);
         
         } catch (Exception ex) {
@@ -77,31 +95,9 @@ public class ApplicationTest {
         }
     }
     
-    public static void testDeployment() throws Exception{
-        //================ Actual deployment testing ==============
-            depl = new gr.ntua.cslab.celar.server.beans.Deployment(app, ""+random.nextInt());
-            store(depl);
-            assertTrue(depl.equals(getDeploymentById(depl.getId())));
-            
-            Resource res = new Resource(depl, component, providedResource);
-            store(res);
-            res = new Resource(res.getId());
-            System.out.println(res);
-            assertTrue(res.equals(new Resource(res.getId())));
-            
-            //metric value testing
-            MetricValue mv = new MetricValue(metric, res);
-            store(mv);
-            List<MetricValue> mvl = getMetricValue( metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
-            System.out.println("Metric Values: "+mvl);
-            
-            
-            delete(mv);            
-            delete(res);            
-            delete(depl);
-    }
+
     
-    public static void delete_structure() throws DBException{
+    public static void destroy() throws DBException{
                 delete(metric);
                 delete(component);
                 delete(module);
@@ -130,16 +126,42 @@ public class ApplicationTest {
     }
 
 
+    static void testCSAR(String filename) throws Exception{
+
+        
+        FileInputStream csar = new FileInputStream(filename);
+        ApplicationInfo ai = dummy.describe(null, csar);
+        csar = new FileInputStream(filename);
+        ai = Applications.launchDeployment(null, ai.getId(), csar);
+        //System.out.println(ai.toString(true));
+        ai.marshal(System.out);
+        removeApplication(ai);
+    }
+    
+    static void search() throws Exception{
+//        ApplicationInfoList ail = Applications.searchApplicationsByProperty(0, System.currentTimeMillis(),app.description,user.id, module.name, component.description, null);
+         ApplicationList ail = Applications.searchApplicationsByProperty(0, 0,app.description,user.id, module.name, component.description, null);
+         ail.marshal(System.out);
+         
+         FileOutputStream fos = new FileOutputStream("testSearch");
+         ail.marshal(fos);
+         fos.close();
+         
+         InputStream is = new FileInputStream("testSearch");
+         ApplicationList al = new ApplicationList();
+         al.unmarshal(is);
+         
+         
+    }
     
     
     public static void main(String args[]) throws Exception{
-        createApplicationStructure();
-        Application dummy = new Application();
-//        ApplicationInfo info = dummy.getApplicationInfo(app.getId());
-//        System.out.println(info.toString(true));
-//        delete_structure();
-    }
+        create();
+        search();
+        destroy();
 
+}
+    
 }
     
     

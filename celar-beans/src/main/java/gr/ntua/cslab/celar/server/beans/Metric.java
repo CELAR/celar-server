@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class Metric extends IDEntity{
+    public String name;
     public int component_ID;
     public MyTimestamp timestamp;
     
@@ -30,10 +31,15 @@ public class Metric extends IDEntity{
         super(id);
     }
     
-    
-    public Metric(Component c){
+    /**
+     * Create a metric with a name from a Component object 
+     * @param c
+     * @param name 
+     */
+    public Metric(Component c, String name){
         this.component_ID=c.getId();
         this.timestamp = new MyTimestamp(System.currentTimeMillis());
+        this.name=name;
     }
 
 
