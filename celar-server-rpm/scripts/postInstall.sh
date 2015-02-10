@@ -284,6 +284,4 @@ echo "CELAR DB is created"
 rm db_temp
 
 chkconfig --add celar-server
-service celar-server start
-
-echo "ALL DONE"
+service celar-server start;
