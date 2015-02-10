@@ -27,7 +27,7 @@ configure_server(){
 /bin/sed -i 's|# server.ssl.keystore.path = |server.ssl.keystore.path = '$KEYSTORE_PATH'|' $CONF_FILE;
 /bin/sed -i "s/# server.ssl.keystore.password = /server.ssl.keystore.password = $RANDOM_PASSWORD/" $CONF_FILE
 /bin/sed -i "s/# server.ssl.port = 8443/server.ssl.port = 8443/" $CONF_FILE
-}
+}y
 
 create_service(){
 	/bin/ln -sv $CELAR_SERVER_HOME/bin/celar-server /etc/init.d/
@@ -62,9 +62,8 @@ service postgresql initdb &>/dev/null
 #create user
 echo "create user $user password '$password';" | psql -U postgres &>/dev/null
 # drop and re-create the DB
-echo "DROP DATABASE celardb;
-    CREATE DATABASE celardb
-;" | psql -U celaruser postgres >/dev/null
+echo "DROP DATABASE celardb;" | psql -U celaruser postgres >/dev/nul
+echo "CREATE DATABASE celardb;" | psql -U postgres >/dev/null
 
 
 
@@ -281,7 +280,7 @@ EOF
 psql -U celaruser -d celardb -a -f db_temp &>/dev/null
 
 echo "CELAR DB is created"
-rm db_temp
+rm -f db_temp
 
 chkconfig --add celar-server
 service celar-server start
