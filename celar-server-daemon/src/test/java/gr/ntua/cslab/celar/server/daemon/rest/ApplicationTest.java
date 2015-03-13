@@ -31,6 +31,7 @@ public class ApplicationTest {
     static Module module;
     static gr.ntua.cslab.celar.server.beans.Deployment depl;
     static Applications dummy = new Applications();
+    static ResizingAction ra;
     
     static Random random = new Random();
     
@@ -70,6 +71,10 @@ public class ApplicationTest {
                 
                 metric = new Metric(component, "my metric");
                 store(metric);
+                
+             //resizing action
+                ra = new ResizingAction(component, module,"ADD");
+                store(ra);
         
         } catch (Exception ex) {
             System.out.println(ex);
@@ -81,6 +86,7 @@ public class ApplicationTest {
     
     public static void destroy() throws DBException{
                 delete(metric);
+                delete(ra);
                 delete(component);
                 delete(module);
                 delete(app);

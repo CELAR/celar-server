@@ -11,6 +11,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
  * This is the father of all the celar entities.
@@ -19,7 +20,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
  * entity and check for equality
  * @author cmantas
  */
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso(MetricValue.class)
 public abstract class ReflectiveEntity {
     
     /**

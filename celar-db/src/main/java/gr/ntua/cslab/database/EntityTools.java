@@ -16,6 +16,7 @@ import static gr.ntua.cslab.database.DBTools.doSelect;
 import static gr.ntua.cslab.database.DBTools.whereStatement;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentResources;
 import static gr.ntua.cslab.database.EntityGetters.getMetricValueByMetric;
+import static gr.ntua.cslab.database.TableTools.getTableName;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.LinkedList;
@@ -293,7 +294,7 @@ public final class EntityTools {
     
     
     static String fatherEntityIdName (Class father, Class child){
-        String fatherName = father.getSimpleName();
+        String fatherName = getTableName(father);
         for (Field f: child.getFields()){
             String fieldName = f.getName();
             if(fieldName.toLowerCase().contains(fatherName.toLowerCase()) && fieldName.toLowerCase().contains("id"))
@@ -332,7 +333,7 @@ public final class EntityTools {
             }
             for (String s: fields){
                     String t =  fromDb.remove(s);
-                    int i = c.getSimpleName().length()+2;
+                    int i = c.getSimpleName().length()+3;
                     s = s.substring(i, s.length());
                     map.put(s,t);
             }

@@ -2,11 +2,13 @@ package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Decision;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
 import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.Spec;
@@ -36,6 +38,10 @@ public class Entities {
     static Metric metric;
     static Module module;
     static Deployment depl;
+    static ResizingAction ra;
+    static Decision decision;
+    static Resource res;
+    static MetricValue mv;
     
     static Random random = new Random();
     
@@ -105,9 +111,16 @@ public class Entities {
                 System.out.println(new Component(component.getId()));
                 assertTrue(component.equals(new Component(component.getId())));
                 
+            // Metric
                 metric = new Metric(component, "my metric");
                 store(metric);
                 assertTrue(metric.equals( new Metric(metric.getId())));
+            
+            // Resizing action
+                ra = new ResizingAction(component, module, "ADD");
+                store(ra);
+                assertTrue(ra.equals( new ResizingAction(ra.getId())));
+                
         
         } catch (Exception ex) {
             System.out.println(ex);
@@ -115,25 +128,33 @@ public class Entities {
         }
     }
     
-    public static void testDeployment() throws Exception{
+    public static void createDeployment() throws Exception{
         //================ Actual deployment testing ==============
             depl = new Deployment(app, ""+random.nextInt(), "1.2.3.4");
             store(depl);
             assertTrue(depl.equals(getDeploymentById(depl.getId())));
             
-            Resource res = new Resource(depl, component, providedResource);
+            res = new Resource(depl, component, providedResource);
             store(res);
             res = new Resource(res.getId());
             System.out.println(res);
             assertTrue(res.equals(new Resource(res.getId())));
             
             //metric value testing
-            MetricValue mv = new MetricValue(metric, res);
+            mv = new MetricValue(metric, res);
             store(mv);
-            List<MetricValue> mvl = getMetricValue( metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+            List<MetricValue> mvl = getMetricValues( metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
             System.out.println("Metric Values: "+mvl);
             
+            //decision
+            decision = new Decision(ra,depl,1);
+            store(decision);
+            assertTrue(decision.equals( new Decision(decision.getId())));
             
+    }
+    
+    public static void deleteDeployment() throws DBException{
+            delete(decision);
             delete(mv);            
             delete(res);            
             delete(depl);
@@ -141,6 +162,7 @@ public class Entities {
     
     public static void delete_structure() throws DBException{
                 delete(metric);
+                delete(ra);
                 delete(component);
                 delete(module);
                 delete(app);
@@ -172,7 +194,8 @@ public class Entities {
     
     public static void main(String args[]) throws Exception{
         createApplicationStructure();
-        testDeployment();
+        createDeployment();
+        deleteDeployment();
         delete_structure();
     }
 

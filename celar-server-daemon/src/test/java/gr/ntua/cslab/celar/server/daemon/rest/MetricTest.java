@@ -3,11 +3,14 @@ package gr.ntua.cslab.celar.server.daemon.rest;
 
 import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Metric;
+import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
+import gr.ntua.cslab.celar.server.beans.structured.REList;
 import static gr.ntua.cslab.celar.server.daemon.rest.ApplicationTest.metric;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.sql.Timestamp;
 
 
 
@@ -15,7 +18,7 @@ import java.io.InputStream;
  *
  * @author cmantas
  */
-public class MetricTest extends ApplicationTest{
+public class MetricTest extends DeploymentTest{
     static Metrics dummyM = new Metrics();
     
     public static void main(String args[]) throws Exception{
@@ -44,7 +47,7 @@ public class MetricTest extends ApplicationTest{
         Metric ametric = new Metric(component, "my metricsss");
         
         //send this metric to some output stream
-        ametric.marshal(System.out);
+//        ametric.marshal(System.out);
         
         fos = new FileOutputStream("metric_test");
         ametric.marshal(fos);
@@ -52,11 +55,27 @@ public class MetricTest extends ApplicationTest{
         fis = new FileInputStream("metric_test");
         
         Metric m = dummyM.put(null, fis);
-        System.out.println("Received : "+m);
+        System.out.println("Received metric:\n\t "+m);
+        
+        REList<MetricValue> mvl = Metrics.getValues(metric.id, 0 , System.currentTimeMillis());
+        System.out.println("Received metric values:"+" \n\t");
+        mvl.marshal(new FileOutputStream("metric_values.xml"));
+        
+        mvl = new REList();
+        mvl.unmarshal(new FileInputStream("metric_values.xml"));
+        System.out.println("READ mvl:\n"+mvl);
+//        for (MetricValue mv: mvl.values){
+//            mv.marshal(System.out);
+//        }
+
+        
+        //remove the last metric
         System.out.println(dummyM.remove( m.id ));
         
+        
+        
         destroy();
-        dummyM.remove(333);
+        
     }
     
 

@@ -107,7 +107,7 @@ public class ApplicationParser {
     
     
         public static JSONArray exportModuleComponentsJ(Module m, Timestamp ts, boolean includeResources) throws Exception {
-        List<Component> components = getComponentsByModule(m);
+        List<Component> components = getModuleComponents(m);
         LOG.debug("components for moduleid:" + m.getId() + " " + components);
 
         JSONArray componentsJson = new JSONArray();//json array of components
@@ -167,7 +167,7 @@ public class ApplicationParser {
     
     
         public static List<ComponentInfo> exportModuleComponents(Module m, Timestamp ts, Deployment dep) throws Exception {
-        List<Component> components = getComponentsByModule(m);
+        List<Component> components = getModuleComponents(m);
         List<ComponentInfo> rv = new LinkedList();
         LOG.debug("components for moduleid:" + m.getId() + " " + components);
 

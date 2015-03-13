@@ -1,9 +1,15 @@
 package gr.ntua.cslab.celar.server.beans;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Represents a 'Metric value' entity as it is stored in celarDB
  * @author cmantas
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MetricValue extends IDEntity{
     public int metrics_Id, resources_Id;
     public MyTimestamp timestamp;
@@ -32,5 +38,8 @@ public class MetricValue extends IDEntity{
         this.timestamp = new MyTimestamp(System.currentTimeMillis());
     }
 
+
+
+    
 
 }

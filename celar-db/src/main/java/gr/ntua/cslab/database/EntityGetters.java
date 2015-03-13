@@ -2,6 +2,7 @@ package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.Decision;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
@@ -9,6 +10,7 @@ import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
 import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
+import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.Spec;
@@ -39,7 +41,7 @@ public class EntityGetters {
      * @return
      * @throws DBException 
      */
-    public static List<Component> getComponentsByModule(Module module) throws DBException {
+    public static List<Component> getModuleComponents(Module module) throws DBException {
         return EntityTools.<Component>getByField(Component.class,"MODULE_id", "" + module.getId());
     }
     
@@ -49,7 +51,7 @@ public class EntityGetters {
      * @param c
      * @return 
      */    
-    public static List<Metric> getMetricsByComponent(Component c){
+    public static List<Metric> getComponentMetrics(Component c){
         return EntityTools.<Metric>getByField(Metric.class, "COMPONENT_id", "" + c.getId());
     }
     
@@ -57,10 +59,12 @@ public class EntityGetters {
         return EntityTools.<MetricValue>getByField(MetricValue.class, "METRICS_id", ""+m.getId());
     }
     
-     public static List<MetricValue> getMetricValue(Metric m, Timestamp start, Timestamp finish){
+     public static List<MetricValue> getMetricValues(Metric m, Timestamp start, Timestamp finish){
         List<DBTools.Constrain> lc= new java.util.LinkedList();
-        lc.add(new Constrain("timestamp", "> ",""+start));
-        lc.add(new Constrain("timestamp", "<",""+finish));
+        if (start!=null)
+            lc.add(new Constrain("timestamp", "> ",""+start));
+        if (finish!=null)
+            lc.add(new Constrain("timestamp", "<",""+finish));
         return EntityTools.<MetricValue>getByConstrains(MetricValue.class, lc, false);
     }
     
@@ -241,6 +245,28 @@ public class EntityGetters {
         return list;
     }
     
+    /** Gets all the Metrics of a given deployment
+     * 
+     * @param dep the deployment whose metrics we are getting
+     * @return 
+     * @throws gr.ntua.cslab.database.DBException 
+    */
+    public static List<Metric> getDeploymentMetrics(Deployment dep) throws DBException, Exception{
+        List<Class> classes = new LinkedList();
+        List<Constrain> constrains= new LinkedList();
+        classes.add(Deployment.class);
+        classes.add(Metric.class);        
+        constrains.add(new Constrain("deployment_id", dep.id));
+
+        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
+        List<Metric> rv = new LinkedList();
+        for(List<ReflectiveEntity> line: lines){
+            System.out.println(line);
+            rv.add((Metric)line.get(0));
+        }
+        return rv;
+    }
+    
         /**
      * Gets the resource type with the specified String type (assumed unique)
      * 
@@ -274,7 +300,7 @@ public class EntityGetters {
             String providedResourceId) throws Exception{
         List<Constrain> constrains= new LinkedList();
         constrains.add(new Constrain("submitted", ">",""+new MyTimestamp(submittedStart)));
-        if(submittedEnd!=0) constrains.add(new Constrain("submitted", "<",""+new MyTimestamp(submittedEnd)));
+        if(submittedEnd>0) constrains.add(new Constrain("submitted", "<",""+new MyTimestamp(submittedEnd)));
         if(description!=null) constrains.add(new Constrain("Application.description",description));
         if(userid!=0) constrains.add(new Constrain("user_id",""+userid));
         if(moduleName!=null) constrains.add(new Constrain("Module.name",moduleName));
@@ -290,5 +316,57 @@ public class EntityGetters {
             rv.add((Application)line.get(0));
         return rv;
     }
+
+    public static List<Decision> searchDecisions(
+            long start ,long end, String actionType) throws Exception {
+        List<Decision> rv = new LinkedList();
+      
+        List<Constrain> constrains= new LinkedList();
+        List<Class> classes = new LinkedList();
+        
+        if(start>=0)constrains.add(new Constrain("timestamp", ">",""+new MyTimestamp(start)));
+        if(end>0) constrains.add(new Constrain("timestamp", "<",""+new MyTimestamp(end)));
+        if(actionType!=null) constrains.add(new Constrain("RESIZING_ACTION.type",actionType));
+
+        LOG.info("Searching for constrains: "+constrains);  
+        
+        classes.add(ResizingAction.class);
+        classes.add(Decision.class);
+                
+        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
+        for(List<ReflectiveEntity> line: lines)
+            rv.add((Decision)line.get(1));
+        return rv;
+
+    }
     
+        public static List<Decision> searchDecisions2( Deployment depl,
+            long start ,long end, String actionType, int componentId, int moduleId) throws Exception {
+        List<Decision> rv = new LinkedList();
+      
+        List<Constrain> constrains= new LinkedList();
+        List<Class> classes = new LinkedList();
+        
+        if(start>=0)constrains.add(new Constrain("timestamp", ">",""+new MyTimestamp(start)));
+        if(end>0) constrains.add(new Constrain("timestamp", "<",""+new MyTimestamp(end)));
+        if(actionType!=null) constrains.add(new Constrain("RESIZING_ACTION.type",actionType));
+        if(componentId>0) constrains.add(new Constrain("COMPONENT.id",""+componentId));
+        if(moduleId>0) constrains.add(new Constrain("MODULE.id",""+moduleId));
+
+        LOG.info("Searching for constrains: "+constrains);  
+        
+        classes.add(Module.class);
+        classes.add(Component.class);
+        classes.add(ResizingAction.class);
+        classes.add(Decision.class);
+                
+        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
+        for(List<ReflectiveEntity> line: lines){
+            Decision d = (Decision)line.get(3);
+            if(d.deployment_id.equals(depl.id)) rv.add(d);
+        }
+        return rv;
+
+    }
+
 }

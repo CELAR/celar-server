@@ -22,6 +22,8 @@ public final class TableTools {
         tableNames.put("ApplicationInfo", "Application");
         tableNames.put("ModuleInfo", "MODULE");
         tableNames.put("ComponentInfo", "COMPONENT");
+        tableNames.put("ResizingAction", "RESIZING_ACTION");
+        tableNames.put("Decision", "DECISIONS");
         
     }
     

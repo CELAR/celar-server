@@ -8,6 +8,8 @@ USE `celardb` ;
 -- -----------------------------------------------------
 -- Table `celardb`.`USERS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`USERS` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`USERS` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(45) NULL ,
@@ -19,6 +21,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`APPLICATION`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`APPLICATION` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`APPLICATION` (
   `id` VARCHAR(18) NOT NULL ,
   `unique_id` INT NULL ,
@@ -40,6 +44,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`MODULE`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`MODULE` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`MODULE` (
   `id` INT NOT NULL ,
   `APPLICATION_id` VARCHAR(18) NOT NULL ,
@@ -56,6 +62,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`RESOURCE_TYPE`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`RESOURCE_TYPE` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`RESOURCE_TYPE` (
   `id` INT NOT NULL ,
   `type` VARCHAR(45) NULL ,
@@ -66,6 +74,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`COMPONENT`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`COMPONENT` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`COMPONENT` (
   `id` INT NOT NULL ,
   `MODULE_id` INT NOT NULL ,
@@ -88,6 +98,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`DEPLOYMENT`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`DEPLOYMENT` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`DEPLOYMENT` (
   `id` VARCHAR(45) NOT NULL ,
   `APPLICATION_id` VARCHAR(18) NOT NULL ,
@@ -106,6 +118,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`PROVIDED_RESOURCE`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`PROVIDED_RESOURCE` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`PROVIDED_RESOURCE` (
   `id` INT NOT NULL ,
   `RESOURCE_TYPE_id` INT NULL ,
@@ -122,6 +136,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`RESOURCES`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`RESOURCES` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`RESOURCES` (
   `id` INT NOT NULL ,
   `DEPLOYMENT_id` VARCHAR(45) NOT NULL ,
@@ -151,6 +167,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`SPECS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`SPECS` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`SPECS` (
   `id` INT NOT NULL ,
   `PROVIDED_RESOURCE_id` INT NOT NULL ,
@@ -166,10 +184,12 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `celardb`.`RESIZING_ACTIONS`
+-- Table `celardb`.`RESIZING_ACTION`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `celardb`.`RESIZING_ACTIONS` (
-  `id` INT NOT NULL ,
+DROP TABLE IF EXISTS `celardb`.`RESIZING_ACTION` ;
+
+CREATE  TABLE IF NOT EXISTS `celardb`.`RESIZING_ACTION` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `MODULE_id` INT NOT NULL ,
   `COMPONENT_id` INT NOT NULL ,
   `type` VARCHAR(45) NULL ,
@@ -190,6 +210,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`METRICS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`METRICS` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`METRICS` (
   `id` INT NOT NULL ,
   `Name` VARCHAR(45) NULL ,
@@ -207,6 +229,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`METRIC_VALUES`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`METRIC_VALUES` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`METRIC_VALUES` (
   `id` INT NOT NULL ,
   `METRICS_id` INT NOT NULL ,
@@ -229,13 +253,23 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`DECISIONS`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`DECISIONS` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`DECISIONS` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `RESIZING_ACTION_id` INT NULL ,
+  `DEPLOYMENT_id` VARCHAR(45) NULL ,
   `timestamp` TIMESTAMP NOT NULL ,
-  `RECISING_ACTION_id` INT NULL ,
   `size` INT NULL ,
+  PRIMARY KEY (`id`) ,
   CONSTRAINT `fk_DECISIONS_1`
-    FOREIGN KEY (`RECISING_ACTION_id` )
-    REFERENCES `celardb`.`RESIZING_ACTIONS` (`id` )
+    FOREIGN KEY (`RESIZING_ACTION_id` )
+    REFERENCES `celardb`.`RESIZING_ACTION` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_DECISIONS_2`
+    FOREIGN KEY (`DEPLOYMENT_id` )
+    REFERENCES `celardb`.`DEPLOYMENT` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -244,6 +278,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`COMPONENT__DEPENDENCY`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`COMPONENT__DEPENDENCY` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`COMPONENT__DEPENDENCY` (
   `COMPONENT_from_id` INT NOT NULL ,
   `COMPONENT_to_id` INT NULL ,
@@ -264,6 +300,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `celardb`.`MODULE_DEPENDENCY`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `celardb`.`MODULE_DEPENDENCY` ;
+
 CREATE  TABLE IF NOT EXISTS `celardb`.`MODULE_DEPENDENCY` (
   `MODULE_from_id` INT NOT NULL ,
   `MODULE_to_id` INT NULL ,
