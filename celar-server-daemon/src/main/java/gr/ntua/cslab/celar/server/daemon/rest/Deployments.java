@@ -2,17 +2,22 @@ package gr.ntua.cslab.celar.server.daemon.rest;
 
 import com.sixsq.slipstream.statemachine.States;
 import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Decision;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
+import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
 import static gr.ntua.cslab.database.EntityGetters.searchDecisions2;
+import static gr.ntua.cslab.database.EntityGetters.getResizingActions;
 import static gr.ntua.cslab.database.EntityTools.removeDeployment;
+import static gr.ntua.cslab.database.EntityTools.store;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -24,7 +29,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.xml.ws.WebServiceException;
 import org.apache.log4j.Logger;
 
@@ -113,6 +120,22 @@ public class Deployments {
                 actionName, componentId, moduleId);
         rv.values.addAll(decisions);        
         return rv;
+    }
+    
+    @GET
+    @Path("{id}/component/{component_id}/{type}")
+    public static Decision addDecision(
+            @PathParam("id") String deploymentID,
+            @PathParam("component_id") int componentID,
+            @PathParam("type") String decisionType,
+            @DefaultValue("1")  @QueryParam("count") int count) throws Exception{
+            Deployment dep =  getDeploymentById(deploymentID);
+            Component comp = new Component(componentID);
+            ResizingAction ra = getResizingActions(decisionType, comp).get(0);
+            Decision des = new Decision(ra, dep, count);
+           /* TODO: do implement the decision */
+            store(des);
+            return des;
     }
     
 	

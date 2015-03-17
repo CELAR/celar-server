@@ -287,6 +287,15 @@ public class EntityGetters {
         return rv;
     }
     
+    public static List<ResizingAction> getResizingActions(String type, Component c){
+        List<Constrain> con= new LinkedList();
+        if(type!=null) con.add(new Constrain("lower(type)",type.toLowerCase()));
+        if(c!=null) con.add(new Constrain("COMPONENT_ID", ""+c.id));
+        List<ResizingAction> list = EntityTools.getByConstrains(ResizingAction.class, con, false);
+        return list;
+    }
+            
+            
     public static List<Application> searchApplication(long submittedStart, long submittedEnd,
             String description, int userid,  String moduleName, String componentDescription,
             String providedResourceId) throws Exception{
@@ -339,7 +348,7 @@ public class EntityGetters {
         List<Constrain> constrains= new LinkedList();
         if(start>=0)constrains.add(new Constrain("timestamp", ">=",""+new MyTimestamp(start)));
         if(end>0) constrains.add(new Constrain("timestamp", "<=",""+new MyTimestamp(end)));
-        if(!actionType.equals("")) constrains.add(new Constrain("RESIZING_ACTION.type",actionType));
+        if(!actionType.equals("")) constrains.add(new Constrain("lower(RESIZING_ACTION.type)",actionType.toLowerCase()));
         if(componentId>0) constrains.add(new Constrain("COMPONENT.id",""+componentId));
         if(moduleId>0) constrains.add(new Constrain("MODULE.id",""+moduleId));
 

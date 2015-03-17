@@ -47,15 +47,13 @@ public class DeploymentsTest extends ApplicationTest {
             List<MetricValue> mvl = searchMetricValues(depl, metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
             System.out.println(mvl);
             
-            //decision testing
-            des = new Decision(ra, depl, 2);
-            store(des);
+
             
     }
         
         public static void destroy() throws DBException{
             try{
-                delete(des);
+                
                 delete(mv);            
                 delete(res);            
                 delete(depl);
@@ -72,7 +70,11 @@ public class DeploymentsTest extends ApplicationTest {
             Deployment rv = Deployments.getDeployment(depl.id);
             System.out.println(rv.toString(true));
             
+            // test decision
+            des = Deployments.addDecision(depl.id, component.id, "ADD", 2);
+            System.out.println("I put decision: "+ des);
             REList<Decision> dl = Deployments.getDecisions(depl.id, -1, -1, module.id, component.id, "ADD");
+            delete(des);
             
             System.out.println(dl);
             

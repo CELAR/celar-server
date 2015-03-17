@@ -138,14 +138,18 @@ public class ApplicationTest {
          InputStream is = new FileInputStream("testSearch");
          ApplicationList al = new ApplicationList();
          al.unmarshal(is);
-         
-         
+    }
+    
+    static void miscCalls() throws Exception{
+        List resActions = Applications.getComponentResizingActions(component.id);
+        System.out.println(resActions);
     }
     
     
     public static void main(String args[]) throws Exception{
         create();
         search();
+        miscCalls();
         destroy();
 
 }

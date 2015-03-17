@@ -8,12 +8,15 @@ import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationList;
+import gr.ntua.cslab.celar.server.beans.structured.REList;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.searchApplication;
+import static gr.ntua.cslab.database.EntityGetters.getResizingActions;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
 import gr.ntua.cslab.database.parsers.ToscaHandler;
 import java.io.IOException;
@@ -233,13 +236,14 @@ public class Applications {
     }
 
 
-//    @GET
-//    @Path("dependencies/component/{component_id}")
-//    public ApplicationInfo getApplicationInfo(@PathParam("component_id") int componentId) throws Exception {
-//        Component c = new Component(componentId);
-//    }
     
-
+    @GET
+    @Path("component/{component_id}/resizing_actions")
+    public static REList<ResizingAction> getComponentResizingActions(@PathParam("component_id") int componentId) throws Exception {
+        Component c = new Component(componentId);
+        return new REList<>(getResizingActions(null, c));
+      
+    }
     
 
 }
