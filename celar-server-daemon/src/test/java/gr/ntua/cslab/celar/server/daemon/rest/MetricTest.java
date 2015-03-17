@@ -18,7 +18,7 @@ import java.sql.Timestamp;
  *
  * @author cmantas
  */
-public class MetricTest extends DeploymentTest{
+public class MetricTest extends DeploymentsTest{
     static Metrics dummyM = new Metrics();
     
     public static void main(String args[]) throws Exception{
@@ -57,7 +57,7 @@ public class MetricTest extends DeploymentTest{
         Metric m = dummyM.put(null, fis);
         System.out.println("Received metric:\n\t "+m);
         
-        REList<MetricValue> mvl = Metrics.getValues(metric.id, 0 , System.currentTimeMillis());
+        REList<MetricValue> mvl = Metrics.getValues( metric.id, depl.id, 0 , System.currentTimeMillis());
         System.out.println("Received metric values:"+" \n\t");
         mvl.marshal(new FileOutputStream("metric_values.xml"));
         

@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<reList/>
+<reList>
+    <decision>
+        <id>25</id>
+        <deployment_id>-717371293</deployment_id>
+        <resizing_action_id>28</resizing_action_id>
+        <size>2</size>
+        <timestamp>
+            <nanos>128000000</nanos>
+            <longTime>1426589790128</longTime>
+        </timestamp>
+    </decision>
+</reList>

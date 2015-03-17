@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class MetricValue extends IDEntity{
     public int metrics_Id, resources_Id;
     public MyTimestamp timestamp;
+    public long value;
     
     /**
      * Default constructor for all DBEntities
@@ -32,10 +33,11 @@ public class MetricValue extends IDEntity{
     }
     
     
-    public MetricValue(Metric metric, Resource res){
+    public MetricValue(Metric metric, Resource res, long value){
         this.metrics_Id = metric.getId();
         this.resources_Id = res.getId();
         this.timestamp = new MyTimestamp(System.currentTimeMillis());
+        this.value = value;
     }
 
 

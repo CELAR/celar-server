@@ -127,6 +127,8 @@ public final class EntityTools {
                         f.set(e, Integer.parseInt(value));
                     else if(type==MyTimestamp.class)
                         f.set(e, new MyTimestamp(Timestamp.valueOf(value).getTime()));
+                    else if(long.class==type)
+                        f.set(e, Long.parseLong(value));
                     else
                         throw new Exception("Unhandled type: "+type);
                 } catch (Exception ex) {
@@ -333,7 +335,7 @@ public final class EntityTools {
             }
             for (String s: fields){
                     String t =  fromDb.remove(s);
-                    int i = c.getSimpleName().length()+3;
+                    int i = TableTools.getTableName(c).length()+2;
                     s = s.substring(i, s.length());
                     map.put(s,t);
             }
@@ -387,6 +389,7 @@ public final class EntityTools {
         String where = whereStatement(constrains, false);
         mapsFromDB = doSelect(aliasedFields, joinedTableName, where);
         for(Map<String, String> m: mapsFromDB){
+            
             rv.add(disJoin(m, classList));
         }
         return rv;

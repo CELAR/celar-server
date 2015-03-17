@@ -59,14 +59,6 @@ public class EntityGetters {
         return EntityTools.<MetricValue>getByField(MetricValue.class, "METRICS_id", ""+m.getId());
     }
     
-     public static List<MetricValue> getMetricValues(Metric m, Timestamp start, Timestamp finish){
-        List<DBTools.Constrain> lc= new java.util.LinkedList();
-        if (start!=null)
-            lc.add(new Constrain("timestamp", "> ",""+start));
-        if (finish!=null)
-            lc.add(new Constrain("timestamp", "<",""+finish));
-        return EntityTools.<MetricValue>getByConstrains(MetricValue.class, lc, false);
-    }
     
     /**
      * Returns a list of all the metric values associated with the given Metric between the given timestamps
@@ -255,13 +247,13 @@ public class EntityGetters {
         List<Class> classes = new LinkedList();
         List<Constrain> constrains= new LinkedList();
         classes.add(Deployment.class);
+        classes.add(Resource.class);
         classes.add(Metric.class);        
         constrains.add(new Constrain("deployment_id", dep.id));
 
         List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
         List<Metric> rv = new LinkedList();
         for(List<ReflectiveEntity> line: lines){
-            System.out.println(line);
             rv.add((Metric)line.get(0));
         }
         return rv;
@@ -299,8 +291,8 @@ public class EntityGetters {
             String description, int userid,  String moduleName, String componentDescription,
             String providedResourceId) throws Exception{
         List<Constrain> constrains= new LinkedList();
-        constrains.add(new Constrain("submitted", ">",""+new MyTimestamp(submittedStart)));
-        if(submittedEnd>0) constrains.add(new Constrain("submitted", "<",""+new MyTimestamp(submittedEnd)));
+        constrains.add(new Constrain("submitted", ">=",""+new MyTimestamp(submittedStart)));
+        if(submittedEnd>0) constrains.add(new Constrain("submitted", "<=",""+new MyTimestamp(submittedEnd)));
         if(description!=null) constrains.add(new Constrain("Application.description",description));
         if(userid!=0) constrains.add(new Constrain("user_id",""+userid));
         if(moduleName!=null) constrains.add(new Constrain("Module.name",moduleName));
@@ -324,8 +316,8 @@ public class EntityGetters {
         List<Constrain> constrains= new LinkedList();
         List<Class> classes = new LinkedList();
         
-        if(start>=0)constrains.add(new Constrain("timestamp", ">",""+new MyTimestamp(start)));
-        if(end>0) constrains.add(new Constrain("timestamp", "<",""+new MyTimestamp(end)));
+        if(start>=0)constrains.add(new Constrain("timestamp", ">=",""+new MyTimestamp(start)));
+        if(end>0) constrains.add(new Constrain("timestamp", "<=",""+new MyTimestamp(end)));
         if(actionType!=null) constrains.add(new Constrain("RESIZING_ACTION.type",actionType));
 
         LOG.info("Searching for constrains: "+constrains);  
@@ -345,16 +337,13 @@ public class EntityGetters {
         List<Decision> rv = new LinkedList();
       
         List<Constrain> constrains= new LinkedList();
-        List<Class> classes = new LinkedList();
-        
-        if(start>=0)constrains.add(new Constrain("timestamp", ">",""+new MyTimestamp(start)));
-        if(end>0) constrains.add(new Constrain("timestamp", "<",""+new MyTimestamp(end)));
-        if(actionType!=null) constrains.add(new Constrain("RESIZING_ACTION.type",actionType));
+        if(start>=0)constrains.add(new Constrain("timestamp", ">=",""+new MyTimestamp(start)));
+        if(end>0) constrains.add(new Constrain("timestamp", "<=",""+new MyTimestamp(end)));
+        if(!actionType.equals("")) constrains.add(new Constrain("RESIZING_ACTION.type",actionType));
         if(componentId>0) constrains.add(new Constrain("COMPONENT.id",""+componentId));
         if(moduleId>0) constrains.add(new Constrain("MODULE.id",""+moduleId));
 
-        LOG.info("Searching for constrains: "+constrains);  
-        
+        List<Class> classes = new LinkedList();
         classes.add(Module.class);
         classes.add(Component.class);
         classes.add(ResizingAction.class);
@@ -367,6 +356,28 @@ public class EntityGetters {
         }
         return rv;
 
+    }
+        
+    
+    public static List<MetricValue> searchMetricValues(Deployment dep, Metric m, Timestamp start, Timestamp finish) throws Exception{
+        List<Constrain> lc= new java.util.LinkedList();
+       if (start!=null)
+            lc.add(new Constrain("METRIC_VALUES.timestamp", ">= ",""+start));
+        if (finish!=null)
+            lc.add(new Constrain("METRIC_VALUES.timestamp", "<=",""+finish));
+        if(dep!=null)
+            lc.add(new Constrain("RESOURCES.DEPLOYMENT_id", dep.id));
+        
+        List<Class> classes = new LinkedList();
+        classes.add(Resource.class);
+        classes.add(MetricValue.class);
+        
+        List<MetricValue> rv = new LinkedList();
+        List<List<ReflectiveEntity>> lines = joiner(classes, lc);
+        for(List<ReflectiveEntity> line: lines){
+            rv.add((MetricValue) line.get(1));
+        }
+        return rv;
     }
 
 }

@@ -10,7 +10,7 @@ import gr.ntua.cslab.celar.server.beans.structured.REList;
 import static gr.ntua.cslab.celar.server.daemon.rest.ApplicationTest.depl;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
-import static gr.ntua.cslab.database.EntityGetters.getMetricValues;
+import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
 import java.io.FileOutputStream;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
  *
  * @author cmantas
  */
-public class DeploymentTest extends ApplicationTest {
+public class DeploymentsTest extends ApplicationTest {
     static MetricValue mv;
      static Resource res;
      static Decision des;
@@ -40,9 +40,12 @@ public class DeploymentTest extends ApplicationTest {
             assertTrue(res.equals(new Resource(res.getId())));
             
             //metric value testing
-            mv = new MetricValue(metric, res);
+            mv = new MetricValue(metric, res, 5);
             store(mv);
-            List<MetricValue> mvl = getMetricValues( metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+            assertTrue(mv.equals(new MetricValue(mv.id)));
+            
+            List<MetricValue> mvl = searchMetricValues(depl, metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+            System.out.println(mvl);
             
             //decision testing
             des = new Decision(ra, depl, 2);
@@ -69,14 +72,15 @@ public class DeploymentTest extends ApplicationTest {
             Deployment rv = Deployments.getDeployment(depl.id);
             System.out.println(rv.toString(true));
             
-//            REList<Metric> ml = Deployments.getMetrics(depl.id);
-//            System.out.println("Got Metrics: "+ml);
-            
-            REList<Decision> dl = Deployments.getDecisions(depl.id, -1, -1, module.id, component.id);
+            REList<Decision> dl = Deployments.getDecisions(depl.id, -1, -1, module.id, component.id, "ADD");
             
             System.out.println(dl);
             
             dl.marshal(new FileOutputStream("decisions.xml"));
+            
+            
+            System.exit(0);
+            
             
             Deployments.terminateDeployment(rv.id);
 //            Deployments.terminateDeployment(rv.id);

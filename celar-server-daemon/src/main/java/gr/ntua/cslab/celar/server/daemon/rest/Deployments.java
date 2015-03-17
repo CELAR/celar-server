@@ -6,12 +6,10 @@ import gr.ntua.cslab.celar.server.beans.Decision;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentStatus;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
-import static gr.ntua.cslab.database.EntityGetters.getDeploymentMetrics;
 import static gr.ntua.cslab.database.EntityGetters.searchDecisions2;
 import static gr.ntua.cslab.database.EntityTools.removeDeployment;
 import java.io.IOException;
@@ -43,7 +41,7 @@ public class Deployments {
     @Path("{id}/")
     public static Deployment getDeployment(@PathParam("id") String deploymentID) throws Exception {
         logger.info("Get deployment: "+deploymentID);
-        Deployment dep =  getDeploymentById(deploymentID);;
+        Deployment dep =  getDeploymentById(deploymentID);
         States state = null;
         if(ssService!=null){
             state = ssService.getDeploymentState(deploymentID);
@@ -63,7 +61,6 @@ public class Deployments {
     public List<Deployment> searchDeployments(
             @DefaultValue("0") @QueryParam("start_time") long startTime,
             @DefaultValue("0") @QueryParam("end_time") long endTime,
-            @DefaultValue("ERROR") @QueryParam("status") DeploymentStatus status,
             @DefaultValue("-1") @QueryParam("application_id") int applicationId) {
     	logger.info("Searchin deployment");
         throw new UnsupportedOperationException("not implemented");
@@ -92,32 +89,9 @@ public class Deployments {
         return  Files.readAllBytes(Paths.get((father.description_file_location)));
     }
     
-    @GET
-    @Path("{id}/metrics")
-    public static REList<Metric> getMetrics(@PathParam("id") String deploymentID) throws Exception {
-        logger.info("Get metrics for deployment: "+deploymentID);
-        Deployment dep =  getDeploymentById(deploymentID);
-        REList<Metric> rv = new REList();
-        //check deployment exists
-        List<Metric> metrics= getDeploymentMetrics(dep);
-        rv.values.addAll(metrics);        
-        return rv;
-    }
+        
     
-    
-    
-    @GET
-    @Path("{id}/decisions")
-    public static REList<Decision> getDecisions(
-            @PathParam("id")                                String deploymentID,            
-            @DefaultValue("-1")  @QueryParam("start_time")   long startTime,
-            @DefaultValue("-1")  @QueryParam("end_time")     long endTime,
-            @DefaultValue("-1")  @QueryParam("module_id")    int moduleId,
-            @DefaultValue("-1")  @QueryParam("component_id") int componentId) throws Exception {
-                
-        return getDecisions(deploymentID, startTime, endTime, moduleId, componentId, null);
-    }
-    
+
     @GET
     @Path("{id}/decisions")
     public static REList<Decision> getDecisions(
@@ -126,7 +100,7 @@ public class Deployments {
             @DefaultValue("-1")  @QueryParam("end_time")     long endTime,
             @DefaultValue("-1")  @QueryParam("module_id")    int moduleId,
             @DefaultValue("-1")  @QueryParam("component_id") int componentId,
-            @QueryParam("component_id") String actionName
+            @DefaultValue("")    @QueryParam("action_name") String actionName
             ) throws Exception {
         
         logger.info("Search decisions for deployment: "+deploymentID);

@@ -2,9 +2,9 @@
 <metric>
     <id>0</id>
     <name>my metricsss</name>
-    <component_ID>77</component_ID>
+    <component_ID>29</component_ID>
     <timestamp>
-        <nanos>986000000</nanos>
-        <longTime>1426003837986</longTime>
+        <nanos>172000000</nanos>
+        <longTime>1426589800172</longTime>
     </timestamp>
 </metric>

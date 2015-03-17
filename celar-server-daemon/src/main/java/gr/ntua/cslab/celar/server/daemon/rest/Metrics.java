@@ -1,10 +1,13 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
+import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
 import gr.ntua.cslab.database.DBException;
-import static gr.ntua.cslab.database.EntityGetters.getMetricValues;
+import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
+import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
 import java.io.InputStream;
@@ -36,6 +39,7 @@ public class Metrics {
     public static Metric put(@Context HttpServletRequest request, InputStream input) throws JAXBException, DBException {
         Metric m = new Metric();
         m.unmarshal(input);
+        m.timestamp = new MyTimestamp(System.currentTimeMillis());
         store(m);
         return m;
     }
@@ -53,15 +57,18 @@ public class Metrics {
     @Path("{id}/values")
     public static REList<MetricValue> getValues(
             @PathParam("id") int id,
+            @DefaultValue("-1") @QueryParam("deployment_Id") String deploymentID,
             @DefaultValue("-1") @QueryParam("start_time") long start,
-            @DefaultValue("-1") @QueryParam("end_time") long end    
+            @DefaultValue("-1") @QueryParam("end_time") long end
                               ) throws JAXBException, DBException, Exception {
         Metric m = new Metric(id);
         if(m.id==0) return null;
         Timestamp tstart=null, tend =null;
         if (start>=0) tstart = new Timestamp(0);
         if (end>0) tend = new Timestamp(end);
-        List<MetricValue> mvl = getMetricValues(m ,tstart, tend);
+        Deployment dep = null;
+        if(!deploymentID.equals("-1")) dep=getDeploymentById(deploymentID);
+        List<MetricValue> mvl = searchMetricValues(dep, m ,tstart, tend);
         REList<MetricValue> rv = new REList();
         rv.values.addAll(mvl);
         return rv;

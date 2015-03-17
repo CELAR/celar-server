@@ -61,6 +61,7 @@ CREATE TABLE METRIC_VALUES (
     METRICS_id integer NOT NULL,
     RESOURCES_id integer DEFAULT NULL,
     timestamp timestamp NULL DEFAULT NULL,
+    value text ,
     PRIMARY KEY (id)
 );
 

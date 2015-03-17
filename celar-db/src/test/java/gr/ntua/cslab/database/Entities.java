@@ -7,6 +7,7 @@ import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
 import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
 import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.Resource;
@@ -115,6 +116,7 @@ public class Entities {
                 metric = new Metric(component, "my metric");
                 store(metric);
                 assertTrue(metric.equals( new Metric(metric.getId())));
+                metric.marshal(System.out);
             
             // Resizing action
                 ra = new ResizingAction(component, module, "ADD");
@@ -141,10 +143,8 @@ public class Entities {
             assertTrue(res.equals(new Resource(res.getId())));
             
             //metric value testing
-            mv = new MetricValue(metric, res);
+            mv = new MetricValue(metric, res, (long)5);
             store(mv);
-            List<MetricValue> mvl = getMetricValues( metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
-            System.out.println("Metric Values: "+mvl);
             
             //decision
             decision = new Decision(ra,depl,1);

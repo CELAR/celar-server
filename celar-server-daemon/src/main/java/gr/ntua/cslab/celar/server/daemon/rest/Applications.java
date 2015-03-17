@@ -7,10 +7,10 @@ import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
 import gr.ntua.cslab.celar.server.beans.Application;
+import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationList;
-import gr.ntua.cslab.celar.server.daemon.rest.beans.deployment.DeploymentInfoList;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.searchApplication;
@@ -232,13 +232,12 @@ public class Applications {
         return ai;
     }
 
-    @GET
-    @Path("{id}/deployments/")
-    public DeploymentInfoList getDeploymentsByApplicationId(@PathParam("id") String applicationId) {
-            //TODO get deployments
-            throw new UnsupportedOperationException("not implemented");
-    }
-    
+
+//    @GET
+//    @Path("dependencies/component/{component_id}")
+//    public ApplicationInfo getApplicationInfo(@PathParam("component_id") int componentId) throws Exception {
+//        Component c = new Component(componentId);
+//    }
     
 
     
