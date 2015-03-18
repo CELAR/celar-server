@@ -1,9 +1,12 @@
 package gr.ntua.cslab.celar.server.beans;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Represents a 'Resource' entity as it is stored in celarDB
  * @author cmantas
  */
+@XmlRootElement
 public class Resource extends IDEntity{
     public int component_Id, provided_Resource_Id;
     public MyTimestamp start_Time, end_Time;
