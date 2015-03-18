@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<applicationList>
-    <applications>
+<reList>
+    <application>
         <description>test_application</description>
         <major_Version>0</major_Version>
         <minor_Version>0</minor_Version>
         <submitted>
-            <nanos>934000000</nanos>
-            <longTime>1426608074934</longTime>
+            <nanos>976000000</nanos>
+            <longTime>1426686675976</longTime>
         </submitted>
-        <unique_Id>8</unique_Id>
-        <user_Id>31</user_Id>
-    </applications>
-</applicationList>
+        <unique_Id>11</unique_Id>
+        <user_Id>16</user_Id>
+    </application>
+</reList>

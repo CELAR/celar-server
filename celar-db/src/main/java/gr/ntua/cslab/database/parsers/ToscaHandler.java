@@ -125,7 +125,7 @@ public class ToscaHandler {
     private void handleModuleDependencies(Module m) throws DBException{
         for(String depName:parser.getModuleDependencies(m.getName())){
                 Module dep = getModuleByName(depName);
-                ModuleDependency md = new ModuleDependency(m, dep);
+                ModuleDependency md = new ModuleDependency(m, dep, "depends_on");
                 moduleDependencies.add(md);
                 store(md);
             }
@@ -143,7 +143,7 @@ public class ToscaHandler {
     private void handleComponentDependencies(Module m, Component c) throws DBException {
         for(String depName:parser.getComponentDependencies(c.getDescription())){
                 Component dep = getComponentByName(depName, moduleComponents.get(m));
-                ComponentDependency cd = new ComponentDependency(c, dep);
+                ComponentDependency cd = new ComponentDependency(c, dep, "depends_on");
                 componentDependencies.add(cd);
                 store(cd);
             }

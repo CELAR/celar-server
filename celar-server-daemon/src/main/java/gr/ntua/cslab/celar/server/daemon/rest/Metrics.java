@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
@@ -7,6 +8,7 @@ import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
+import static gr.ntua.cslab.database.EntityGetters.getMetrics;
 import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
@@ -74,7 +76,13 @@ public class Metrics {
         return rv;
 
     }
-    
+        
+    @GET
+    @Path("component/{component_id}")
+    public static REList<Metric> getComponentMetrics(  @PathParam("component_id") int id) throws Exception{
+        Component c = new Component(id);
+        return new REList(getMetrics(c));
+    }
 
     
 }

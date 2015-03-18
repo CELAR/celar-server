@@ -2,11 +2,13 @@ package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.ComponentDependency;
 import gr.ntua.cslab.celar.server.beans.Decision;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
 import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.ModuleDependency;
 import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
 import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
@@ -217,7 +219,8 @@ public class EntityGetters {
     */
     public static List<Resource> getResources(Component c, Deployment dep) throws DBException{
         List<Constrain> cl= new java.util.LinkedList();
-        cl.add(new Constrain("COMPONENT_id", ""+c.getId()));
+        if(c!=null) cl.add(new Constrain("COMPONENT_id", ""+c.getId()));
+        
         cl.add(new Constrain("DEPLOYMENT_id", ""+dep.getId()));
         List<Resource> list = EntityTools.getByConstrains(Resource.class, cl, false);
         return list;
@@ -239,24 +242,12 @@ public class EntityGetters {
     
     /** Gets all the Metrics of a given deployment
      * 
-     * @param dep the deployment whose metrics we are getting
+     * @param comp the component whose metrics we are getting
      * @return 
      * @throws gr.ntua.cslab.database.DBException 
     */
-    public static List<Metric> getDeploymentMetrics(Deployment dep) throws DBException, Exception{
-        List<Class> classes = new LinkedList();
-        List<Constrain> constrains= new LinkedList();
-        classes.add(Deployment.class);
-        classes.add(Resource.class);
-        classes.add(Metric.class);        
-        constrains.add(new Constrain("deployment_id", dep.id));
-
-        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
-        List<Metric> rv = new LinkedList();
-        for(List<ReflectiveEntity> line: lines){
-            rv.add((Metric)line.get(0));
-        }
-        return rv;
+    public static List<Metric> getMetrics(Component comp) throws DBException, Exception{
+        return EntityTools.getByField(Metric.class, "COMPONENT_id", ""+comp.id);
     }
     
         /**
@@ -294,7 +285,14 @@ public class EntityGetters {
         List<ResizingAction> list = EntityTools.getByConstrains(ResizingAction.class, con, false);
         return list;
     }
-            
+    
+    public static List<ComponentDependency> getDependencies(Component c){
+        return EntityTools.getByField(ComponentDependency.class, "COMPONENT_from_id", ""+c.id);
+    }
+    
+    public static List<ModuleDependency> getDependencies(Module m){
+        return EntityTools.getByField(ModuleDependency.class, "MODULE_from_id", ""+m.id);
+    }
             
     public static List<Application> searchApplication(long submittedStart, long submittedEnd,
             String description, int userid,  String moduleName, String componentDescription,
@@ -318,29 +316,7 @@ public class EntityGetters {
         return rv;
     }
 
-    public static List<Decision> searchDecisions(
-            long start ,long end, String actionType) throws Exception {
-        List<Decision> rv = new LinkedList();
-      
-        List<Constrain> constrains= new LinkedList();
-        List<Class> classes = new LinkedList();
         
-        if(start>=0)constrains.add(new Constrain("timestamp", ">=",""+new MyTimestamp(start)));
-        if(end>0) constrains.add(new Constrain("timestamp", "<=",""+new MyTimestamp(end)));
-        if(actionType!=null) constrains.add(new Constrain("RESIZING_ACTION.type",actionType));
-
-        LOG.info("Searching for constrains: "+constrains);  
-        
-        classes.add(ResizingAction.class);
-        classes.add(Decision.class);
-                
-        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
-        for(List<ReflectiveEntity> line: lines)
-            rv.add((Decision)line.get(1));
-        return rv;
-
-    }
-    
         public static List<Decision> searchDecisions2( Deployment depl,
             long start ,long end, String actionType, int componentId, int moduleId) throws Exception {
         List<Decision> rv = new LinkedList();

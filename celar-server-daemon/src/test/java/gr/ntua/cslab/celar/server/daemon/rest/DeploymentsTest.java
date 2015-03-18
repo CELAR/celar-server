@@ -1,13 +1,8 @@
 
 package gr.ntua.cslab.celar.server.daemon.rest;
 
-import gr.ntua.cslab.celar.server.beans.Decision;
-import gr.ntua.cslab.celar.server.beans.Deployment;
-import gr.ntua.cslab.celar.server.beans.Metric;
-import gr.ntua.cslab.celar.server.beans.MetricValue;
-import gr.ntua.cslab.celar.server.beans.Resource;
-import gr.ntua.cslab.celar.server.beans.structured.REList;
-import static gr.ntua.cslab.celar.server.daemon.rest.ApplicationTest.depl;
+import gr.ntua.cslab.celar.server.beans.*;
+import gr.ntua.cslab.celar.server.beans.structured.*;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
 import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
@@ -69,6 +64,10 @@ public class DeploymentsTest extends ApplicationTest {
             
             Deployment rv = Deployments.getDeployment(depl.id);
             System.out.println(rv.toString(true));
+            
+            // test resources
+            REList<Resource> resources = Deployments.getDeploymentResources(depl.id, -1);            
+            System.out.println("RESOURCES:\n"+resources.toString(true));
             
             // test decision
             des = Deployments.addDecision(depl.id, component.id, "ADD", 2);

@@ -15,7 +15,6 @@ import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.Entities.depl;
 import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
 import static gr.ntua.cslab.database.EntityGetters.searchApplication;
-import static gr.ntua.cslab.database.EntityGetters.searchDecisions;
 import static gr.ntua.cslab.database.EntityGetters.searchDecisions2;
 import static gr.ntua.cslab.database.EntityTools.joinedTableName;
 import static gr.ntua.cslab.database.EntityTools.joiner;

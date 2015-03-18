@@ -8,13 +8,16 @@ import com.sixsq.slipstream.persistence.Node;
 import com.sixsq.slipstream.persistence.Target;
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.ComponentDependency;
+import gr.ntua.cslab.celar.server.beans.Module;
+import gr.ntua.cslab.celar.server.beans.ModuleDependency;
 import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.DeployedApplication;
-import gr.ntua.cslab.celar.server.beans.structured.ApplicationList;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
+import static gr.ntua.cslab.database.EntityGetters.getDependencies;
 import static gr.ntua.cslab.database.EntityGetters.searchApplication;
 import static gr.ntua.cslab.database.EntityGetters.getResizingActions;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
@@ -78,7 +81,7 @@ public class Applications {
 
     @GET
     @Path("search/")
-    public static ApplicationList searchApplicationsByProperty(
+    public static REList<Application> searchApplicationsByProperty(
             @DefaultValue("0") @QueryParam("submitted_start") long submittedStart,
             @DefaultValue("0") @QueryParam("submitted_end") long submittedEnd,
             @QueryParam("description") String description,
@@ -86,15 +89,11 @@ public class Applications {
             @QueryParam("module_name") String moduleName,
             @QueryParam("component_description") String componentDescription,
             @QueryParam("provided_resource_id") String providedResourceId) throws Exception {
-        ApplicationList rv = new ApplicationList();
+       
         List<Application> apps= searchApplication(submittedStart, submittedEnd,
                 description ,userid, moduleName, componentDescription, providedResourceId);
-        for(Application a: apps){
-           
-            rv.applications.add(a);
-        }
-         System.out.println(rv.applications);
-        return rv;
+       
+        return new REList(apps);
     }
 
 
@@ -242,8 +241,21 @@ public class Applications {
     public static REList<ResizingAction> getComponentResizingActions(@PathParam("component_id") int componentId) throws Exception {
         Component c = new Component(componentId);
         return new REList<>(getResizingActions(null, c));
-      
     }
     
 
+    @GET
+    @Path("component/{component_id}/dependencies")
+    public static REList<ComponentDependency> getComponentDependencies(@PathParam("component_id") int componentId) throws Exception {
+        Component c = new Component(componentId);
+        return new REList<>(getDependencies(c));
+    }
+    
+    @GET
+    @Path("module/{module_id}/dependencies")
+    public static REList<ModuleDependency> getModuleDependencies(@PathParam("module_id") int moduleId) throws Exception {
+        Module c = new Module(moduleId);
+        return new REList<>(getDependencies(c));
+    }
+    
 }

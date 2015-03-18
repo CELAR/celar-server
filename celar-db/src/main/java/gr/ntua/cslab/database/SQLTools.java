@@ -126,6 +126,8 @@ public class SQLTools {
         for (Map.Entry<String, String> e : tupples.entrySet()) {
             keys += "" + e.getKey() + ",";
         }
+        if (keys.length()==0) return "";
+        
         keys = keys.substring(0, keys.length() - 1);
         keys = "(" + keys + ")";
 

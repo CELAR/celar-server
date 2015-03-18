@@ -277,11 +277,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `celardb`.`COMPONENT__DEPENDENCY`
+-- Table `celardb`.`COMPONENT_DEPENDENCY`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `celardb`.`COMPONENT__DEPENDENCY` ;
+DROP TABLE IF EXISTS `celardb`.`COMPONENT_DEPENDENCY` ;
 
-CREATE  TABLE IF NOT EXISTS `celardb`.`COMPONENT__DEPENDENCY` (
+CREATE  TABLE IF NOT EXISTS `celardb`.`COMPONENT_DEPENDENCY` (
   `COMPONENT_from_id` INT NOT NULL ,
   `COMPONENT_to_id` INT NULL ,
   `type` VARCHAR(45) NULL ,

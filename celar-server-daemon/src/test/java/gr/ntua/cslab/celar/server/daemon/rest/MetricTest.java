@@ -67,7 +67,9 @@ public class MetricTest extends DeploymentsTest{
 //        for (MetricValue mv: mvl.values){
 //            mv.marshal(System.out);
 //        }
-
+        
+        REList<Metric> ml = Metrics.getComponentMetrics(component.id);
+        System.out.println("Metrics for component: \n"+ml.toString(true));        
         
         //remove the last metric
         System.out.println(dummyM.remove( m.id ));

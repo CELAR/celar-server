@@ -2,7 +2,7 @@ package gr.ntua.cslab.celar.server.daemon.rest;
 
 import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
-import gr.ntua.cslab.celar.server.beans.structured.ApplicationList;
+import gr.ntua.cslab.celar.server.beans.structured.REList;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.*;
@@ -32,6 +32,8 @@ public class ApplicationTest {
     static gr.ntua.cslab.celar.server.beans.Deployment depl;
     static Applications dummy = new Applications();
     static ResizingAction ra;
+    static ModuleDependency modDep;
+    static ComponentDependency compDep;
     
     static Random random = new Random();
     
@@ -75,9 +77,17 @@ public class ApplicationTest {
              //resizing action
                 ra = new ResizingAction(component, module,"ADD");
                 store(ra);
-        
+                
+             //module dependency
+                modDep= new ModuleDependency(module, module,"dummy_identity");
+                store(modDep);
+             
+             //component depencency 
+                compDep = new ComponentDependency(component, component, "dummy_identity");
+                store(compDep);
+                
         } catch (Exception ex) {
-            System.out.println(ex);
+            ex.printStackTrace();
             fail("failed to create resources");
         }
     }
@@ -85,6 +95,10 @@ public class ApplicationTest {
 
     
     public static void destroy() throws DBException{
+        
+                delete(modDep);
+                delete(compDep);
+        
                 delete(metric);
                 delete(ra);
                 delete(component);
@@ -128,7 +142,7 @@ public class ApplicationTest {
     
     static void search() throws Exception{
 //        ApplicationInfoList ail = Applications.searchApplicationsByProperty(0, System.currentTimeMillis(),app.description,user.id, module.name, component.description, null);
-         ApplicationList ail = Applications.searchApplicationsByProperty(0, 0,app.description,user.id, module.name, component.description, null);
+         REList<Application> ail = Applications.searchApplicationsByProperty(0, 0,app.description,user.id, module.name, component.description, null);
          ail.marshal(System.out);
          
          FileOutputStream fos = new FileOutputStream("testSearch");
@@ -136,13 +150,23 @@ public class ApplicationTest {
          fos.close();
          
          InputStream is = new FileInputStream("testSearch");
-         ApplicationList al = new ApplicationList();
+         REList<Application> al = new REList<Application>();
          al.unmarshal(is);
     }
     
     static void miscCalls() throws Exception{
         List resActions = Applications.getComponentResizingActions(component.id);
         System.out.println(resActions);
+        
+        // test component dependencies
+        REList<ComponentDependency> cdeps = Applications.getComponentDependencies(component.id);            
+        System.out.println("Component Dependencies:\n"+cdeps.toString(true));
+
+
+        // test module dependencies
+        REList<ModuleDependency> mdeps = Applications.getModuleDependencies(module.id);            
+        System.out.println("Module Dependencies:\n"+mdeps.toString(true));
+            
     }
     
     

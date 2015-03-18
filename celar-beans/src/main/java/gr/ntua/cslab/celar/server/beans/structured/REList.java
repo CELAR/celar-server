@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class  REList <E extends IDEntity> extends ReflectiveEntity implements List  {
+public class  REList <E extends ReflectiveEntity> extends ReflectiveEntity implements List  {
      public List<E> values;
 
     public REList() {
