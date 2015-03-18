@@ -78,19 +78,14 @@ public class EntityGetters {
     /**
      * Returns a List of all the ProvidedResources of the given type
      * 
-     * @param type the ResourceType father of all the ProvidedResources returned
+     * @param typeName the name of the ResourceType father of all the ProvidedResources returned
      * @return 
      * @throws gr.ntua.cslab.database.DBException 
     */
-    public static List<ProvidedResource> getProvidedResourceByType(ResourceType type) throws DBException{
-        List<ProvidedResource> rv = new java.util.LinkedList();
-        ResourceType rt = getResourceTypeByName(type.type);
-        ProvidedResource dummy = new ProvidedResource();
-        List generic= EntityTools.getByField(ProvidedResource.class, "RESOURCE_TYPE_id", ""+rt.getId());
-        for(Object e: generic){
-            rv.add((ProvidedResource) e);
-        }
-        return rv;
+    public static List<ProvidedResource> getProvidedResourceByTypeName(String typeName) throws DBException{
+        ResourceType rt = getResourceTypeByName(typeName);
+        return EntityTools.getByField(
+                        ProvidedResource.class, "RESOURCE_TYPE_id", ""+rt.getId());
     }
     
         /**
@@ -317,7 +312,7 @@ public class EntityGetters {
     }
 
         
-        public static List<Decision> searchDecisions2( Deployment depl,
+        public static List<Decision> searchDecisions( Deployment depl,
             long start ,long end, String actionType, int componentId, int moduleId) throws Exception {
         List<Decision> rv = new LinkedList();
       

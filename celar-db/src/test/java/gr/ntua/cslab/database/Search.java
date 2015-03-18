@@ -15,7 +15,7 @@ import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.Entities.depl;
 import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
 import static gr.ntua.cslab.database.EntityGetters.searchApplication;
-import static gr.ntua.cslab.database.EntityGetters.searchDecisions2;
+import static gr.ntua.cslab.database.EntityGetters.searchDecisions;
 import static gr.ntua.cslab.database.EntityTools.joinedTableName;
 import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.util.List;
@@ -47,7 +47,7 @@ public class Search extends Entities{
         List<MetricValue> mvl = searchMetricValues(depl, metric, new MyTimestamp((long)0), new MyTimestamp(System.currentTimeMillis()));
         System.out.println("Metric Values: "+mvl);
         
-        List<Decision> decisions = searchDecisions2(depl, 0, System.currentTimeMillis(),"ADD", component.id, module.id);
+        List<Decision> decisions = searchDecisions(depl, 0, System.currentTimeMillis(),"ADD", component.id, module.id);
         
         System.out.println("Found decisions: "+ decisions);
         assertTrue(decisions.get(0).equals(decision));

@@ -10,7 +10,7 @@ import gr.ntua.cslab.celar.server.beans.ProvidedResource;
 import gr.ntua.cslab.celar.server.beans.ResourceType;
 import gr.ntua.cslab.celar.server.beans.Spec;
 import gr.ntua.cslab.database.DBException;
-import static gr.ntua.cslab.database.EntityGetters.getProvidedResourceByType;
+import static gr.ntua.cslab.database.EntityGetters.getProvidedResourceByTypeName;
 import static gr.ntua.cslab.database.EntityGetters.getResourceTypeByName;
 import static gr.ntua.cslab.database.EntityGetters.getSpecsByProvidedResource;
 import static gr.ntua.cslab.database.EntityTools.toJSONObject;
@@ -43,7 +43,7 @@ public class ResourceParsers {
         public static JSONObject exportProvidedResourcesByType(ResourceType rt) throws DBException{
         JSONObject result=new JSONObject();
         JSONArray prs=new JSONArray();
-        List<ProvidedResource> resources=getProvidedResourceByType(rt);
+        List<ProvidedResource> resources=getProvidedResourceByTypeName(rt.type);
         for(ProvidedResource pr:resources){
             prs.put(exportProvidedResource(pr));
         }

@@ -1,9 +1,11 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
-import gr.ntua.cslab.celar.server.daemon.rest.beans.ServerInfo;
 import java.io.IOException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -12,6 +14,14 @@ import javax.ws.rs.Path;
 @Path("/server/")
 public class Server {
     
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public class ServerInfo {
+        protected long uptime;
+        public ServerInfo() {}
+        public long getUptime() {return uptime;}
+        public void setUptime(long uptime) {this.uptime = uptime;}
+    }
     
     @GET
     @Path("info/")

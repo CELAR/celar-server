@@ -85,7 +85,7 @@ public class Entities {
                 assertTrue(providedResource.equals(new ProvidedResource(providedResource.getId())));
 
             // search the provided resources by a type (father)
-                List<ProvidedResource> prl = getProvidedResourceByType(resourceType);
+                List<ProvidedResource> prl = getProvidedResourceByTypeName(resourceType.type);
                 System.out.println(prl);
 //
             //create and store some specs 

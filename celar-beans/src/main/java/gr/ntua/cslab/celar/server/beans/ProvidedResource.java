@@ -1,9 +1,12 @@
 package gr.ntua.cslab.celar.server.beans;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Represents a 'Provided Resource' entity as it is stored in celarDB
  * @author cmantas
  */
+@XmlRootElement
 public class ProvidedResource  extends IDEntity{
         /**
          * The values of the table fields

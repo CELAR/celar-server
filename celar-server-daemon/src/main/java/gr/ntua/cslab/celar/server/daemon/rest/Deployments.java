@@ -5,7 +5,6 @@ import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Decision;
 import gr.ntua.cslab.celar.server.beans.Deployment;
-import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
@@ -13,28 +12,23 @@ import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
-import static gr.ntua.cslab.database.EntityGetters.searchDecisions2;
+import static gr.ntua.cslab.database.EntityGetters.searchDecisions;
 import static gr.ntua.cslab.database.EntityGetters.getResizingActions;
 import static gr.ntua.cslab.database.EntityGetters.getResources;
 import static gr.ntua.cslab.database.EntityTools.removeDeployment;
 import static gr.ntua.cslab.database.EntityTools.store;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.ws.WebServiceException;
 import org.apache.log4j.Logger;
 
 /**
@@ -118,7 +112,7 @@ public class Deployments {
         if(dep.id.equals("")) throw new Exception("Deployment not found");
         
         REList<Decision> rv = new REList();
-        List<Decision> decisions = searchDecisions2(dep, startTime, endTime, 
+        List<Decision> decisions = searchDecisions(dep, startTime, endTime, 
                 actionName, componentId, moduleId);
         rv.values.addAll(decisions);        
         return rv;

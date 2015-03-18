@@ -21,9 +21,11 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * @author cmantas
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({MetricValue.class, Decision.class, MetricValue.class,
-    Application.class, Metric.class, ComponentDependency.class, 
-    ModuleDependency.class, Resource.class})
+@XmlSeeAlso({Application.class, Component.class, ComponentDependency.class,
+    Decision.class, Deployment.class, Metric.class, MetricValue.class, Module.class,
+    ModuleDependency.class, MyTimestamp.class, Probe.class, ProvidedResource.class,
+    ResizingAction.class, Resource.class, ResourceType.class, SlipStreamCredentials.class,
+    Spec.class, User.class})
 
 public abstract class ReflectiveEntity {
     
