@@ -5,17 +5,10 @@
  */
 package gr.ntua.cslab.database;
 import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Decision;
-import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
-import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.MyTimestamp;
-import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.Entities.depl;
-import static gr.ntua.cslab.database.EntitySearchers.*;
-import static gr.ntua.cslab.database.EntityTools.joinedTableName;
-import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.util.List;
 import static org.junit.Assert.assertTrue;
 
