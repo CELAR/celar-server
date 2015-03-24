@@ -7,6 +7,7 @@ import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.celar.server.beans.structured.ApplicationInfo;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
 import static gr.ntua.cslab.celar.server.daemon.rest.ApplicationTest.metric;
+import static gr.ntua.cslab.database.EntityTools.delete;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -63,10 +64,13 @@ public class MetricTest extends DeploymentsTest{
         
         mvl = new REList();
         mvl.unmarshal(new FileInputStream("metric_values.xml"));
-        System.out.println("READ mvl:\n"+mvl);
-//        for (MetricValue mv: mvl.values){
-//            mv.marshal(System.out);
-//        }
+
+        mvl = Metrics.putMetrics(null, new FileInputStream("metric_values.xml"));
+        
+        System.out.println("Got back stored Metrics: "+mvl);
+        for(Object o: mvl){
+            delete((MetricValue) o);
+        }
         
         REList<Metric> ml = Metrics.getComponentMetrics(component.id);
         System.out.println("Metrics for component: \n"+ml.toString(true));        

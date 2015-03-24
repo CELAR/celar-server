@@ -18,8 +18,8 @@ import gr.ntua.cslab.celar.server.beans.structured.REList;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.getDependencies;
-import static gr.ntua.cslab.database.EntityGetters.searchApplication;
 import static gr.ntua.cslab.database.EntityGetters.getResizingActions;
+import gr.ntua.cslab.database.EntitySearchers;
 import static gr.ntua.cslab.database.parsers.ApplicationParser.exportApplication;
 import gr.ntua.cslab.database.parsers.ToscaHandler;
 import java.io.IOException;
@@ -29,7 +29,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -90,7 +89,7 @@ public class Applications {
             @QueryParam("component_description") String componentDescription,
             @QueryParam("provided_resource_id") String providedResourceId) throws Exception {
        
-        List<Application> apps= searchApplication(submittedStart, submittedEnd,
+        List<Application> apps= EntitySearchers.searchApplication(submittedStart, submittedEnd,
                 description ,userid, moduleName, componentDescription, providedResourceId);
        
         return new REList(apps);

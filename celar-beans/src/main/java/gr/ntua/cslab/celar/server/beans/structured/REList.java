@@ -55,7 +55,7 @@ public class  REList <E extends ReflectiveEntity> extends ReflectiveEntity imple
     }
 
     @Override
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
        return values.iterator();
     }
 
@@ -141,7 +141,7 @@ public class  REList <E extends ReflectiveEntity> extends ReflectiveEntity imple
     }
 
     @Override
-    public ListIterator listIterator(int index) {
+    public ListIterator<E> listIterator(int index) {
         return values.listIterator(index);
     }
 

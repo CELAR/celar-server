@@ -9,7 +9,8 @@ import gr.ntua.cslab.celar.server.beans.structured.REList;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
 import static gr.ntua.cslab.database.EntityGetters.getMetrics;
-import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
+import static gr.ntua.cslab.database.EntitySearchers.searchMetricValues;
+import gr.ntua.cslab.database.EntitySearchers;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
 import java.io.InputStream;
@@ -26,6 +27,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
+import org.apache.log4j.Logger;
+import static org.apache.log4j.Logger.getLogger;
 
 
 /**
@@ -34,6 +37,8 @@ import javax.xml.bind.JAXBException;
  */
 @Path("/metrics/")
 public class Metrics {
+    
+    static Logger LOG = getLogger(Metrics.class);
     
     @POST
     @Path("put/")
@@ -70,7 +75,7 @@ public class Metrics {
         if (end>0) tend = new Timestamp(end);
         Deployment dep = null;
         if(!deploymentID.equals("-1")) dep=getDeploymentById(deploymentID);
-        List<MetricValue> mvl = searchMetricValues(dep, m ,tstart, tend);
+        List<MetricValue> mvl = EntitySearchers.searchMetricValues(dep, m ,tstart, tend);
         REList<MetricValue> rv = new REList();
         rv.values.addAll(mvl);
         return rv;
@@ -82,6 +87,20 @@ public class Metrics {
     public static REList<Metric> getComponentMetrics(  @PathParam("component_id") int id) throws Exception{
         Component c = new Component(id);
         return new REList(getMetrics(c));
+    }
+    
+    @POST
+    @Path("values/put")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    public static REList<MetricValue>  putMetrics(@Context HttpServletRequest request, InputStream input) throws JAXBException, DBException {
+        REList<MetricValue> metrics = new REList<>();
+        metrics.unmarshal(input);
+        LOG.info("Received "+metrics.size()+ " metrics.");
+        for(Object o: metrics){
+            MetricValue m = (MetricValue) o;
+            store(m);
+        }
+        return metrics;
     }
 
     

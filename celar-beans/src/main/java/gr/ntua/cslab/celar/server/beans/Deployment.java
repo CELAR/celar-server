@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Deployment extends ReflectiveEntity{
     public String id, application_Id, orchestrator_IP;
     public MyTimestamp start_Time ,end_Time;
-    private String state;
+    public String state;
     
     /**
      * Default constructor for all DBEntities

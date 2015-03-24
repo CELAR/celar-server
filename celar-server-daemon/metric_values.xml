@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <reList>
     <metricValue>
-        <id>2</id>
-        <metrics_Id>14</metrics_Id>
-        <resources_Id>2</resources_Id>
+        <id>12</id>
+        <metrics_Id>29</metrics_Id>
+        <resources_Id>11</resources_Id>
         <timestamp>
-            <nanos>774000000</nanos>
-            <longTime>1426686133774</longTime>
+            <nanos>193000000</nanos>
+            <longTime>1427127452193</longTime>
         </timestamp>
         <value>5</value>
     </metricValue>

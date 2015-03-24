@@ -5,7 +5,8 @@ import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.celar.server.beans.structured.*;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
-import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
+import static gr.ntua.cslab.database.EntitySearchers.searchMetricValues;
+import gr.ntua.cslab.database.EntitySearchers;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
 import java.io.FileOutputStream;
@@ -39,7 +40,7 @@ public class DeploymentsTest extends ApplicationTest {
             store(mv);
             assertTrue(mv.equals(new MetricValue(mv.id)));
             
-            List<MetricValue> mvl = searchMetricValues(depl, metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+            List<MetricValue> mvl = EntitySearchers.searchMetricValues(depl, metric, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
             System.out.println(mvl);
             
 
@@ -64,6 +65,9 @@ public class DeploymentsTest extends ApplicationTest {
             
             Deployment rv = Deployments.getDeployment(depl.id);
             System.out.println(rv.toString(true));
+            
+            List<Deployment> depList = Deployments.searchDeployments(0, -1, null);
+            System.out.println("Found deployemnts: "+depList);
             
             // test resources
             REList<Resource> resources = Deployments.getDeploymentResources(depl.id, -1);            

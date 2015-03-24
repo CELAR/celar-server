@@ -289,75 +289,14 @@ public class EntityGetters {
         return EntityTools.getByField(ModuleDependency.class, "MODULE_from_id", ""+m.id);
     }
             
-    public static List<Application> searchApplication(long submittedStart, long submittedEnd,
-            String description, int userid,  String moduleName, String componentDescription,
-            String providedResourceId) throws Exception{
-        List<Constrain> constrains= new LinkedList();
-        constrains.add(new Constrain("submitted", ">=",""+new MyTimestamp(submittedStart)));
-        if(submittedEnd>0) constrains.add(new Constrain("submitted", "<=",""+new MyTimestamp(submittedEnd)));
-        if(description!=null) constrains.add(new Constrain("Application.description",description));
-        if(userid!=0) constrains.add(new Constrain("user_id",""+userid));
-        if(moduleName!=null) constrains.add(new Constrain("Module.name",moduleName));
-        if(componentDescription!=null) constrains.add(new Constrain("Component.description",componentDescription));
-        LOG.info("Searching for constrains: "+constrains);
-        List<Class> classes = new LinkedList();
-        classes.add(Application.class);
-        classes.add(Module.class);
-        classes.add(Component.class);
-        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
-        List<Application> rv = new LinkedList();
-        for(List<ReflectiveEntity> line: lines)
-            rv.add((Application)line.get(0));
-        return rv;
-    }
-
-        
-        public static List<Decision> searchDecisions( Deployment depl,
-            long start ,long end, String actionType, int componentId, int moduleId) throws Exception {
-        List<Decision> rv = new LinkedList();
-      
-        List<Constrain> constrains= new LinkedList();
-        if(start>=0)constrains.add(new Constrain("timestamp", ">=",""+new MyTimestamp(start)));
-        if(end>0) constrains.add(new Constrain("timestamp", "<=",""+new MyTimestamp(end)));
-        if(!actionType.equals("")) constrains.add(new Constrain("lower(RESIZING_ACTION.type)",actionType.toLowerCase()));
-        if(componentId>0) constrains.add(new Constrain("COMPONENT.id",""+componentId));
-        if(moduleId>0) constrains.add(new Constrain("MODULE.id",""+moduleId));
-
-        List<Class> classes = new LinkedList();
-        classes.add(Module.class);
-        classes.add(Component.class);
-        classes.add(ResizingAction.class);
-        classes.add(Decision.class);
-                
-        List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
-        for(List<ReflectiveEntity> line: lines){
-            Decision d = (Decision)line.get(3);
-            if(d.deployment_id.equals(depl.id)) rv.add(d);
-        }
-        return rv;
-
-    }
-        
     
-    public static List<MetricValue> searchMetricValues(Deployment dep, Metric m, Timestamp start, Timestamp finish) throws Exception{
-        List<Constrain> lc= new java.util.LinkedList();
-       if (start!=null)
-            lc.add(new Constrain("METRIC_VALUES.timestamp", ">= ",""+start));
-        if (finish!=null)
-            lc.add(new Constrain("METRIC_VALUES.timestamp", "<=",""+finish));
-        if(dep!=null)
-            lc.add(new Constrain("RESOURCES.DEPLOYMENT_id", dep.id));
-        
-        List<Class> classes = new LinkedList();
-        classes.add(Resource.class);
-        classes.add(MetricValue.class);
-        
-        List<MetricValue> rv = new LinkedList();
-        List<List<ReflectiveEntity>> lines = joiner(classes, lc);
-        for(List<ReflectiveEntity> line: lines){
-            rv.add((MetricValue) line.get(1));
-        }
-        return rv;
+    public static List<Deployment> getDeployments( Timestamp start, Timestamp finish, Application app){
+        List<Constrain> lc = new LinkedList();
+        if (start != null)  lc.add(new DBTools.Constrain("DEPLOYMENT.start_time", ">= ", "" + start));
+        if (finish != null) lc.add(new DBTools.Constrain("DEPLOYMENT.end_time", " IS NULL OR DEPLOYMENT.end_time <=", "" + finish));
+        if (app != null)    lc.add(new DBTools.Constrain("DEPLOYMENT.APPLICATION_id", app.id));
+        LOG.info(lc.toString());
+        return EntityTools.getByConstrains(Deployment.class, lc, false);
     }
 
 }

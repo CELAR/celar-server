@@ -4,7 +4,7 @@ echo Got $img_count images
 flav_count=$(curl http://localhost:8080/resources/flavors 2>/dev/null |  grep \<id\> | wc -l)
 echo Got $flav_count flavors
 
-################  test application ####################
+################  test applications ####################
 echo Putting application
 curl http://localhost:8080/application/describe/ --data-binary @test1.csar -X POST -H "Content-Type: application/octet-stream" -ik > test_app.xml 2>/dev/null
 app_id=$(cat test_app.xml | grep application_Id)
@@ -15,7 +15,7 @@ app_id=${app_id#*Id>}
 echo Got application id: $app_id
 
 
-################# test metric ########################
+################# test metrics ########################
 #create a dummy xml file for metric
 echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <metric>
@@ -23,20 +23,25 @@ echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <component_ID>1</component_ID>
 </metric>' > metric_tmp.xml
 
-echo Putting Metric
 #put metric and get id
 curl http://localhost:8080/metrics/put/ --data-binary @metric_tmp.xml -X POST -H "Content-Type: application/octet-stream" -ik >test_metric.xml 2>/dev/null
 rm -f metric_tmp.xml
 metric_id=$(cat test_metric.xml | grep id)
 metric_id=${metric_id%</*>}
 metric_id=${metric_id#*id>}
-echo Got metric id: $metric_id
+echo Put metric id: $metric_id
 
-################ test deployment   ###########################
+################ test deployments   ###########################
 # Create a dummy deployment (offline)
-dep_id=$RANDOM
-dep_id=$(echo -e "$dep_id" | tr -d '[[:space:]]') #trim whitespaces (idk why this is needed)
-echo "insert into deployment(id, application_id, orchestrator_ip) values ('$dep_id', '$app_id' , '1.2.3.4');" | psql celardb celaruser >/dev/null
+dep_id_tmp=$RANDOM
+dep_id_tmp=$(echo -e "$dep_id_tmp" | tr -d '[[:space:]]') #trim whitespaces (idk why this is needed)
+echo "insert into deployment(id, application_id, orchestrator_ip, start_time) values ('$dep_id_tmp', '$app_id' , '1.2.3.4', now());" | psql celardb celaruser >/dev/null
+
+#search for deployments and get id of first one
+dep_id=$(curl http://localhost:8080/deployment/search?start_time=0 2>/dev/null| grep \<id\> | head -n 1)
+dep_id=${dep_id%</*>}
+dep_id=${dep_id#*id>}
+echo "Got Deployment id: $dep_id"
 
 #retreive a module and a component id (offline)
 module_id=$(echo "select id from module where application_id='$app_id' limit 1;" | psql celardb celaruser -tq)
@@ -48,11 +53,10 @@ component_id=$(echo -e "$component_id" | tr -d '[[:space:]]') #trim whitespaces 
 ra_id=$(echo "insert into resizing_action values (default, $module_id, $component_id, 'ADD') returning id;" | psql celardb celaruser -tq)
 
 #create a decision for that resizing action
-echo Putting a Decision
-des_id=$(curl http://localhost:8080/deployment/$dep_id/component/$component_id/decision/add  2>/dev/null| grep "<id>")
+des_id=$(curl http://localhost:8080/deployment/$dep_id/component/$component_id/decide/add  2>/dev/null| grep "<id>")
 des_id=${des_id%</*>}
 des_id=${des_id#*id>}
-echo Got decision with id: $des_id
+echo Put decision with id: $des_id
 
 #retreive all decisions for the deployment
 echo Getting decisions for deployment\($dep_id\)
@@ -61,9 +65,8 @@ echo Got $decision_count decisions
 
 # Creating a dummy resource (offline)
 res_id=$(echo "insert into resources (deployment_id, provided_resource_id, start_time) values ('$dep_id', 1, now())  returning id;" | psql celardb celaruser -tq)
-echo Getting resources for deployment
 res_count=$(curl http://localhost:8080/deployment/$dep_id/resources 2>/dev/null | grep \<id\> | wc -l)
-echo Got $res_count resources
+echo Got $res_count resources for deployment $dep_id
 
 
 
@@ -78,17 +81,38 @@ mod_dep_count=$(curl http://localhost:8080/application/module/$module_id/depende
 echo Got $mod_dep_count Module dependencies
 
 
-################ test metric value ###########################
+################ test metric values ###########################
 echo Inserting Some dummy metric values
+# create a couple of metric values
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
+<reList>
+    <metricValue>
+        <metrics_Id>$metric_id</metrics_Id>
+        <resources_Id>$res_id</resources_Id>
+        <timestamp>
+            <nanos>240000000</nanos>
+            <longTime>1427120254240</longTime>
+        </timestamp>
+        <value>12345</value>
+    </metricValue>
+    <metricValue>
+        <metrics_Id>$metric_id</metrics_Id>
+        <resources_Id>$res_id</resources_Id>
+        <timestamp>
+            <nanos>281000000</nanos>
+            <longTime>1427120254281</longTime>
+        </timestamp>
+        <value>6789</value>
+    </metricValue>
+</reList>" > metric_values_tmp.xml
 
-# create a couple of metric values (offline)
-echo "insert into metric_values values (default, $metric_id, $res_id, now(), 12345);" | psql celardb celaruser -tq
-echo "insert into metric_values values (default, $metric_id, $res_id, now(), 6789);" | psql celardb celaruser -tq
-
-echo Getting metric values for metric\($metric_id\)
+curl http://localhost:8080/metrics/values/put/ \
+        --data-binary @metric_values_tmp.xml -X POST -H \
+        "Content-Type: application/octet-stream" -ik &>/dev/null
+rm -f metric_values_tmp.xml
 curl http://localhost:8080/metrics/$metric_id/values 2>/dev/null  >test_metric_values.xml
 metric_values_count=$(cat test_metric_values.xml | grep id | wc -l)
-echo Got $metric_values_count metric values
+echo Got $metric_values_count metric values for metric\($metric_id\)
 
 
 

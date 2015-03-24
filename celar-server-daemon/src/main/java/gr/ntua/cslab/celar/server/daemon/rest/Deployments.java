@@ -12,14 +12,17 @@ import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
 import static gr.ntua.cslab.database.EntityGetters.getApplicationById;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
-import static gr.ntua.cslab.database.EntityGetters.searchDecisions;
+import static gr.ntua.cslab.database.EntityGetters.getDeployments;
+import static gr.ntua.cslab.database.EntitySearchers.searchDecisions;
 import static gr.ntua.cslab.database.EntityGetters.getResizingActions;
 import static gr.ntua.cslab.database.EntityGetters.getResources;
+import gr.ntua.cslab.database.EntitySearchers;
 import static gr.ntua.cslab.database.EntityTools.removeDeployment;
 import static gr.ntua.cslab.database.EntityTools.store;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.DefaultValue;
@@ -45,14 +48,20 @@ public class Deployments {
     public static Deployment getDeployment(@PathParam("id") String deploymentID) throws Exception {
         logger.info("Get deployment: "+deploymentID);
         Deployment dep =  getDeploymentById(deploymentID);
-        States state = null;
-        if(ssService!=null){
-            state = ssService.getDeploymentState(deploymentID);
-            //TODO manage Orchestrator and VMs IPs?
-            HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
-            //dep.setDescription(ips.toString());
+        try {
+            States state = null;
+            if (ssService != null) {
+                state = ssService.getDeploymentState(deploymentID);
+                //TODO manage Orchestrator and VMs IPs?
+                HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
+                //dep.setDescription(ips.toString());
+            }
+            dep.setState(state);
         }
-        dep.setState(state);
+        catch (Exception e){
+            logger.error("Slipstream get state failed");
+            e.printStackTrace();
+        }
 
         return dep;
     }
@@ -61,12 +70,37 @@ public class Deployments {
     
     @GET
     @Path("search/")
-    public List<Deployment> searchDeployments(
-            @DefaultValue("0") @QueryParam("start_time") long startTime,
-            @DefaultValue("0") @QueryParam("end_time") long endTime,
-            @DefaultValue("-1") @QueryParam("application_id") int applicationId) {
-    	logger.info("Searchin deployment");
-        throw new UnsupportedOperationException("not implemented");
+    public static REList<Deployment> searchDeployments(
+            @DefaultValue("-1") @QueryParam("start_time") long startTime,
+            @DefaultValue("-1") @QueryParam("end_time") long endTime,
+            @DefaultValue("-1") @QueryParam("application_id") String applicationId) throws Exception {
+    	logger.info("Searching deployment for start>="+startTime+" end<="+ endTime+" appId="+applicationId);
+        Timestamp stt=null, ett=null;
+        Application app=null;
+        if(startTime!=-1) stt=new Timestamp(startTime);
+        if(endTime!=-1) ett=new Timestamp(endTime);
+        if(!(applicationId==null || applicationId.equals("-1"))) app = getApplicationById(applicationId);
+        REList<Deployment> rv= new REList(getDeployments(stt, ett, app));
+        
+        for (Object o : rv) {
+            Deployment dep = (Deployment) o;
+            try {
+                States state = null;
+                if (ssService != null) {
+                    state = ssService.getDeploymentState(dep.id);
+                    //TODO manage Orchestrator and VMs IPs?
+                    HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(dep.id);
+                    //dep.setDescription(ips.toString());
+                }
+                dep.setState(state);
+            } catch (Exception e) {
+                logger.error("Slipstream get state failed for Deployement("+dep.id+")");
+                e.printStackTrace();
+            }
+
+        }
+         return rv;
+        
     }
 
     @GET
@@ -112,14 +146,14 @@ public class Deployments {
         if(dep.id.equals("")) throw new Exception("Deployment not found");
         
         REList<Decision> rv = new REList();
-        List<Decision> decisions = searchDecisions(dep, startTime, endTime, 
+        List<Decision> decisions = EntitySearchers.searchDecisions(dep, startTime, endTime, 
                 actionName, componentId, moduleId);
         rv.values.addAll(decisions);        
         return rv;
     }
     
     @GET
-    @Path("{id}/component/{component_id}/decision/{type}")
+    @Path("{id}/component/{component_id}/decide/{type}")
     public static Decision addDecision(
             @PathParam("id") String deploymentID,
             @PathParam("component_id") int componentID,

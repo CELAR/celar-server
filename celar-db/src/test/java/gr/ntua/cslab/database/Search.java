@@ -13,9 +13,7 @@ import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.MyTimestamp;
 import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.Entities.depl;
-import static gr.ntua.cslab.database.EntityGetters.searchMetricValues;
-import static gr.ntua.cslab.database.EntityGetters.searchApplication;
-import static gr.ntua.cslab.database.EntityGetters.searchDecisions;
+import static gr.ntua.cslab.database.EntitySearchers.*;
 import static gr.ntua.cslab.database.EntityTools.joinedTableName;
 import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.util.List;
@@ -36,7 +34,7 @@ public class Search extends Entities{
 //            long submittedStart, long submittedEnd,
 //            String description, int userid,  String moduleName, String componentDescription,
 //            String providedResourceId){
-        List<Application> result = searchApplication(0, System.currentTimeMillis(),
+        List<Application> result = EntitySearchers.searchApplication(0, System.currentTimeMillis(),
                 app.description,user.id, module.name, component.description, null);
         
         System.out.println(result);
@@ -44,10 +42,10 @@ public class Search extends Entities{
         
         createDeployment();
         
-        List<MetricValue> mvl = searchMetricValues(depl, metric, new MyTimestamp((long)0), new MyTimestamp(System.currentTimeMillis()));
+        List<MetricValue> mvl = EntitySearchers.searchMetricValues(depl, metric, new MyTimestamp((long)0), new MyTimestamp(System.currentTimeMillis()));
         System.out.println("Metric Values: "+mvl);
         
-        List<Decision> decisions = searchDecisions(depl, 0, System.currentTimeMillis(),"ADD", component.id, module.id);
+        List<Decision> decisions = EntitySearchers.searchDecisions(depl, 0, System.currentTimeMillis(),"ADD", component.id, module.id);
         
         System.out.println("Found decisions: "+ decisions);
         assertTrue(decisions.get(0).equals(decision));
