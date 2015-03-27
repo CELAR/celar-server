@@ -108,84 +108,88 @@ public class Applications {
         ToscaHandler th = new ToscaHandler(tc);
         th.storeDescription();
         
-        if(ssService!=null){
+        try {
+            if (ssService != null) {
             //application name and version
-            //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
-            String ssApplicationName = th.getApplication().getSlipstreamName();
-            logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
-            String appName = ssService.createApplication(ssApplicationName, tc.getAppVersion());
-            HashMap<String, Node> nodes = new HashMap();
-            //iterate through modules
-            for (String module : tc.getModules()) {
-                logger.info("\t" + module);
+                //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
+                String ssApplicationName = th.getApplication().getSlipstreamName();
+                logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
+                String appName = tc.getAppName() + " v" + tc.getAppVersion();
+                appName = ssService.createApplication(ssApplicationName, tc.getAppVersion());
 
-                //module dependecies
-                logger.info("\t\tdepends on: " + tc.getModuleDependencies(module));
+                HashMap<String, Node> nodes = new HashMap();
+                //iterate through modules
+                for (String module : tc.getModules()) {
+                    logger.info("\t" + module);
 
-                //iterate through components
-                for (String component : tc.getModuleComponents(module)) {
-                    logger.info("\t\t" + component);
-                    ImageModule imModule = new ImageModule(appName + "/" + component);
-                    Authz auth = new Authz(ssService.getUser(), imModule);
-                    imModule.setAuthz(auth);
+                    //module dependecies
+                    logger.info("\t\tdepends on: " + tc.getModuleDependencies(module));
 
-                    //component dependencies
-                    logger.info("\t\t\tdepends on: " + tc.getComponentDependencies(component));
+                    //iterate through components
+                    for (String component : tc.getModuleComponents(module)) {
+                        logger.info("\t\t" + component);
+                        ImageModule imModule = new ImageModule(appName + "/" + component);
+                        Authz auth = new Authz(ssService.getUser(), imModule);
+                        imModule.setAuthz(auth);
 
-                    //component properties
-                    List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
-                    Set<Target> targets = new HashSet<Target>();
-                    for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
-                        if (prop.getKey().toString().equals("VMI")) {
-                            logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
-                            imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString()));
-                        } else if (prop.getKey().toString().equals("executeScript")) {
-                            logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Execute script: " + prop.getValue().toString());
-                            parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
-                            Target t = new Target(Target.EXECUTE_TARGET, ssService.patchExecuteScript(prop.getValue().toString()));
-                            targets.add(t);
-                        } else if (prop.getKey().toString().contains("Add")) {
-                            logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Add script: " + prop.getValue().toString());
-                            parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
-                            Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
-                            targets.add(t);
-                        } else if (prop.getKey().toString().contains("Remove")) {
-                            logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Remove script: " + prop.getValue().toString());
-                            parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
-                            Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
-                            targets.add(t);
-                        } else if (prop.getKey().toString().equals("flavor")) {
-                            logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
-                            parameters.addAll(ssService.createFlavorParameters(prop.getValue().toString()));
+                        //component dependencies
+                        logger.info("\t\t\tdepends on: " + tc.getComponentDependencies(component));
+
+                        //component properties
+                        List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
+                        Set<Target> targets = new HashSet<Target>();
+                        for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
+                            if (prop.getKey().toString().equals("VMI")) {
+                                logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
+                                imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString()));
+                            } else if (prop.getKey().toString().equals("executeScript")) {
+                                logger.info("\t\t\t" + prop.getKey());
+                                logger.debug("Execute script: " + prop.getValue().toString());
+                                parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
+                                Target t = new Target(Target.EXECUTE_TARGET, ssService.patchExecuteScript(prop.getValue().toString()));
+                                targets.add(t);
+                            } else if (prop.getKey().toString().contains("Add")) {
+                                logger.info("\t\t\t" + prop.getKey());
+                                logger.debug("Add script: " + prop.getValue().toString());
+                                parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
+                                Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
+                                targets.add(t);
+                            } else if (prop.getKey().toString().contains("Remove")) {
+                                logger.info("\t\t\t" + prop.getKey());
+                                logger.debug("Remove script: " + prop.getValue().toString());
+                                parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
+                                Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
+                                targets.add(t);
+                            } else if (prop.getKey().toString().equals("flavor")) {
+                                logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
+                                parameters.addAll(ssService.createFlavorParameters(prop.getValue().toString()));
+                            }
                         }
+                        imModule.setTargets(targets);
+                        
+                        for (ModuleParameter p : parameters) {
+                            imModule.setParameter(p);
+                        }
+                        for (ModuleParameter p : ssService.baseParameters) {
+                            imModule.setParameter(p);
+                        }
+                        
+                        ssService.putModule(imModule);
+                        nodes.put(imModule.getShortName(), new Node(imModule.getShortName(), imModule));
+                        
                     }
-                    imModule.setTargets(targets);
-
-                    for (ModuleParameter p : parameters) {
-                        imModule.setParameter(p);
-                    }
-                    for (ModuleParameter p : ssService.baseParameters) {
-                        imModule.setParameter(p);
-                    }
-
-                    ssService.putModule(imModule);
-                    nodes.put(imModule.getShortName(), new Node(imModule.getShortName(), imModule));
-
                 }
+                //add DeploymentModule 
+                String name = appName + "/" + appName;
+                DeploymentModule deployment = new DeploymentModule(name);
+                Authz auth = new Authz(ssService.getUser(), deployment);
+                deployment.setAuthz(auth);
+                logger.info("App Modules: " + nodes);
+                deployment.setNodes(nodes);
+                ssService.putModule(deployment);
             }
-
-            //add DeploymentModule 
-            String name = appName + "/" + appName;
-            DeploymentModule deployment = new DeploymentModule(name);
-            Authz auth = new Authz(ssService.getUser(), deployment);
-            deployment.setAuthz(auth);
-            logger.info("App Modules: " + nodes);
-            deployment.setNodes(nodes);
-
-            ssService.putModule(deployment);
+        } catch (Exception e) {
+            logger.error("Some Slipstream operation must have failed: \n" + e.getLocalizedMessage());
         }
 
 

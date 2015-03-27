@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class MyTimestamp extends Timestamp{
 
-    public String skata = "skataaaaa";
     
     public MyTimestamp(){
         super(0);
