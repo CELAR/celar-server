@@ -60,13 +60,12 @@ service postgresql restart
 service postgresql initdb &>/dev/null
 
 #create user
-echo "create user $user password '$password';" | psql -U postgres &>/dev/null
+echo "create user $user password '$password' CREATEDB;" | psql -U postgres &>/dev/null
 # drop and re-create the DB
-echo "DROP DATABASE celardb;
-    CREATE DATABASE celardb
-;" | psql -U celaruser postgres >/dev/null
+echo 	"DROP DATABASE celardb;"	| psql -U celaruser postgres 
+echo	"CREATE DATABASE celardb;" 	| psql -U celaruser postgres >/dev/null
 
-
+	
 
 cat <<EOF >db_temp
 -- Converted by db_converter
