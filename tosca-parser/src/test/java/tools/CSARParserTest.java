@@ -35,7 +35,7 @@ public class CSARParserTest {
         
         try {
             //create a Parser instance
-  Parser tc  = new CSARParser("DataPlaySubmission.csary");
+  Parser tc  = new CSARParser("/Users/npapa/Downloads/myApplicationSubmission.csar");
             
 
             
