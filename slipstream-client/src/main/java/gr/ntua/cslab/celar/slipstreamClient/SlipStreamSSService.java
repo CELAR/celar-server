@@ -445,7 +445,7 @@ public class SlipStreamSSService {
 		project.setAuthz(auth);
 		putModule(project);
 		
-		reference ="images/"+imageName;
+		reference = user+"_images/"+imageName;
 		ImageModule module = new ImageModule(reference);
 		module.setIsBase(true);
 		module.setLoginUser("ubuntu");
