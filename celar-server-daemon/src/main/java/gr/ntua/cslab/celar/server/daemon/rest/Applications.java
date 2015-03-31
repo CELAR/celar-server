@@ -139,6 +139,7 @@ public class Applications {
                         List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                         Set<Target> targets = new HashSet<Target>();
                         for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
+                            logger.info("\t\t\t!!" + prop.getKey() + " : " + prop.getValue());
                             if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                                 logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                                 imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString()));
