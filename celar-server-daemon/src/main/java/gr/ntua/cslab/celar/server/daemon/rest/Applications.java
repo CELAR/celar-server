@@ -140,7 +140,7 @@ public class Applications {
                     for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
                         if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                             logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
-                            imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString()));
+                            imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString().replace(" ", "")));
                         } else if (prop.getKey().toString().equals("executeScript")) {
                             logger.info("\t\t\t" + prop.getKey());
                             logger.debug("Execute script: " + prop.getValue().toString());
