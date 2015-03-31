@@ -112,8 +112,8 @@ public class Applications {
         //application name and version
             //String ssApplicationName = System.currentTimeMillis() + "-" + tc.getAppName();
             String ssApplicationName = th.getApplication().getSlipstreamName();
-            logger.info("Application: " + tc.getAppName() + " v" + tc.getAppVersion());
-            String appName = tc.getAppName() + " v" + tc.getAppVersion();
+            logger.info("Application: " + tc.getAppName() + "_v" + tc.getAppVersion());
+            String appName = ssApplicationName;
             appName = ssService.createApplication(ssApplicationName, tc.getAppVersion());
 
             HashMap<String, Node> nodes = new HashMap();
@@ -180,6 +180,7 @@ public class Applications {
             }
             //add DeploymentModule 
             String name = appName + "/" + appName;
+            logger.info("Adding deployment module" + name);
             DeploymentModule deployment = new DeploymentModule(name);
             Authz auth = new Authz(ssService.getUser(), deployment);
             deployment.setAuthz(auth);
