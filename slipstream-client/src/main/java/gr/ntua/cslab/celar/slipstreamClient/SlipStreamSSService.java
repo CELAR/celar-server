@@ -439,13 +439,13 @@ public class SlipStreamSSService {
 		if(reference!=null)
 			return reference;
 		
-		String projectName = "images";
+		String projectName = user+"_images";
 		ProjectModule project = new ProjectModule(projectName);
 		Authz auth = new Authz(getUser(), project);
 		project.setAuthz(auth);
 		putModule(project);
 		
-		reference = user+"_images/"+imageName;
+		reference = projectName+"/"+imageName;
 		ImageModule module = new ImageModule(reference);
 		module.setIsBase(true);
 		module.setLoginUser("ubuntu");
