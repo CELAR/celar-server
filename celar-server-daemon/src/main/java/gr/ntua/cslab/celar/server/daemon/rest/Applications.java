@@ -56,6 +56,7 @@ import tools.Parser;
 public class Applications {
 
     public static Logger logger = Logger.getLogger(Applications.class);
+    public static final String DEPLOYMENT_NAME = "deployment";
     
     private static String storeFile(InputStream input, String prefix) {
         try {
@@ -179,8 +180,8 @@ public class Applications {
                 }
             }
             //add DeploymentModule 
-            String name = appName + "/" + appName;
-            logger.info("Adding deployment module" + name);
+            String name = appName + "/" +DEPLOYMENT_NAME;
+            logger.info("Adding deployment module: " + name);
             DeploymentModule deployment = new DeploymentModule(name);
             Authz auth = new Authz(ssService.getUser(), deployment);
             deployment.setAuthz(auth);
@@ -227,7 +228,9 @@ public class Applications {
         //TODO deployment ID
         String deploymentId;
         if(ssService==null) deploymentId= "" + (new java.util.Random()).nextInt();
-        else deploymentId = ssService.launchApplication(app.getSlipstreamName(), params);
+        else {
+        	deploymentId = ssService.launchApplication(app.getSlipstreamName()+ "/" +DEPLOYMENT_NAME, params);
+        }
         
         //TODO orchestrator IP 
         DeployedApplication ai =  tp.storeDeployment(app, deploymentId,"??IP??");
