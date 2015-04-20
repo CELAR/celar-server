@@ -74,22 +74,23 @@ public class Deployments {
     public static REList<Deployment> searchDeployments(
             @DefaultValue("-1") @QueryParam("start_time") long startTime,
             @DefaultValue("-1") @QueryParam("end_time") long endTime,
-            @DefaultValue("-1") @QueryParam("application_id") String applicationId) throws Exception {
+            @DefaultValue("-1") @QueryParam("application_id") String applicationId,
+            @DefaultValue("-1") @QueryParam("state") String state
+            ) throws Exception {
     	logger.info("Searching deployment for start>="+startTime+" end<="+ endTime+" appId="+applicationId);
         Timestamp stt=null, ett=null;
         Application app=null;
         if(startTime!=-1) stt=new Timestamp(startTime);
         if(endTime!=-1) ett=new Timestamp(endTime);
         if(!(applicationId==null || applicationId.equals("-1"))) app = getApplicationById(applicationId);
-        REList<Deployment> rv= new REList(getDeployments(stt, ett, app));
+        REList<Deployment> deployments= new REList(getDeployments(stt, ett, app));
         
-        for (Object o : rv) {
+        for (Object o : deployments) {
             Deployment dep = (Deployment) o;
             try {
-                States state = null;
                 if (ssService != null) {
-                    state = ssService.getDeploymentState(dep.id);
-                    logger.info("Deployment("+dep.id+") state: "+state);
+                    States s = ssService.getDeploymentState(dep.id);
+                    logger.info("Deployment("+dep.id+") state: "+s);
                     HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(dep.id);
                     //dep.setDescription(ips.toString());
                     for(String host: ips.keySet())
@@ -97,14 +98,26 @@ public class Deployments {
                             dep.setOrchestrator_IP(ips.get(host));
                             break;
                         }
+                    dep.setState(s);
                 }
-                dep.setState(state);
+                
             } catch (Exception e) {
                 logger.error("Slipstream get state failed for Deployement("+dep.id+")");
                 e.printStackTrace();
             }
 
         }
+        
+        if (state.equals("-1")) return deployments;
+        
+        logger.info("Filtering deployments for state: "+state);
+        //filter states
+        REList<Deployment> rv= new REList();
+        for(Object d: deployments){
+            String depState = ((Deployment)d).getState();
+            if(depState!=null && depState.toLowerCase().equals(state.toLowerCase()))
+                rv.add(d);
+        }       
          return rv;
         
     }

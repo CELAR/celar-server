@@ -66,7 +66,7 @@ public class DeploymentsTest extends ApplicationTest {
             Deployment rv = Deployments.getDeployment(depl.id);
             System.out.println(rv.toString(true));
             
-            List<Deployment> depList = Deployments.searchDeployments(0, -1, null);
+            List<Deployment> depList = Deployments.searchDeployments(0, -1, null, "-1");
             System.out.println("Found deployemnts: "+depList);
             
             // test resources
