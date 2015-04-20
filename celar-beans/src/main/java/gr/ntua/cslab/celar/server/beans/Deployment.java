@@ -88,6 +88,10 @@ public class Deployment extends ReflectiveEntity{
         else this.state = state.toString();
     }
     
+    public void setState(String state) {
+        this.state = state;
+    }
+    
      String toString( int indent) {
          String s = super.toString(indent);    
          indent = indent>0?--indent:0;

@@ -62,7 +62,9 @@ service postgresql initdb &>/dev/null
 #create user
 echo "create user $user password '$password' CREATEDB;" | psql -U postgres &>/dev/null
 # drop and re-create the DB
-echo 	"DROP DATABASE celardb;"	| psql -U celaruser postgres 
+
+echo "+++++++++++++++DEBUG: NOT DROPPING THE DB+++++++++++++++"
+#echo 	"DROP DATABASE celardb;"	| psql -U celaruser postgres 
 echo	"CREATE DATABASE celardb;" 	| psql -U celaruser postgres >/dev/null
 
 	

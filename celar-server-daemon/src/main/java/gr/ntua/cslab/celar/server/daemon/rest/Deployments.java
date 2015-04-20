@@ -57,6 +57,7 @@ public class Deployments {
                 //dep.setDescription(ips.toString());
             }
             dep.setState(state);
+            dep.setState("mix");
         }
         catch (Exception e){
             logger.error("Slipstream get state failed");
@@ -88,7 +89,7 @@ public class Deployments {
                 States state = null;
                 if (ssService != null) {
                     state = ssService.getDeploymentState(dep.id);
-                    //TODO manage Orchestrator and VMs IPs?
+                    logger.info("Deployment("+dep.id+") state: "+state);
                     HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(dep.id);
                     //dep.setDescription(ips.toString());
                     for(String host: ips.keySet())
