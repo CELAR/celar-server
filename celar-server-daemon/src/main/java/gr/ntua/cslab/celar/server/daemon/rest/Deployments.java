@@ -91,6 +91,11 @@ public class Deployments {
                     //TODO manage Orchestrator and VMs IPs?
                     HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(dep.id);
                     //dep.setDescription(ips.toString());
+                    for(String host: ips.keySet())
+                        if(host.toLowerCase().contains("orchestrator")){
+                            dep.setOrchestrator_IP(ips.get(host));
+                            break;
+                        }
                 }
                 dep.setState(state);
             } catch (Exception e) {
@@ -136,7 +141,7 @@ public class Deployments {
             @DefaultValue("-1")  @QueryParam("start_time")   long startTime,
             @DefaultValue("-1")  @QueryParam("end_time")     long endTime,
             @DefaultValue("-1")  @QueryParam("module_id")    int moduleId,
-              @QueryParam("component_id") int componentId,
+            @QueryParam("component_id") int componentId,
             @DefaultValue("")    @QueryParam("action_name") String actionName
             ) throws Exception {
         
