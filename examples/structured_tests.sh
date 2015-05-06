@@ -7,7 +7,7 @@ echo Got $flav_count flavors
 ################  test applications ####################
 echo Putting application
 curl http://localhost:8080/application/describe/ --data-binary @test1.csar -X POST -H "Content-Type: application/octet-stream" -ik > test_app.xml 2>/dev/null
-app_id=$(cat test_app.xml | grep application_Id)
+app_id=$(cat test_app.xml | grep -m 1 application_Id)
 # remove postfix/suffix
 app_id=${app_id%</*>}
 app_id=${app_id#*Id>}

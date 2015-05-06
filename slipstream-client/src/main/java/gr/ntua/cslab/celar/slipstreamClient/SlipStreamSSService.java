@@ -680,7 +680,7 @@ public class SlipStreamSSService {
 				break;
 			}
 		}
-    	String okeanosFlavor = "C"+cpu+"R"+ram+"D"+disk+"ext_vlmc";
+    	String okeanosFlavor = "C"+cpu+"R"+ram+"D"+disk+"drbd";
     	
     	logger.info("Okeanos flavor: "+okeanosFlavor);
     	

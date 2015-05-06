@@ -1,7 +1,7 @@
 export BUILD_NUMBER=1000
 rm celar-server-rpm/target/rpm/celar-server-rpm/RPMS/noarch/celar-server-rpm-0.0.1-1000.el6.noarch.rpm
 echo Packaging
-mvn clean package >/dev/null
+mvn clean package
 echo Sending
 scp celar-server-rpm/target/rpm/celar-server-rpm/RPMS/noarch/celar-server-rpm-0.0.1-1000.el6.noarch.rpm celar-server: &>/dev/null
 echo Uninstalling
