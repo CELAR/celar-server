@@ -12,13 +12,13 @@ import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
 
 public class CassandraTest {
 	public static void main(String[] args) throws Exception {
-		SlipStreamSSService ssservise = new SlipStreamSSService("ioannis", "*", "https://109.231.121.23");
+		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "celar2015", "https://109.231.126.66");
 
-		/*String projectName = "examples/CELAR/Cassandra";
+		String projectName = "examples1";
 		ProjectModule project = new ProjectModule(projectName);
 		Authz auth = new Authz(ssservise.getUser(), project);
 		project.setAuthz(auth);
-		ssservise.putModule(project);*/
+		ssservise.putModule(project);
 		
 		/*ImageModule seedNode = CassandraSeedNodeTest.putModule(ssservise);
 		ImageModule node = CassandraNodeTest.putModule(ssservise);
@@ -30,9 +30,9 @@ public class CassandraTest {
 		deploymentParameters.put("ycsbClient:multiplicity", "1");
 		ssservise.launchApplication("examples/CELAR/Cassandra/cassandra", deploymentParameters);
 */
-		String type = "cassandraNode";
+		/*String type = "cassandraNode";
 		String deploymnetId = "899d18f3-c375-4bca-969f-7c429f5e596c";
-		ssservise.addVM(deploymnetId, type, 1);
+		ssservise.addVM(deploymnetId, type, 1);*/
 		//System.exit(0);
 	}
 }

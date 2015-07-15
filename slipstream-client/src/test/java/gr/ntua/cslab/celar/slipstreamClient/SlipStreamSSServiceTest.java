@@ -29,16 +29,16 @@ public class SlipStreamSSServiceTest {
 		user.addSystemParametersIntoUser(conf);
 		
 		//create project directory
-		String projectName = "examples/CELAR/apacheExample3";
+		String projectName = "examples1/CELAR/apacheExample3";
 		ProjectModule project = new ProjectModule(projectName);
 		Authz auth = new Authz(ssservise.getUser(), project);
 		project.setAuthz(auth);
 		ssservise.putModule(project);
 		
 		//add ImageModule apache
-		String name = "examples/CELAR/apacheExample3/apache";
+		String name = "examples1/CELAR/apacheExample3/apache";
 		ImageModule module = new ImageModule(name);
-		module.setModuleReference("module/examples/images/ubuntu-12.04");
+		module.setModuleReference("module/examples1/images/ubuntu-12.04");
 		module.setLoginUser("ubuntu");
 		module.setPlatform("ubuntu");
 		module.setDescription("Apache!! web server appliance with custom landing page.");
@@ -114,9 +114,9 @@ public class SlipStreamSSServiceTest {
 		
 		
 		//add ImageModule client
-		String name1 = "examples/CELAR/apacheExample3/client";
+		String name1 = "examples1/CELAR/apacheExample3/client";
 		ImageModule module1 = new ImageModule(name1);
-		module1.setModuleReference("module/examples/images/ubuntu-12.04");
+		module1.setModuleReference("module/examples1/images/ubuntu-12.04");
 		module1.setLoginUser("ubuntu");
 		module1.setPlatform("ubuntu");
 		module1.setDescription("Web client tests server connectivity and verifies content.");
@@ -168,7 +168,7 @@ public class SlipStreamSSServiceTest {
 		ssservise.putModule(module1);
 	
 		//add DeploymentModule 
-		String name2 = "examples/CELAR/apacheExample3/apacheExample";
+		String name2 = "examples1/CELAR/apacheExample3/apacheExample";
 		DeploymentModule deployment = new DeploymentModule(name2);
 		auth = new Authz(ssservise.getUser(), deployment);
 		deployment.setAuthz(auth);
@@ -254,15 +254,15 @@ public class SlipStreamSSServiceTest {
 	public static void main(String[] args) throws Exception {
 		String cookie = "com.sixsq.slipstream.cookie=com.sixsq.idtype=local&com.sixsq.identifier=ioannis&com.sixsq.expirydate=1413407587469&com.sixsq.signature=e9wlflxyxi139ge3anrf68d27j1o9uvoz0sb4oh003xpdbfrx0mi7jflj3g12or64v7anqpjr9mepa778vjy6qgqqfqbnbgxwu8; Path=/";
 		
-		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "celaR2014", "https://109.231.121.110");
-		ssservise.removeVM("b000a2a3-7138-4298-8d24-561f7d44573b", "cassandraNode", 2);
+		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "celar2015", "https://109.231.126.66");
+		//ssservise.removeVM("b000a2a3-7138-4298-8d24-561f7d44573b", "cassandraNode", 2);
 		//System.out.println(ssservise.getDeploymentIPs("aa418e9a-ddfd-4273-8019-cd06d7bb708a"));
 		
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));
 		//testPutImage("images1/ubuntu-12.04", ssservise);
 		
-//		testPutApplication(ssservise);
+		testPutApplication(ssservise);
 		
 //		HashMap<String,String> parameters = new HashMap<String, String>();
 //		parameters.put("apache:multiplicity", "1");

@@ -174,10 +174,10 @@ public class SlipStreamSSService {
 		String xmlfile = writeXML(xml);
 		String[] command;
 		if(cookieAuth){
-			command = new String[] {"ss-module-put", "-u", user, "--cookie="+cookieFile, "--endpoint", url, xmlfile};
+			command = new String[] {/*"/usr/local/bin/"*/"ss-module-put", "-u", user, "--cookie="+cookieFile, "--endpoint", url, xmlfile};
 		}
 		else{	
-			command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
+			command = new String[] {/*"/usr/local/bin/"*/"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
 		}
 		Map<String, String>  ret = executeCommand(command);
 		if(!ret.get("error").equals("")){
