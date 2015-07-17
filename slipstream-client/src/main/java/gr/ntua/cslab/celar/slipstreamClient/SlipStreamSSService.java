@@ -3,6 +3,7 @@ package gr.ntua.cslab.celar.slipstreamClient;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -174,10 +175,10 @@ public class SlipStreamSSService {
 		String xmlfile = writeXML(xml);
 		String[] command;
 		if(cookieAuth){
-			command = new String[] {/*"/usr/local/bin/"*/"ss-module-put", "-u", user, "--cookie="+cookieFile, "--endpoint", url, xmlfile};
+			command = new String[] {"ss-module-put", "-u", user, "--cookie="+cookieFile, "--endpoint", url, xmlfile};
 		}
 		else{	
-			command = new String[] {/*"/usr/local/bin/"*/"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
+			command = new String[] {"ss-module-put", "-u", user, "-p", password, "--endpoint", url, xmlfile};
 		}
 		Map<String, String>  ret = executeCommand(command);
 		if(!ret.get("error").equals("")){
@@ -314,7 +315,71 @@ public class SlipStreamSSService {
 		InputStream inputStream = conn.getInputStream();
 		return IOUtils.toString(inputStream, "UTF-8");
 	}
+	
+	public void attachDisk(String deploymnetId, String type, String id, Integer gb) throws Exception {
+		logger.info("Attaching disk vm: "+type+"."+id+" from deployment: "+deploymnetId+" disk: "+ gb+"GB");
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {};
+		}
+		else{	
+			//command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			command = new String[] {"ss-scale-disk", "--endpoint", url, "-u", user, "-p", password, "--attach", gb+"", deploymnetId, type, id};
+		}
+		Map<String, String> ret = executeCommand(command);
+		/*if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}*/
+	}
+	
+	public void detachDisk(String deploymnetId, String type, String id, String diskId) throws Exception {
+		logger.info("Detaching disk vm: "+type+"."+id+" from deployment: "+deploymnetId+" disk id: "+ diskId);
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {};
+		}
+		else{	
+			//command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			command = new String[] {"ss-scale-disk", "--endpoint", url, "-u", user, "-p", password, "--detach", diskId+"", deploymnetId, type, id};
+		}
+		Map<String, String> ret = executeCommand(command);
+		/*if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}*/
+	}
+	
+	public void scaleVM(String deploymnetId, String type, String id, Integer cpu, Integer ram) throws Exception {
+		logger.info("Scaling vm: "+type+"."+id+" from deployment: "+deploymnetId+" new cpu: "+ cpu+" ram: "+ram);
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {};
+		}
+		else{	
+			//command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			command = new String[] {"ss-scale-resize", "--endpoint", url, "-u", user, "-p", password, "--cpu", cpu+"","--ram",ram+"", deploymnetId, type, id};
+		}
+		Map<String, String> ret = executeCommand(command);
+		/*if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}*/
+	}
 
+	public void scaleVM(String deploymnetId, String type, String id, String flavor) throws Exception {
+		logger.info("Scaling vm: "+type+"."+id+" from deployment: "+deploymnetId+" new flavor: "+flavor);
+		String[] command;
+		if(cookieAuth){
+			command = new String[] {};
+		}
+		else{	
+			//command = new String[] {"curl", url+"/run/"+deploymnetId+"/"+type, "-d", "ids="+ids, "--user", user+":"+password,"-X", "DELETE", "-k", "-D", "-"};
+			command = new String[] {"ss-scale-resize", "--endpoint", url, "-u", user, "-p", password, "--instance-type", flavor, deploymnetId, type, id};
+		}
+		Map<String, String> ret = executeCommand(command);
+		/*if(!ret.get("error").equals("")){
+			throw new Exception(ret.get("error"));
+		}*/
+	}
+	
 	public String addVM(String deploymnetId, String type, Integer number) throws Exception {
 		logger.info("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
 		String[] command;

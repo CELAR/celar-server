@@ -6,6 +6,7 @@ import java.util.Set;
 
 //import org.junit.Test;
 
+
 import com.sixsq.slipstream.persistence.Authz;
 import com.sixsq.slipstream.persistence.CloudImageIdentifier;
 import com.sixsq.slipstream.persistence.DeploymentModule;
@@ -254,15 +255,18 @@ public class SlipStreamSSServiceTest {
 	public static void main(String[] args) throws Exception {
 		String cookie = "com.sixsq.slipstream.cookie=com.sixsq.idtype=local&com.sixsq.identifier=ioannis&com.sixsq.expirydate=1413407587469&com.sixsq.signature=e9wlflxyxi139ge3anrf68d27j1o9uvoz0sb4oh003xpdbfrx0mi7jflj3g12or64v7anqpjr9mepa778vjy6qgqqfqbnbgxwu8; Path=/";
 		
-		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "celar2015", "https://109.231.126.66");
-		//ssservise.removeVM("b000a2a3-7138-4298-8d24-561f7d44573b", "cassandraNode", 2);
+		SlipStreamSSService ssservise = new SlipStreamSSService("celar", "celar2015", "https://83.212.102.166");
+		//ssservise.addVM("200e1a1e-0a7d-4ea2-9a97-52206566c821", "ubuntu_vm", 1);
+		ssservise.launchApplication("test/ubuntu_deployment", new HashMap<String,String>());
+		ssservise.terminateApplication("200e1a1e-0a7d-4ea2-9a97-52206566c821");
+		//ssservise.scaleVM("200e1a1e-0a7d-4ea2-9a97-52206566c821", "ubuntu_vm", "1",2,2048);
 		//System.out.println(ssservise.getDeploymentIPs("aa418e9a-ddfd-4273-8019-cd06d7bb708a"));
 		
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));
 		//System.out.println(ssservise.getImageReference("ubuntu-12.04"));
 		//testPutImage("images1/ubuntu-12.04", ssservise);
 		
-		testPutApplication(ssservise);
+		//testPutApplication(ssservise);
 		
 //		HashMap<String,String> parameters = new HashMap<String, String>();
 //		parameters.put("apache:multiplicity", "1");
