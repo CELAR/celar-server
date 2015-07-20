@@ -31,10 +31,12 @@ echo Waiting for state to change
 state="mix"
 while [ "$state" = "mix" ]; do
 	echo -n "."
-	state=$(curl http://localhost:8080/deployment/abe670fa-33ae-42ea-9d5a-5099a52a2a49 2>/dev/null | grep "<state")
+	state=$(curl http://localhost:8080/deployment/$dep_id 2>/dev/null | grep "<state")
 	state=${state%</*>}
 	state=${state#*>}
 	sleep 5
 done
 
 echo \nState is now $state
+
+curl http://localhost:8080/deployment/$dep_id/terminate

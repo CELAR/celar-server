@@ -1,22 +1,6 @@
 package gr.ntua.cslab.database;
 
-import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.Component;
-import gr.ntua.cslab.celar.server.beans.ComponentDependency;
-import gr.ntua.cslab.celar.server.beans.Decision;
-import gr.ntua.cslab.celar.server.beans.Deployment;
-import gr.ntua.cslab.celar.server.beans.Metric;
-import gr.ntua.cslab.celar.server.beans.MetricValue;
-import gr.ntua.cslab.celar.server.beans.Module;
-import gr.ntua.cslab.celar.server.beans.ModuleDependency;
-import gr.ntua.cslab.celar.server.beans.MyTimestamp;
-import gr.ntua.cslab.celar.server.beans.ProvidedResource;
-import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
-import gr.ntua.cslab.celar.server.beans.ResizingAction;
-import gr.ntua.cslab.celar.server.beans.Resource;
-import gr.ntua.cslab.celar.server.beans.ResourceType;
-import gr.ntua.cslab.celar.server.beans.Spec;
-import gr.ntua.cslab.celar.server.beans.User;
+import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.sql.Timestamp;
@@ -297,6 +281,14 @@ public class EntityGetters {
         if (app != null)    lc.add(new DBTools.Constrain("DEPLOYMENT.APPLICATION_id", app.id));
         LOG.info(lc.toString());
         return EntityTools.getByConstrains(Deployment.class, lc, false);
+    }
+    
+    public static List<ResourceProperty> getResourceProperties(Resource res){
+        List<ResourceProperty> rv = new LinkedList();
+         for(Object e: EntityTools.getByField(ResourceProperty.class, "RESOURCES_id", ""+res.getId())){
+            rv.add((ResourceProperty) e);
+        }
+        return rv;
     }
 
 }

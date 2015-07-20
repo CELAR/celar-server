@@ -1,19 +1,6 @@
 package gr.ntua.cslab.database;
 
-import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.Component;
-import gr.ntua.cslab.celar.server.beans.Decision;
-import gr.ntua.cslab.celar.server.beans.Deployment;
-import gr.ntua.cslab.celar.server.beans.Metric;
-import gr.ntua.cslab.celar.server.beans.MetricValue;
-import gr.ntua.cslab.celar.server.beans.Module;
-import gr.ntua.cslab.celar.server.beans.MyTimestamp;
-import gr.ntua.cslab.celar.server.beans.ProvidedResource;
-import gr.ntua.cslab.celar.server.beans.ResizingAction;
-import gr.ntua.cslab.celar.server.beans.Resource;
-import gr.ntua.cslab.celar.server.beans.ResourceType;
-import gr.ntua.cslab.celar.server.beans.Spec;
-import gr.ntua.cslab.celar.server.beans.User;
+import gr.ntua.cslab.celar.server.beans.*;
 import static gr.ntua.cslab.database.EntityGetters.*;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
@@ -43,6 +30,7 @@ public class Entities {
     static Decision decision;
     static Resource res;
     static MetricValue mv;
+    static ResourceProperty rp;
     
     static Random random = new Random();
     
@@ -136,11 +124,18 @@ public class Entities {
             store(depl);
             assertTrue(depl.equals(getDeploymentById(depl.getId())));
             
+            //resource
             res = new Resource(depl, component, providedResource);
             store(res);
             res = new Resource(res.getId());
             System.out.println(res);
             assertTrue(res.equals(new Resource(res.getId())));
+            
+            //resource Property
+            rp = new ResourceProperty("my_property", "my_value", res);
+            store(rp);
+            
+            System.out.println("RESOURCE PROPS: "+getResourceProperties(res));
             
             //metric value testing
             mv = new MetricValue(metric, res, (long)5);
@@ -155,7 +150,8 @@ public class Entities {
     
     public static void deleteDeployment() throws DBException{
             delete(decision);
-            delete(mv);            
+            delete(mv);
+            delete(rp);
             delete(res);            
             delete(depl);
     }

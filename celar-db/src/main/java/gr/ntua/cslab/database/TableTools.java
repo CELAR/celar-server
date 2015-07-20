@@ -24,6 +24,7 @@ public final class TableTools {
         tableNames.put("ComponentInfo", "COMPONENT");
         tableNames.put("ResizingAction", "RESIZING_ACTION");
         tableNames.put("Decision", "DECISIONS");
+        tableNames.put("ResourceProperty", "RESOURCE_PROPERTY");
         
     }
     
