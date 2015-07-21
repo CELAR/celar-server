@@ -172,6 +172,7 @@ public class DBTools extends DBConnectable{
      * Retrieves from the table a Mapping of fields-->values for each of the
      * table tuples that satisfy the whereStatement
      *
+     * @param fields
      * @param tableName
      * @param whereStatement an SQL condition to be added after "WHERE" clause
      * command
@@ -180,9 +181,21 @@ public class DBTools extends DBConnectable{
      */
     public static List<Map<String, String>> doSelect(String fields, String tableName, String whereStatement) throws DBException {
         String query = SQLTools.selectSQL(fields, tableName, whereStatement);
-        //try executing the query, else return null
+        return doQuery(query);
+    }
+    
+        /**
+     * Retrieves from the table a Mapping of fields-->values for each of the
+     * table tuples that satisfy the whereStatement
+     *
+     * @param selectQuery
+     * @return a List of mappings of ColumnNames--> Values
+     * @throws gr.ntua.cslab.database.DBException
+     */
+    public static List<Map<String, String>> doQuery(String selectQuery) throws DBException {
+                //try executing the query, else return null
         List<Map<String, String>> results = new java.util.LinkedList();
-        ResultSet resultSet = executeQuery(query);
+        ResultSet resultSet = executeQuery(selectQuery);
         try {
             ResultSetMetaData rsmd = resultSet.getMetaData();
             //create the map of ColumnNames->List_of_Values
@@ -199,9 +212,10 @@ public class DBTools extends DBConnectable{
             }
             resultSet.close();
         } catch (SQLException e) {
-            throw new DBException(e, query);
+            throw new DBException(e, selectQuery);
         }
         return results;
+        
     }
     
     /**

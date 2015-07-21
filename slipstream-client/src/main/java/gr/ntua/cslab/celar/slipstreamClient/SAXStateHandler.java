@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.sixsq.slipstream.statemachine.States;
+import java.util.Map;
 
 public class SAXStateHandler extends DefaultHandler {
 	
@@ -17,6 +18,8 @@ public class SAXStateHandler extends DefaultHandler {
 	public HashMap<String,String> ips;
 	public HashSet<String> goneIps;
 	private boolean print, print1;
+        
+        
 
 	public SAXStateHandler() {
 		super();
@@ -61,6 +64,7 @@ public class SAXStateHandler extends DefaultHandler {
 			}
 			break;
 		default:
+                        System.out.println(qName);
 			break;
 		}
 		
@@ -101,4 +105,10 @@ public class SAXStateHandler extends DefaultHandler {
 		}
 		return ret;
 	}
+        
+        public Map<String, String>getDeploymentIDs(){
+            Map<String, String> ret = new HashMap<String, String>();
+            
+            return ret;
+        }
 }

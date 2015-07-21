@@ -291,15 +291,15 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `celardb`.`RESOURCE_PROPERTY`
+-- Table `celardb`.`DEPLOYMENT_STATE`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `celardb`.`RESOURCE_PROPERTY` (
-  `RESOURCES_id` INT NULL,
-  `property` TEXT NULL,
-  `value` TEXT NULL,
-  CONSTRAINT `fk_RESOURCE_PROPERTY_1`
-    FOREIGN KEY (`RESOURCES_id`)
-    REFERENCES `celardb`.`RESOURCES` (`id`)
+CREATE TABLE IF NOT EXISTS `celardb`.`DEPLOYMENT_STATE` (
+  `DEPLOYMENT_id` VARCHAR(45) NULL,
+  `timestamp` TIMESTAMP NULL,
+  `DEPLOYMENT_STATE` TEXT NULL,
+  CONSTRAINT `fk_DEPLOYMENT_STATE_1`
+    FOREIGN KEY (`DEPLOYMENT_id`)
+    REFERENCES `celardb`.`DEPLOYMENT` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

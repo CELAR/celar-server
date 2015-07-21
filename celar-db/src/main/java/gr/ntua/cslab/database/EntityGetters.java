@@ -283,12 +283,12 @@ public class EntityGetters {
         return EntityTools.getByConstrains(Deployment.class, lc, false);
     }
     
-    public static List<ResourceProperty> getResourceProperties(Resource res){
-        List<ResourceProperty> rv = new LinkedList();
-         for(Object e: EntityTools.getByField(ResourceProperty.class, "RESOURCES_id", ""+res.getId())){
-            rv.add((ResourceProperty) e);
-        }
-        return rv;
+    public static DeploymentState getDeploymentState(String deploymentId){
+        
+        String query = "select * FROM DEPLOYMENT_STATE WHERE DEPLOYMENT_id='"+deploymentId+"' order by timestamp FETCH FIRST 1 ROWS ONLY;";
+        List<DeploymentState> l = EntityTools.getByQuery(DeploymentState.class, query);
+        if(l.isEmpty()) return null;
+        else return l.get(0);
     }
 
 }

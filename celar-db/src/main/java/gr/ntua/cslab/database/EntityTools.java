@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -104,6 +105,22 @@ public final class EntityTools {
         return rv;
     }
     
+    
+       static Map<String, String> makeMap(String s){
+        Map<String, String> rv = new TreeMap();
+        s = s.substring(1, s.length()-1);
+        s = s.replace(",", "");
+        String key,value;
+        
+        StringTokenizer st = new StringTokenizer(s," =");
+        while(st.hasMoreElements()){
+            key = st.nextToken();
+            value = st.nextToken();
+            rv.put(key, value);
+        }
+        return rv;
+    }
+    
    
         
     public static <T extends ReflectiveEntity> void fromFieldMap(ReflectiveEntity e, Map<String, String> fieldMap) {
@@ -129,6 +146,8 @@ public final class EntityTools {
                         f.set(e, new MyTimestamp(Timestamp.valueOf(value).getTime()));
                     else if(long.class==type)
                         f.set(e, Long.parseLong(value));
+                    else if(Map.class.isAssignableFrom(type))
+                        f.set(e, makeMap(value));
                     else
                         throw new Exception("Unhandled type: "+type);
                 } catch (Exception ex) {
@@ -196,6 +215,31 @@ public final class EntityTools {
      */
     public static <T extends ReflectiveEntity> List<T> getAll(Class c) {
         return getByField(c.getClass(), null, null);
+    }
+    
+    /**
+     * Gets a list of reflective entities based on a given query
+     * @param <T>
+     * @param myClass
+     * @param query
+     * @return 
+     */
+    static <T extends ReflectiveEntity> List<T> getByQuery(Class<? extends ReflectiveEntity> myClass, String query) {
+        List<T> results = new java.util.LinkedList();
+        try {
+            T dummy = (T) myClass.newInstance();
+            List<Map<String, String>> mapsFromDB;
+            mapsFromDB = DBTools.doQuery(query);
+            for (Map m : mapsFromDB) {
+                T e = (T) myClass.newInstance();
+                fromFieldMap(e, m);
+                results.add(e);
+            }
+        } catch (Exception ex) {
+            System.err.println(ex);
+            ex.printStackTrace();
+        } 
+        return results;
     }
     
     

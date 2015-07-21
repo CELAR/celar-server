@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
     Decision.class, Deployment.class, Metric.class, MetricValue.class, Module.class,
     ModuleDependency.class, MyTimestamp.class, Probe.class, ProvidedResource.class,
     ResizingAction.class, Resource.class, ResourceType.class, SlipStreamCredentials.class,
-    Spec.class, User.class})
+    Spec.class, User.class, DeploymentState.class})
 
 public abstract class ReflectiveEntity {
     

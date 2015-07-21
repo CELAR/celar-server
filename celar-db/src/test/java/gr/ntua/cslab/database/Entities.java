@@ -6,7 +6,9 @@ import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.TreeMap;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,7 +32,7 @@ public class Entities {
     static Decision decision;
     static Resource res;
     static MetricValue mv;
-    static ResourceProperty rp;
+    static DeploymentState deplState;
     
     static Random random = new Random();
     
@@ -132,10 +134,10 @@ public class Entities {
             assertTrue(res.equals(new Resource(res.getId())));
             
             //resource Property
-            rp = new ResourceProperty("my_property", "my_value", res);
-            store(rp);
-            
-            System.out.println("RESOURCE PROPS: "+getResourceProperties(res));
+            Map props = new TreeMap(); props.put("kati", "timh"); props.put("allo", "timh");
+            deplState = new DeploymentState(props, depl);
+            store(deplState);
+            System.out.println("Deployment State:"+ getDeploymentState(depl.id));
             
             //metric value testing
             mv = new MetricValue(metric, res, (long)5);
@@ -151,7 +153,7 @@ public class Entities {
     public static void deleteDeployment() throws DBException{
             delete(decision);
             delete(mv);
-            delete(rp);
+            delete(deplState);
             delete(res);            
             delete(depl);
     }
