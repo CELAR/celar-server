@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.beans;
 
+import gr.ntua.cslab.celar.server.beans.structured.*;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
     Decision.class, Deployment.class, Metric.class, MetricValue.class, Module.class,
     ModuleDependency.class, MyTimestamp.class, Probe.class, ProvidedResource.class,
     ResizingAction.class, Resource.class, ResourceType.class, SlipStreamCredentials.class,
-    Spec.class, User.class, DeploymentState.class})
+    Spec.class, User.class, DeploymentState.class, ProvidedResourceInfo.class})
 
 public abstract class ReflectiveEntity {
     

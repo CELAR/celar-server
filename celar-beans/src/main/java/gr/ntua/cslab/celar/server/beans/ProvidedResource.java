@@ -21,6 +21,10 @@ public class ProvidedResource  extends IDEntity{
         super();
     }
     
+    public ProvidedResource(ProvidedResource pr){
+        super(pr);
+    }
+    
     /**
      * Creates an unstored providedResource from a given name and its
      * "Resourcetype" father

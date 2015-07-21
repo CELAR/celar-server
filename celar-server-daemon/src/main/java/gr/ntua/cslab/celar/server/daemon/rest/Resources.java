@@ -1,9 +1,8 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
-import gr.ntua.cslab.celar.server.beans.ProvidedResource;
+import gr.ntua.cslab.celar.server.beans.structured.ProvidedResourceInfo;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
-import gr.ntua.cslab.database.DBException;
-import static gr.ntua.cslab.database.EntityGetters.getProvidedResourceByTypeName;
+import static gr.ntua.cslab.database.EntitySearchers.searchProvidedResourceSpecs;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
@@ -16,14 +15,14 @@ public class Resources {
     
     @GET
     @Path("flavors/")
-    public REList<ProvidedResource> getFlavors() throws DBException {
-          return new REList(getProvidedResourceByTypeName("VM_FLAVOR"));
+    public static REList<ProvidedResourceInfo> getFlavors() throws Exception {
+          return new REList(searchProvidedResourceSpecs("VM_FLAVOR"));
     }
     
     @GET
     @Path("images/")
-    public REList<ProvidedResource>  getImages() throws DBException {
-        return new REList(getProvidedResourceByTypeName("VM_IMAGE"));
+    public static REList<ProvidedResourceInfo>  getImages() throws  Exception {
+        return new REList(searchProvidedResourceSpecs("VM_IMAGE"));
     }
     
 

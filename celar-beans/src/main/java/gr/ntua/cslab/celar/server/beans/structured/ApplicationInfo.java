@@ -1,7 +1,6 @@
 package gr.ntua.cslab.celar.server.beans.structured;
 
 import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.Resource;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

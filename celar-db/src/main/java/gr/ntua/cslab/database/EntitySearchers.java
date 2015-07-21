@@ -1,21 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gr.ntua.cslab.database;
 
-import gr.ntua.cslab.celar.server.beans.Application;
-import gr.ntua.cslab.celar.server.beans.Component;
-import gr.ntua.cslab.celar.server.beans.Decision;
-import gr.ntua.cslab.celar.server.beans.Deployment;
-import gr.ntua.cslab.celar.server.beans.Metric;
-import gr.ntua.cslab.celar.server.beans.MetricValue;
-import gr.ntua.cslab.celar.server.beans.Module;
-import gr.ntua.cslab.celar.server.beans.MyTimestamp;
-import gr.ntua.cslab.celar.server.beans.ReflectiveEntity;
-import gr.ntua.cslab.celar.server.beans.ResizingAction;
-import gr.ntua.cslab.celar.server.beans.Resource;
+import gr.ntua.cslab.celar.server.beans.*;
+import gr.ntua.cslab.celar.server.beans.structured.ProvidedResourceInfo;
 import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.sql.Timestamp;
@@ -117,5 +103,46 @@ public class EntitySearchers {
         return rv;
     }
     
+        static List<List<ReflectiveEntity>> searchResourceSpecsTANGLED(String resourceTypeName )throws Exception {
+            List<List<ReflectiveEntity>> rv = new LinkedList();
+            List<DBTools.Constrain> constrains = new LinkedList();
+            constrains.add(new DBTools.Constrain("RESOURCE_TYPE.type", "" + resourceTypeName));
+            
+                    
+            List<Class> classes = new LinkedList();
+            classes.add(ResourceType.class);
+            classes.add(ProvidedResource.class);
+            classes.add(Spec.class);
+            List<List<ReflectiveEntity>> lines = joiner(classes, constrains);
+            for (List<ReflectiveEntity> line : lines) rv.add(line);
+            return rv;
+    }   
     
+        public static List<ProvidedResourceInfo> searchProvidedResourceSpecs(String resourceTypeName ) throws Exception{
+            List<ProvidedResourceInfo> rv = new LinkedList();
+            
+            //get the tangled rows (ResourceType, ProvidedResource, Spec)
+            List<List<ReflectiveEntity>> tangled = searchResourceSpecsTANGLED(resourceTypeName);
+            
+            ProvidedResource current = null, check;
+            ProvidedResourceInfo currentInfo = null;
+            
+            for(List<ReflectiveEntity> entities: tangled){
+                //the provided resource to check against current
+                check = (ProvidedResource) entities.get(1);
+                
+                //check if there is a new resource
+                if(current==null || !current.equals(check)){
+                    current = check; 
+                    currentInfo=new  ProvidedResourceInfo(current);
+                    if(current!=null) rv.add(currentInfo);
+                }
+                
+                currentInfo.specs.add((Spec) entities.get(2) );
+                
+            }
+            
+            
+            return rv;
+        }
 }

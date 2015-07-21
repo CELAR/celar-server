@@ -2,11 +2,9 @@ package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.celar.server.beans.*;
 import gr.ntua.cslab.database.DBTools.Constrain;
-import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
