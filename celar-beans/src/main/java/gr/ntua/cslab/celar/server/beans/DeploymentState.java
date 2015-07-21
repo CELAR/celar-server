@@ -15,6 +15,7 @@ public class DeploymentState extends ReflectiveEntity{
 
     public DeploymentState() {
         super();
+        timestamp=new MyTimestamp(System.currentTimeMillis());
     }
 
    

@@ -139,6 +139,14 @@ public class Entities {
             store(deplState);
             System.out.println("Deployment State:"+ getDeploymentState(depl.id));
             
+            DeploymentState dummy_state = new DeploymentState();
+            dummy_state.deployment_id = depl.id;
+            dummy_state.deployment_state = props;
+            store(dummy_state);
+            delete(dummy_state);
+            
+             
+            
             //metric value testing
             mv = new MetricValue(metric, res, (long)5);
             store(mv);
