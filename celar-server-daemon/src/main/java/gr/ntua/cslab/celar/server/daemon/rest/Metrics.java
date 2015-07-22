@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
 import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.Metric;
@@ -29,8 +30,6 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
-import org.eclipse.jetty.server.Response;
-
 
 /**
  *
@@ -45,8 +44,13 @@ public class Metrics {
     @Path("put/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public static Metric put(@Context HttpServletRequest request, InputStream input, @QueryParam("token") String token) throws JAXBException, DBException {
-        if(!token.equals("4c021c79-6862-4337-bc24-923320e41354"))
-            throw  new WebApplicationException(Response.SC_FORBIDDEN);
+        if(!token.equals("4c021c79-6862-4337-bc24-923320e41354")) {
+            ResponseBuilderImpl responseBuilder =  new ResponseBuilderImpl();
+            responseBuilder.status(javax.ws.rs.core.Response.Status.FORBIDDEN);
+            responseBuilder.entity("Token not recognized");
+            throw new WebApplicationException(responseBuilder.build());
+
+        }
         Metric m = new Metric();
         m.unmarshal(input);
         m.timestamp = new MyTimestamp(System.currentTimeMillis());
