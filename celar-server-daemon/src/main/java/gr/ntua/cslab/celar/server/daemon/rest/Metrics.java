@@ -9,7 +9,6 @@ import gr.ntua.cslab.celar.server.beans.structured.REList;
 import gr.ntua.cslab.database.DBException;
 import static gr.ntua.cslab.database.EntityGetters.getDeploymentById;
 import static gr.ntua.cslab.database.EntityGetters.getMetrics;
-import static gr.ntua.cslab.database.EntitySearchers.searchMetricValues;
 import gr.ntua.cslab.database.EntitySearchers;
 import static gr.ntua.cslab.database.EntityTools.delete;
 import static gr.ntua.cslab.database.EntityTools.store;
@@ -24,11 +23,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import org.apache.log4j.Logger;
 import static org.apache.log4j.Logger.getLogger;
+import org.eclipse.jetty.server.Response;
 
 
 /**
@@ -43,7 +44,9 @@ public class Metrics {
     @POST
     @Path("put/")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    public static Metric put(@Context HttpServletRequest request, InputStream input) throws JAXBException, DBException {
+    public static Metric put(@Context HttpServletRequest request, InputStream input, @QueryParam("token") String token) throws JAXBException, DBException {
+        if(!token.equals("4c021c79-6862-4337-bc24-923320e41354"))
+            throw  new WebApplicationException(Response.SC_FORBIDDEN);
         Metric m = new Metric();
         m.unmarshal(input);
         m.timestamp = new MyTimestamp(System.currentTimeMillis());

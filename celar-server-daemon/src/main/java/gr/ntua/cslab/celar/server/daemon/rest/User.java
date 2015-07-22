@@ -22,7 +22,13 @@ public class User {
     @POST
     @Path("authenticate/")
     public AuthenticationResponse authenticateUser(AuthenticationRequest request) {
-        return new AuthenticationResponse("Logged in", "OK", true);
+        if(request.getUuid().equals("b7dab7d1-24d6-42f1-8bb0-b365e8abaf9e")) {
+            return new AuthenticationResponse("4c021c79-6862-4337-bc24-923320e41354", 
+                    "OK", 
+                    true);
+        } else  {
+            throw new WebApplicationException(Response.SC_FORBIDDEN);
+        }
     }
     
     @GET
