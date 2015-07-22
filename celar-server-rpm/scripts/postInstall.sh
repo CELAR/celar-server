@@ -54,6 +54,13 @@ password=celar-user
 sed -i "s/local   all         all                               ident/local   all         all                               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
 sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
 
+#accept outside connections
+sed -i "s/.*listen_addresses =.*/listen_addresses = '0.0.0.0'/g" /var/lib/pgsql/data/postgresql.conf
+
+#password protect outside connections
+sed -i '/0.0.0.0/d' /var/lib/pgsql/data/pg_hba.conf
+echo "host    all         all         0.0.0.0/0               md5" >>/var/lib/pgsql/data/pg_hba.conf
+
 #restart to apply changes
 service postgresql restart
 
@@ -62,7 +69,6 @@ service postgresql initdb &>/dev/null
 #create user
 echo "create user $user password '$password' CREATEDB;" | psql -U postgres &>/dev/null
 # drop and re-create the DB
-
 echo "+++++++++++++++DEBUG: NOT DROPPING THE DB+++++++++++++++"
 #echo 	"DROP DATABASE celardb;"	| psql -U celaruser postgres 
 echo	"CREATE DATABASE celardb;" 	| psql -U celaruser postgres >/dev/null
