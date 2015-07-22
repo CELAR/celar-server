@@ -25,6 +25,11 @@ public class DeploymentState extends ReflectiveEntity{
         timestamp=new MyTimestamp(System.currentTimeMillis());
     }
     
+    public DeploymentState(Map state, String depId) {
+        this.deployment_state = state;
+        this.deployment_id=depId;
+        timestamp=new MyTimestamp(System.currentTimeMillis());
+    }
     
     
     
