@@ -39,6 +39,7 @@ import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.statemachine.States;
 import com.sixsq.slipstream.util.SerializationUtil;
+import static gr.ntua.cslab.celar.slipstreamClient.SSXMLParser.parse;
 
 
 public class SlipStreamSSService {
@@ -812,5 +813,10 @@ public class SlipStreamSSService {
 		this.url = url;
 	}
 	
+        
+        public Map<String,String> getAllRuntimeParams(String deploymentId) throws Exception{
+          String ret= httpsGet(getUrl()+"/run/"+deploymentId+"?media=xml");
+          return parse(ret);
+        }
     
 }

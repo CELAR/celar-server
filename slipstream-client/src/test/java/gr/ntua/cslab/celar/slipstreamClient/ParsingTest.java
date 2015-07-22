@@ -29,10 +29,7 @@ public class ParsingTest {
 
     SlipStreamSSService ssService  = new SlipStreamSSService(username, password, slipstreamHost, connectorName);
     
-    String ret = ssService.httpsGet(ssService.getUrl()+"/run/"+deploymentId+"?media=xml");
-    
-
-    Map<String,String> test  = parse(ret);
+    Map<String,String> test  = ssService.getAllRuntimeParams(deploymentId);
     
     System.out.println(test);
     
