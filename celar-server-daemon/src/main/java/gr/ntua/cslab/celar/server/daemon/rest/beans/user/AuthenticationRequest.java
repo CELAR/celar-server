@@ -14,16 +14,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AuthenticationRequest {
     
     private String cloud;
-    private String authenticationUrl;
+    private String projectId;
     private String token;
+    private String uuid;
 
     public AuthenticationRequest() {
     }
 
-    public AuthenticationRequest(String cloud, String authenticationUrl, String token) {
+    public AuthenticationRequest(String cloud, String projectId, String token, String uuid) {
         this.cloud = cloud;
-        this.authenticationUrl = authenticationUrl;
+        this.projectId = projectId;
         this.token = token;
+        this.uuid = uuid;
     }
 
     public String getCloud() {
@@ -34,12 +36,12 @@ public class AuthenticationRequest {
         this.cloud = cloud;
     }
 
-    public String getAuthenticationUrl() {
-        return authenticationUrl;
+    public String getProjectId() {
+        return projectId;
     }
 
-    public void setAuthenticationUrl(String authenticationUrl) {
-        this.authenticationUrl = authenticationUrl;
+    public void setProjectId(String authenticationUrl) {
+        this.projectId = authenticationUrl;
     }
 
     public String getToken() {
@@ -48,6 +50,14 @@ public class AuthenticationRequest {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
     
 }

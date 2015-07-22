@@ -55,28 +55,28 @@ public class MetricTest extends DeploymentsTest{
         fos.close();
         fis = new FileInputStream("metric_test");
         
-        Metric m = dummyM.put(null, fis);
-        System.out.println("Received metric:\n\t "+m);
-        
-        REList<MetricValue> mvl = Metrics.getValues( metric.id, depl.id, 0 , System.currentTimeMillis());
-        System.out.println("Received metric values:"+" \n\t");
-        mvl.marshal(new FileOutputStream("metric_values.xml"));
-        
-        mvl = new REList();
-        mvl.unmarshal(new FileInputStream("metric_values.xml"));
-
-        mvl = Metrics.putMetrics(null, new FileInputStream("metric_values.xml"));
-        
-        System.out.println("Got back stored Metrics: "+mvl);
-        for(Object o: mvl){
-            delete((MetricValue) o);
-        }
-        
-        REList<Metric> ml = Metrics.getComponentMetrics(component.id);
-        System.out.println("Metrics for component: \n"+ml.toString(true));        
-        
-        //remove the last metric
-        System.out.println(dummyM.remove( m.id ));
+//        Metric m = dummyM.put(null, fis);
+//        System.out.println("Received metric:\n\t "+m);
+//        
+//        REList<MetricValue> mvl = Metrics.getValues( metric.id, depl.id, 0 , System.currentTimeMillis());
+//        System.out.println("Received metric values:"+" \n\t");
+//        mvl.marshal(new FileOutputStream("metric_values.xml"));
+//        
+//        mvl = new REList();
+//        mvl.unmarshal(new FileInputStream("metric_values.xml"));
+//
+//        mvl = Metrics.putMetrics(null, new FileInputStream("metric_values.xml"));
+//        
+//        System.out.println("Got back stored Metrics: "+mvl);
+//        for(Object o: mvl){
+//            delete((MetricValue) o);
+//        }
+//        
+//        REList<Metric> ml = Metrics.getComponentMetrics(component.id);
+//        System.out.println("Metrics for component: \n"+ml.toString(true));        
+//        
+//        //remove the last metric
+//        System.out.println(dummyM.remove( m.id ));
         
         
         

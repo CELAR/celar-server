@@ -1,5 +1,6 @@
 package gr.ntua.cslab.celar.server.daemon.rest;
 
+import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
 import gr.ntua.cslab.celar.server.beans.SlipStreamCredentials;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.user.AuthenticationRequest;
 import gr.ntua.cslab.celar.server.daemon.rest.beans.user.AuthenticationResponse;
@@ -22,7 +23,16 @@ public class User {
     @POST
     @Path("authenticate/")
     public AuthenticationResponse authenticateUser(AuthenticationRequest request) {
-        return new AuthenticationResponse("Logged in", "OK", true);
+        if(request.getUuid().equals("b7dab7d1-24d6-42f1-8bb0-b365e8abaf9e")) {
+            return new AuthenticationResponse("4c021c79-6862-4337-bc24-923320e41354", 
+                    "OK", 
+                    true);
+        } else  {
+            ResponseBuilderImpl responseBuilder =  new ResponseBuilderImpl();
+            responseBuilder.status(javax.ws.rs.core.Response.Status.FORBIDDEN);
+            responseBuilder.entity("The received UUID is not allowed!");
+            throw new WebApplicationException(responseBuilder.build());
+        }
     }
     
     @GET
