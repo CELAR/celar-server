@@ -61,7 +61,7 @@ public class Deployments {
 //                HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
                 //dep.setDescription(ips.toString());
             }
-            dep.setState(map.get("state"));
+            dep.setState(map.get("state").toString());
             DeploymentState depState = new DeploymentState(map, dep);
             store(depState);
             return depState;

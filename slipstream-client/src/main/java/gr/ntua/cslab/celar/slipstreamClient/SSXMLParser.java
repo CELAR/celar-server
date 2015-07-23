@@ -46,7 +46,7 @@ public class SSXMLParser {
                             String tmp = attributes.getValue(i);
                             for (States s : States.values()) {
                                 if (tmp.equals(s.name())) {
-                                    allInfo.put("state", s);
+                                    allInfo.put("state", s.toString());
                                     break;
                                 }
                             }
