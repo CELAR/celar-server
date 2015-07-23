@@ -63,6 +63,7 @@ public class Deployments {
             }
             dep.setState(map.get("state"));
             DeploymentState depState = new DeploymentState(map, dep);
+            store(depState);
             return depState;
         }
         catch (Exception e){
