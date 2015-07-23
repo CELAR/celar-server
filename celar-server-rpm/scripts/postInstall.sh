@@ -51,9 +51,9 @@ password=celar-user
 
 
 #trust local users
-sed -i "s/local   all         all                               ident/local   all         all                               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
-sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g" -i /var/lib/pgsql/data/pg_hba.conf
-
+sed -i "s/local   all         all                               ident/local   all         all                               trust/g"  /var/lib/pgsql/data/pg_hba.conf
+sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g"  /var/lib/pgsql/data/pg_hba.conf
+sed -i "s/host    all         all         127\.0\.0\.1/32.*/host    all         all         127.0.0.1/32          trust/g" /var/lib/pgsql/data/pg_hba.conf
 #accept outside connections
 sed -i "s/.*listen_addresses =.*/listen_addresses = '0.0.0.0'/g" /var/lib/pgsql/data/postgresql.conf
 
