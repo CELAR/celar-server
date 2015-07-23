@@ -64,7 +64,6 @@ public class SAXStateHandler extends DefaultHandler {
 			}
 			break;
 		default:
-                        System.out.println(qName);
 			break;
 		}
 		

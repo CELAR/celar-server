@@ -5,6 +5,7 @@ import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
 import gr.ntua.cslab.celar.server.beans.Decision;
 import gr.ntua.cslab.celar.server.beans.Deployment;
+import gr.ntua.cslab.celar.server.beans.DeploymentState;
 import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.Resource;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
@@ -25,6 +26,7 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -45,26 +47,30 @@ public class Deployments {
     
     @GET
     @Path("{id}/")
-    public static Deployment getDeployment(@PathParam("id") String deploymentID) throws Exception {
+    public static DeploymentState getDeployment(@PathParam("id") String deploymentID) throws Exception {
         logger.info("Get deployment: "+deploymentID);
         Deployment dep =  getDeploymentById(deploymentID);
         try {
             States state = null;
+            Map<String,String> map =null;
             if (ssService != null) {
-                state = ssService.getDeploymentState(deploymentID);
+                map = ssService.getAllRuntimeParams(deploymentID);
+                
+//                state = ssService.getDeploymentState(deploymentID);
                 //TODO manage Orchestrator and VMs IPs?
-                HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
+//                HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
                 //dep.setDescription(ips.toString());
             }
-            dep.setState(state);
-            dep.setState("mix");
+            dep.setState(map.get("state"));
+            DeploymentState depState = new DeploymentState(map, dep);
+            return depState;
         }
         catch (Exception e){
             logger.error("Slipstream get state failed");
             e.printStackTrace();
         }
 
-        return dep;
+        return null;
     }
 	
 
