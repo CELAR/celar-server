@@ -63,7 +63,7 @@ public class DeploymentsTest extends ApplicationTest {
         public static void main(String args[]) throws Exception{
             create();
             
-            Deployment rv = Deployments.getDeployment(depl.id);
+            DeploymentState rv = Deployments.getDeployment(depl.id);
             System.out.println(rv.toString(true));
             
             List<Deployment> depList = Deployments.searchDeployments(0, -1, null, "-1");
@@ -87,7 +87,7 @@ public class DeploymentsTest extends ApplicationTest {
             System.exit(0);
             
             
-            Deployments.terminateDeployment(rv.id);
+            Deployments.terminateDeployment(rv.deployment_id);
 //            Deployments.terminateDeployment(rv.id);
             
             destroy();
