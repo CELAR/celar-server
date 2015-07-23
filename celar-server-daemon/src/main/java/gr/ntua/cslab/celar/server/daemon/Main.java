@@ -3,9 +3,9 @@ package gr.ntua.cslab.celar.server.daemon;
 import com.sixsq.slipstream.exceptions.ValidationException;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 
-import gr.ntua.cslab.celar.server.daemon.rest.Applications;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import gr.ntua.cslab.celar.slipstreamClient.SlipStreamSSService;
+import static gr.ntua.cslab.database.DBTools.openConnection;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.ws.WebServiceException;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Connector;
@@ -28,6 +27,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
 
 /**
  * Executor class, used as an endpoint to the jar package from the outside
@@ -148,6 +148,7 @@ public class Main {
         addShutdownHook();
         configureServer();
         configureSlipstreamClient();
+        openConnection();
 
         ServerStaticComponents.server.start();
         Logger.getLogger(Main.class.getName()).info("Server is started");

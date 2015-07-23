@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gr.ntua.cslab.database.DBTools;
 
 /**
  *
@@ -199,6 +200,7 @@ public class Entities {
     
     
     public static void main(String args[]) throws Exception{
+        DBTools.openConnection();
         createApplicationStructure();
         createDeployment();
         deleteDeployment();

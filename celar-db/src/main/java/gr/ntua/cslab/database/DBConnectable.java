@@ -37,14 +37,24 @@ public abstract class DBConnectable {
     /**
      * The static initializer loads the properties
      */
-    static {
-        //LOG.setLevel(DEBUG);
-        loadProperties();
+//    static {
+//        //LOG.setLevel(DEBUG);
+//        loadProperties();
+//    }
+    
+    public static void loadProperties(Properties prop ){
+        
+            // get the property value 
+            BACKEND = prop.getProperty("backend");
+            HOST = prop.getProperty(BACKEND + ".host");
+            PORT = prop.getProperty(BACKEND + ".port");
+            USER = prop.getProperty(BACKEND + ".username");
+            PASSWORD = prop.getProperty(BACKEND + ".password");
+            DB_NAME = prop.getProperty(BACKEND + ".db_name");
     }
 
    /**
     * Loads the properties from the properties file and uses default values if failed
-    * <b>Note:</b> DEBUG: use with maven
     */
     public static void loadProperties() {
         Properties prop = new Properties();
@@ -54,14 +64,7 @@ public abstract class DBConnectable {
             InputStream in = DBConnectable.class.getResourceAsStream(PROPERTIES_FILE);
             // load a properties file
             prop.load(in);
-
-            // get the property value 
-            BACKEND = prop.getProperty("backend");
-            HOST = prop.getProperty(BACKEND + ".host");
-            PORT = prop.getProperty(BACKEND + ".port");
-            USER = prop.getProperty(BACKEND + ".username");
-            PASSWORD = prop.getProperty(BACKEND + ".password");
-            DB_NAME = prop.getProperty(BACKEND + ".db_name");
+            loadProperties(prop);
 
         } catch (IOException ex) {
             LOG.error("Could not load the properties for the DB Connection");
@@ -85,13 +88,8 @@ public abstract class DBConnectable {
             }
         }
     }
-
-    /**
-     * Opens the connection to the database.
-     *
-     * <b>Note (by ggian):</b> SLOW procedure, use with care!
-     */
-    public static void openConnection() {
+    
+    private static void openConnectionWithSetProps(){
         try {
             String DRIVER = "org." + BACKEND + ".Driver";
             Class.forName(DRIVER);
@@ -107,6 +105,22 @@ public abstract class DBConnectable {
             e.printStackTrace();
         }
         LOG.debug("Connection created");
+    }
+    
+
+    /**
+     * Opens the connection to the database.
+     *
+     * <b>Note (by ggian):</b> SLOW procedure, use with care!
+     */
+    public static void openConnection() {
+        loadProperties();
+        openConnectionWithSetProps();
+    }
+    
+    public static void openConnection(Properties props){
+        loadProperties(props);
+        openConnectionWithSetProps();
     }
 
     /**

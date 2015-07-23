@@ -22,9 +22,9 @@ public class DBTools extends DBConnectable{
     /**
      * The static initializer creates the connection to the DB
      */
-    static{
-        openConnection();
-    }
+//    static{
+//        openConnection();
+//    }
     
     
     public static class Constrain{
