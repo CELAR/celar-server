@@ -126,7 +126,7 @@ public abstract class DBConnectable {
     /**
      * Closes the connection with the database.
      */
-    public void closeConnection() {
+    public static void closeConnection() {
         try {
             connection.close();
             LOG.debug("Connection closed");
