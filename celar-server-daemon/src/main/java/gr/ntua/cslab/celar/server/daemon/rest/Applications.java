@@ -136,7 +136,13 @@ public class Applications {
                     }
                     //component dependencies
                     logger.info("\t\t\tdepends on: " + tc.getComponentDependencies(component));
-
+                    
+                    String preAttachScript="";
+                    String postAttachScript="";
+                    String preDetachScript="";
+                    String postDetachScript="";
+                    String preScaleScript="";
+                    String postScaleScript="";
                     //component properties
                     List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                     Set<Target> targets = new HashSet<Target>();
@@ -151,18 +157,24 @@ public class Applications {
                             parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
                             Target t = new Target(Target.EXECUTE_TARGET, ssService.patchExecuteScript(prop.getValue().toString()));
                             targets.add(t);
-                        } else if (prop.getKey().toString().contains("Add")) {
+                        } else if (prop.getKey().toString().contains("scaleOut")) {
                             logger.info("\t\t\t" + prop.getKey());
                             logger.debug("Add script: " + prop.getValue().toString());
                             parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
                             Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
                             targets.add(t);
-                        } else if (prop.getKey().toString().contains("Remove")) {
+                        } else if (prop.getKey().toString().contains("scaleIn")) {
                             logger.info("\t\t\t" + prop.getKey());
                             logger.debug("Remove script: " + prop.getValue().toString());
                             parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
                             Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
                             targets.add(t);
+                        } else if (prop.getKey().toString().contains("vmResize")) {
+                            logger.info("\t\t\t" + prop.getKey());
+                        } else if (prop.getKey().toString().contains("attachDisk")) {
+                            logger.info("\t\t\t" + prop.getKey());
+                        } else if (prop.getKey().toString().contains("detachDisk")) {
+                            logger.info("\t\t\t" + prop.getKey());
                         } else if (prop.getKey().toString().equals("flavor")) {
                             logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                             parameters.addAll(ssService.createFlavorParameters(prop.getValue().toString()));
