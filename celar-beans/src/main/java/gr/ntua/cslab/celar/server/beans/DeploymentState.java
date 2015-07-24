@@ -14,7 +14,7 @@ public class DeploymentState extends ReflectiveEntity{
     
     public String deployment_id;
     public Map deployment_state;
-    public MyTimestamp timestamp;
+    public MyTimestamp timestamp=null;
 
     public DeploymentState() {
         super();
@@ -31,7 +31,7 @@ public class DeploymentState extends ReflectiveEntity{
     public DeploymentState(Map state, String depId) {
         this.deployment_state = state;
         this.deployment_id=depId;
-        timestamp=new MyTimestamp(System.currentTimeMillis());
+        this.timestamp=new MyTimestamp(System.currentTimeMillis());
     }
     
     

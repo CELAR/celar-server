@@ -51,7 +51,6 @@ public class Deployments {
         logger.info("Get deployment: "+deploymentID);
         Deployment dep =  getDeploymentById(deploymentID);
         try {
-            States state = null;
             Map<String,String> map =null;
             if (ssService != null) {
                 map = ssService.getAllRuntimeParams(deploymentID);
@@ -61,7 +60,7 @@ public class Deployments {
 //                HashMap<String, String> ips = ServerStaticComponents.ssService.getDeploymentIPs(deploymentID);
                 //dep.setDescription(ips.toString());
             }
-            dep.setState(map.get("state").toString());
+            dep.setState(map.get("state"));
             DeploymentState depState = new DeploymentState(map, dep);
             store(depState);
             return depState;

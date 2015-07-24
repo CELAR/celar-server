@@ -33,7 +33,7 @@ import javax.xml.bind.Marshaller;
 
 public class Testing {
 
-    public static void main(String args[]) throws CloneNotSupportedException, JAXBException, FileNotFoundException, IOException {
+    public static void main(String args[]) throws Exception{
 
         //create a user entity
         User user = new User("takis", "dummy cred");
@@ -74,6 +74,7 @@ public class Testing {
         
         DeploymentState ds = new DeploymentState(new java.util.TreeMap(), "testtest");
         ds.marshal(System.out);
+        ds = DeploymentState.class.newInstance();
 
 //                    Metric metric = new Metric(component);
 //                    metric.marshal(System.out);
