@@ -829,9 +829,9 @@ public class SlipStreamSSService {
 		this.connectorName = connectorName;
 	}
         
-        public Map<String,String> getAllRuntimeParams(String deploymentId) throws Exception{
-          String ret= httpsGet(getUrl()+"/run/"+deploymentId+"?media=xml");
-          return parse(ret);
-        }
+    public Map<String,String> getAllRuntimeParams(String deploymentId) throws Exception{
+        String ret= httpsGet(getUrl()+"/run/"+deploymentId+"?media=xml");
+        return parse(ret);
+    }
     
 }
