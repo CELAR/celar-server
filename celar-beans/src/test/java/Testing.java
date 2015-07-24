@@ -6,6 +6,7 @@
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Component;
+import gr.ntua.cslab.celar.server.beans.DeploymentState;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.Module;
 import gr.ntua.cslab.celar.server.beans.ProvidedResource;
@@ -70,6 +71,9 @@ public class Testing {
 
         System.out.println(inai);
         System.out.println(inai.toString(true));
+        
+        DeploymentState ds = new DeploymentState(new java.util.TreeMap(), "testtest");
+        ds.marshal(System.out);
 
 //                    Metric metric = new Metric(component);
 //                    metric.marshal(System.out);
