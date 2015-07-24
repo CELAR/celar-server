@@ -44,6 +44,8 @@ import static gr.ntua.cslab.celar.slipstreamClient.SSXMLParser.parse;
 
 public class SlipStreamSSService {
 	private String user, password, url, cookie, cookieFile, connectorName;
+
+
 	private boolean cookieAuth;
     public  Logger logger = Logger.getLogger(SlipStreamSSService.class);
     public HashMap<String,String> baseImageReferences; //imageName-reference
@@ -812,7 +814,14 @@ public class SlipStreamSSService {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
+	public String getConnectorName() {
+		return connectorName;
+	}
+
+	public void setConnectorName(String connectorName) {
+		this.connectorName = connectorName;
+	}
         
         public Map<String,String> getAllRuntimeParams(String deploymentId) throws Exception{
           String ret= httpsGet(getUrl()+"/run/"+deploymentId+"?media=xml");

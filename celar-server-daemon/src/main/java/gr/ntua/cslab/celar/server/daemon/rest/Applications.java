@@ -131,7 +131,9 @@ public class Applications {
                     ImageModule imModule = new ImageModule(appName + "/" + component);
                     Authz auth = new Authz(ssService.getUser(), imModule);
                     imModule.setAuthz(auth);
-
+                    if(ssService.getConnectorName().equals("okeanos")){
+                    	imModule.setLoginUser("root");
+                    }
                     //component dependencies
                     logger.info("\t\t\tdepends on: " + tc.getComponentDependencies(component));
 
