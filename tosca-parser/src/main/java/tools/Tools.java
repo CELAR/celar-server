@@ -142,7 +142,7 @@ public class Tools {
     static Map<String, String> getToscaMeta(Path tempDir) throws IOException {
         Map<String, String> props = new java.util.TreeMap<>();
         File meta = new File (tempDir.toString()+File.separator+"TOSCA-Metadata"+File.separator+"TOSCA.meta");
-        
+        logger.info("Opening meta file: "+meta.getAbsoluteFile());
         if(!meta.isFile()){
             logger.error("missing 'TOSCA.meta' file ");
             throw new IOException("could not find TOSCA.meta file");
