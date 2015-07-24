@@ -39,6 +39,7 @@ import com.sixsq.slipstream.persistence.ProjectModule;
 import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.statemachine.States;
 import com.sixsq.slipstream.util.SerializationUtil;
+
 import static gr.ntua.cslab.celar.slipstreamClient.SSXMLParser.parse;
 
 
@@ -516,7 +517,12 @@ public class SlipStreamSSService {
 		reference = projectName+"/"+imageName;
 		ImageModule module = new ImageModule(reference);
 		module.setIsBase(true);
-		module.setLoginUser("ubuntu");
+        if(getConnectorName().equals("okeanos")){
+        	module.setLoginUser("root");
+        }
+        else{
+    		module.setLoginUser("ubuntu");
+        }
 		module.setPlatform("ubuntu");
 		module.setDescription("Baseline Image "+imageName);
 		auth = new Authz(getUser(), module);
