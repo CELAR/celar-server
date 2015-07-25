@@ -2,7 +2,6 @@ package gr.ntua.cslab.database;
 
 import gr.ntua.cslab.celar.server.beans.Application;
 import gr.ntua.cslab.celar.server.beans.Deployment;
-import gr.ntua.cslab.celar.server.beans.DeploymentState;
 import gr.ntua.cslab.celar.server.beans.IDEntity;
 import gr.ntua.cslab.celar.server.beans.Metric;
 import gr.ntua.cslab.celar.server.beans.MetricValue;
@@ -139,9 +138,7 @@ public final class EntityTools {
                         LOG.debug("Null value for: "+fieldName);
                         continue;
                     }
-                    if (current == DeploymentState.class && fieldName.equals("timestamp"))
-                        f.set(e, Timestamp.valueOf(value).getTime());
-                    else if(type==String.class)
+                    if(type==String.class)
                         f.set(e, value);
                     else if(type==int.class)
                         f.set(e, Integer.parseInt(value));
