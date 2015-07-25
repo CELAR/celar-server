@@ -69,6 +69,8 @@ public abstract class ReflectiveEntity {
                     String name = f.getName();
                     if(f.get(this)==null) continue;
                     String value = f.get(this).toString();
+                    if (this.getClass()==DeploymentState.class && name.equals("timestamp"))
+                        value = new MyTimestamp((Long)f.get(this)).toString();
                     rv.put(name, value);
                 } catch (Exception ex) {
                     ex.printStackTrace();
