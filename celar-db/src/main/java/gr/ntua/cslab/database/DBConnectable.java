@@ -45,12 +45,12 @@ public abstract class DBConnectable {
     public static void loadProperties(Properties prop ){
         
             // get the property value 
-            BACKEND = prop.getProperty("backend");
-            HOST = prop.getProperty(BACKEND + ".host");
-            PORT = prop.getProperty(BACKEND + ".port");
-            USER = prop.getProperty(BACKEND + ".username");
-            PASSWORD = prop.getProperty(BACKEND + ".password");
-            DB_NAME = prop.getProperty(BACKEND + ".db_name");
+            if(BACKEND==null) BACKEND = prop.getProperty("backend");
+            if(HOST==null) HOST = prop.getProperty(BACKEND + ".host");
+            if(PORT==null) PORT = prop.getProperty(BACKEND + ".port");
+            if(USER==null) USER = prop.getProperty(BACKEND + ".username");
+            if(PASSWORD==null) PASSWORD = prop.getProperty(BACKEND + ".password");
+            if(DB_NAME==null) DB_NAME = prop.getProperty(BACKEND + ".db_name");
     }
 
    /**

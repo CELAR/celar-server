@@ -30,17 +30,21 @@ public class Search extends Entities{
 
     
     public static void main(String args[]) throws Exception{
-        createApplicationStructure();
+        
+        DBTools.HOST="83.212.102.166";
+        DBTools.openConnection();
+//        createApplicationStructure();
         
 //            public static List<Application> searchApplication(
 //            long submittedStart, long submittedEnd,
 //            String description, int userid,  String moduleName, String componentDescription,
 //            String providedResourceId){
-        List<Application> result = searchApplication(0, System.currentTimeMillis(),
-                app.description,user.id, module.name, component.description, null);
+        int userId=1;
+        List<Application> result = searchApplication(0, System.currentTimeMillis(), null, userId, null, null, null);
         
-        System.out.println(result);
-
+        System.out.println(result.size());
+        
+        System.exit(0);
         
         createDeployment();
         

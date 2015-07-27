@@ -5,6 +5,7 @@ import gr.ntua.cslab.celar.server.beans.structured.ProvidedResourceInfo;
 import gr.ntua.cslab.database.DBTools.Constrain;
 import static gr.ntua.cslab.database.EntityTools.joiner;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.log4j.Logger;
@@ -16,6 +17,21 @@ import org.apache.log4j.Logger;
 public class EntitySearchers {
     
     private static final Logger LOG = Logger.getLogger(EntitySearchers.class.getName());
+    
+    private static <E extends ReflectiveEntity> List<E> discritize(List<E> inl){
+         List<E> rv = new LinkedList();
+         for (E ie: inl){
+             boolean exists = false;
+             for(E e: rv)
+                 if (ie.equals(e)){
+                     exists=true;
+                     break;
+                 }
+             if(!exists)
+                 rv.add(ie);                 
+         }
+         return rv;
+    }
 
     public static List<Application> searchApplication(long submittedStart, long submittedEnd, String description, int userid, String moduleName, String componentDescription, String providedResourceId) throws Exception {
         List<DBTools.Constrain> constrains = new LinkedList();
@@ -45,7 +61,7 @@ public class EntitySearchers {
         for (List<ReflectiveEntity> line : lines) {
             rv.add((Application) line.get(0));
         }
-        return rv;
+        return discritize(rv);
     }
 
     public static List<Decision> searchDecisions(Deployment depl, long start, long end, String actionType, int componentId, int moduleId) throws Exception {
@@ -78,7 +94,7 @@ public class EntitySearchers {
                 rv.add(d);
             }
         }
-        return rv;
+        return discritize(rv);
     }
 
     public static List<MetricValue> searchMetricValues(Deployment dep, Metric m, Timestamp start, Timestamp finish) throws Exception {
@@ -100,7 +116,7 @@ public class EntitySearchers {
         for (List<ReflectiveEntity> line : lines) {
             rv.add((MetricValue) line.get(1));
         }
-        return rv;
+        return discritize(rv);
     }
     
         static List<List<ReflectiveEntity>> searchResourceSpecsTANGLED(String resourceTypeName )throws Exception {
@@ -143,6 +159,6 @@ public class EntitySearchers {
             }
             
             
-            return rv;
+            return discritize(rv);
         }
 }

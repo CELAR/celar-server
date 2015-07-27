@@ -200,6 +200,8 @@ public class Entities {
     
     
     public static void main(String args[]) throws Exception{
+        
+        DBTools.HOST="83.212.102.166";
         DBTools.openConnection();
         createApplicationStructure();
         createDeployment();
