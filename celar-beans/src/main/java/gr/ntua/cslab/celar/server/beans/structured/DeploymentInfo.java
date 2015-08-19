@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author cmantas
  */
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DeploymentInfo extends Deployment{
     public Map stateMap;
     public MyTimestamp timestamp=null;
