@@ -8,6 +8,7 @@ import gr.ntua.cslab.celar.server.beans.Deployment;
 import gr.ntua.cslab.celar.server.beans.DeploymentState;
 import gr.ntua.cslab.celar.server.beans.ResizingAction;
 import gr.ntua.cslab.celar.server.beans.Resource;
+import gr.ntua.cslab.celar.server.beans.structured.DeploymentInfo;
 import gr.ntua.cslab.celar.server.beans.structured.REList;
 import gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents;
 import static gr.ntua.cslab.celar.server.daemon.shared.ServerStaticComponents.ssService;
@@ -47,7 +48,7 @@ public class Deployments {
     
     @GET
     @Path("{id}/")
-    public static DeploymentState getDeployment(@PathParam("id") String deploymentID) throws Exception {
+    public static DeploymentInfo getDeployment(@PathParam("id") String deploymentID) throws Exception {
         logger.info("Get deployment: "+deploymentID);
         Deployment dep =  getDeploymentById(deploymentID);
         try {
@@ -63,7 +64,7 @@ public class Deployments {
             dep.setState(map.get("state"));
             DeploymentState depState = new DeploymentState(map, dep);
             store(depState);
-            return depState;
+            return new DeploymentInfo(dep, depState);
         }
         catch (Exception e){
             logger.error("Slipstream get state failed");
