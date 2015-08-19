@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DeploymentInfo extends Deployment{
     public Map stateMap;
     public MyTimestamp timestamp=null;
+    
+    public DeploymentInfo(){}
 
     public DeploymentInfo(Deployment dep, DeploymentState depState) {
         this.mirror(dep);
