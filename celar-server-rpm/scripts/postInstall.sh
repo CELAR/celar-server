@@ -53,7 +53,7 @@ password=celar-user
 #trust local users
 sed -i "s/local   all         all                               ident/local   all         all                               trust/g"  /var/lib/pgsql/data/pg_hba.conf
 sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g"  /var/lib/pgsql/data/pg_hba.conf
-sed -i "s/host    all         all         127\.0\.0\.1/32.*/host    all         all         127.0.0.1/32          trust/g" /var/lib/pgsql/data/pg_hba.conf
+sed -i "s/host    all         all         127\.0\.0\.1\/32.*/host    all         all             127\.0\.0\.1\/32          trust/g" /var/lib/pgsql/data/pg_hba.conf
 #accept outside connections
 sed -i "s/.*listen_addresses =.*/listen_addresses = '0.0.0.0'/g" /var/lib/pgsql/data/postgresql.conf
 
@@ -62,9 +62,10 @@ sed -i '/0.0.0.0/d' /var/lib/pgsql/data/pg_hba.conf
 echo "host    all         all         0.0.0.0/0               md5" >>/var/lib/pgsql/data/pg_hba.conf
 
 #restart to apply changes
-service postgresql restart
+service postgresql stop
+service postgresql initdb 
+service postgresql start
 
-service postgresql initdb &>/dev/null
 
 #create user
 echo "create user $user password '$password' CREATEDB;" | psql -U postgres &>/dev/null
@@ -306,7 +307,7 @@ EOF
 psql -U celaruser -d celardb -a -f db_temp &>/dev/null
 
 echo "CELAR DB is created"
-rm db_temp
+rm -f db_temp
 
 chkconfig --add celar-server
 service celar-server start;
