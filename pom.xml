@@ -15,6 +15,7 @@
 
 	<modules>
 		<module>celar-db</module>
+                <module>celar-db-rpm</module>
 		<module>slipstream-client</module>
 		<module>tosca-parser</module>
 		<module>celar-server-daemon</module>

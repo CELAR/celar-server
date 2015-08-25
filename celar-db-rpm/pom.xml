@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>gr.ntua.cslab</groupId>
+        <artifactId>celar-server</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>celar-db-rpm</artifactId>
+    <packaging>pom</packaging>
+    <name>CELAR DB RPM</name>
+    <description>
+        This module creates an RPM package. It packages the CELAR Server 
+        daemon, along with its resources and dependencies, ready to be
+        deployed in a CentOS machine.
+    </description>
+    <build>
+        <scriptSourceDirectory>${basedir}/scripts/</scriptSourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <id>copy-resources</id>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/conf/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../celar-server-daemon/src/main/resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-rpm</id>
+                        <goals>
+                            <goal>attached-rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <group>Application</group>
+                    <packager>ggian@cslab</packager>
+		    <release>${BUILD_NUMBER}.${package.os}</release>
+                    <requires>
+                        <require>java-1.7.0-openjdk</require>
+                        <require>postgresql-server</require>
+                        <require>postgresql</require>
+                        <require>python</require>
+                        <require>python-pip</require>
+                        <require>python-devel</require>
+                        <require>postgresql-devel</require>
+                        <require>gcc</require>                          
+                    </requires>
+                    <mappings>
+                   </mappings>
+                    <postinstallScriptlet>
+                        <scriptFile>scripts/postInstall.sh</scriptFile>
+                    </postinstallScriptlet>
+               </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>celar-server-daemon</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+</project>
