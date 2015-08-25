@@ -72,6 +72,15 @@
                         <require>gcc</require>                          
                     </requires>
                     <mappings>
+		    <mapping>
+		        <directory>${celar.install.dir}/celar-server/conf/</directory>
+		        <username>root</username>
+		        <groupname>root</groupname>
+		        <sources>
+			        <source>																	                                        <location>target/conf/</location>
+				</source>
+			</sources>
+		    </mapping>
                    </mappings>
                     <postinstallScriptlet>
                         <scriptFile>scripts/postInstall.sh</scriptFile>
