@@ -49,21 +49,21 @@ create_service
 user=celaruser
 password=celar-user
 
+service postgresql stop # stop in case running
+service postgresql initdb # init if not inited
 
-#trust local users
+# trust local users
 sed -i "s/local   all         all                               ident/local   all         all                               trust/g"  /var/lib/pgsql/data/pg_hba.conf
 sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g"  /var/lib/pgsql/data/pg_hba.conf
 sed -i "s/host    all         all         127\.0\.0\.1\/32.*/host    all         all             127\.0\.0\.1\/32          trust/g" /var/lib/pgsql/data/pg_hba.conf
-#accept outside connections
+# accept outside connections
 sed -i "s/.*listen_addresses =.*/listen_addresses = '0.0.0.0'/g" /var/lib/pgsql/data/postgresql.conf
 
-#password protect outside connections
+# password protect outside connections
 sed -i '/0.0.0.0/d' /var/lib/pgsql/data/pg_hba.conf
 echo "host    all         all         0.0.0.0/0               md5" >>/var/lib/pgsql/data/pg_hba.conf
 
-#restart to apply changes
-service postgresql stop
-service postgresql initdb 
+# start with new config
 service postgresql start
 
 
