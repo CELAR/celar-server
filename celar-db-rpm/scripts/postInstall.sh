@@ -8,9 +8,8 @@ service postgresql initdb # init if not inited
 
 echo Editing the conf files
 # trust local users
-sed -i "s/local   all         all                               ident/local   all         all                               trust/g"  /var/lib/pgsql/data/pg_hba.conf
-sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g"  /var/lib/pgsql/data/pg_hba.conf
-sed -i "s/host    all         all         127\.0\.0\.1\/32.*/host    all         all             127\.0\.0\.1\/32          trust/g" /var/lib/pgsql/data/pg_hba.conf
+sed -i "s/peer/trust/g"  /var/lib/pgsql/data/pg_hba.conf
+sed -i "s/ident/trust/g"  /var/lib/pgsql/data/pg_hba.conf
 # accept outside connections
 sed -i "s/.*listen_addresses =.*/listen_addresses = '0.0.0.0'/g" /var/lib/pgsql/data/postgresql.conf
 
@@ -266,5 +265,3 @@ psql -U celaruser -d celardb -a -f db_temp &>/dev/null
 echo "CELAR DB is created"
 rm -f db_temp
 
-chkconfig --add celar-server
-service celar-server start;
