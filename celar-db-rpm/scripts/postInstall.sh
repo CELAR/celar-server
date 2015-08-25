@@ -2,9 +2,11 @@
 user=celaruser
 password=celar-user
 
+echo Initializing postgres
 service postgresql stop # stop in case running
 service postgresql initdb # init if not inited
 
+echo Editing the conf files
 # trust local users
 sed -i "s/local   all         all                               ident/local   all         all                               trust/g"  /var/lib/pgsql/data/pg_hba.conf
 sed -i "s/host    all         all         ::1\/128               ident/host    all         all         ::1\/128               trust/g"  /var/lib/pgsql/data/pg_hba.conf
@@ -16,10 +18,12 @@ sed -i "s/.*listen_addresses =.*/listen_addresses = '0.0.0.0'/g" /var/lib/pgsql/
 sed -i '/0.0.0.0/d' /var/lib/pgsql/data/pg_hba.conf
 echo "host    all         all         0.0.0.0/0               md5" >>/var/lib/pgsql/data/pg_hba.conf
 
+echo starting postgres
 # start with new config
 service postgresql start
 
 
+echo creating user
 #create user
 echo "create user $user password '$password' CREATEDB;" | psql -U postgres &>/dev/null
 # drop and re-create the DB
@@ -28,7 +32,7 @@ echo "+++++++++++++++DEBUG: NOT DROPPING THE DB+++++++++++++++"
 echo	"CREATE DATABASE celardb;" 	| psql -U celaruser postgres >/dev/null
 
 	
-
+echo creating the DB
 cat <<EOF >db_temp
 -- Converted by db_converter
 START TRANSACTION;
