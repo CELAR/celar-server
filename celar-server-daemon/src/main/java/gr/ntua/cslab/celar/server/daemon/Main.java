@@ -148,7 +148,7 @@ public class Main {
         addShutdownHook();
         configureServer();
         configureSlipstreamClient();
-        openConnection();
+        openConnection(ServerStaticComponents.properties);
 
         ServerStaticComponents.server.start();
         Logger.getLogger(Main.class.getName()).info("Server is started");

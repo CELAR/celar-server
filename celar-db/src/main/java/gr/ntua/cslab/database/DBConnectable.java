@@ -62,20 +62,22 @@ public abstract class DBConnectable {
 
         try {
             InputStream in = DBConnectable.class.getResourceAsStream(PROPERTIES_FILE);
-            // load a properties file
+            
+            if (in == null) throw new Exception("Could not load DB props File");
+            
+            // load the props file
             prop.load(in);
             loadProperties(prop);
 
-        } catch (IOException ex) {
-            LOG.error("Could not load the properties for the DB Connection");
+        } catch (Exception e){
+            LOG.error("Could not load the properties for the DB Connection, using default");
             BACKEND ="postgresql";
             HOST = "localhost";
             PORT = ""+5432;
             USER = "celaruser";
             PASSWORD = "celar-user";
             DB_NAME = "celardb";
-        } catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
         } 
         
         finally {
@@ -98,6 +100,7 @@ public abstract class DBConnectable {
         }
         try {
             String url = "jdbc:" + BACKEND + ":" + "//" + HOST + ":" + PORT + "/" + DB_NAME;
+            LOG.info("Opening Connection with DB: "+url);
             connection = DriverManager.getConnection(url, USER, PASSWORD);
         } catch (SQLException e) {
             LOG.fatal("Failed to create connection to DB server "+HOST+":"+PORT);
