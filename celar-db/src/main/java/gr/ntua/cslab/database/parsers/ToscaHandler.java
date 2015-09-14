@@ -211,13 +211,14 @@ public class ToscaHandler {
                 //retreive the characteristics of the flavor
                 int vcpus = 1, ram = 1024, disk = 20;
                 String flavorString =  componentProperties.get("flavor");
-                for (String s : flavorString.split("\\s+")) {
-                    int val = Integer.parseInt(s.substring(s.indexOf(":") + 1));
-                    if (s.startsWith("vcpus")) vcpus = val;
-                    else if (s.startsWith("ram")) ram = val;
-                    else if (s.startsWith("disk"))disk = val;
+                if(flavorString!=null){
+                    for (String s : flavorString.split("\\s+")) {
+                        int val = Integer.parseInt(s.substring(s.indexOf(":") + 1));
+                        if (s.startsWith("vcpus")) vcpus = val;
+                        else if (s.startsWith("ram")) ram = val;
+                        else if (s.startsWith("disk"))disk = val;
+                    }
                 }
-
                 int count = 1;
                 if (!componentProperties.containsKey("minInstances")) {
                     logger.debug("there is no 'minInstances' entry in the component properties, assuming 1");
