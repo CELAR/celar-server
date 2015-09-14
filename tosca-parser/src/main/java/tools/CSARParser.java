@@ -218,7 +218,6 @@ public class CSARParser implements Parser{
         for (TDeploymentArtifact da : component.getDeploymentArtifacts().getDeploymentArtifact()){
                 componentProperties.put(da.getArtifactType().toString(), da.getName());
         }
-        
         componentsProperties.put(componentName, componentProperties);
     }
     
@@ -234,7 +233,8 @@ public class CSARParser implements Parser{
         for (ImplementationArtifactType ia : ni.getImplementationArtifacts().getImplementationArtifact()) {
             String opName = ia.getOperationName();
             String artifactRef = ia.getArtifactRef().toString();
-            props.put(opName+"Script", artifactRef);
+            String interf = ia.getInterfaceName().toString();
+            props.put(opName+"_"+interf+"_"+"Script", artifactRef);
         }
     }
 

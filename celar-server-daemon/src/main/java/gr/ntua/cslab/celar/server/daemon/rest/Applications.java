@@ -171,10 +171,13 @@ public class Applications {
                             targets.add(t);
                         } else if (prop.getKey().toString().contains("vmResize")) {
                             logger.info("\t\t\t" + prop.getKey());
+                            logger.debug("Script: " + prop.getValue().toString());
                         } else if (prop.getKey().toString().contains("attachDisk")) {
                             logger.info("\t\t\t" + prop.getKey());
+                            logger.debug("Script: " + prop.getValue().toString());
                         } else if (prop.getKey().toString().contains("detachDisk")) {
                             logger.info("\t\t\t" + prop.getKey());
+                            logger.debug("Script: " + prop.getValue().toString());
                         } else if (prop.getKey().toString().equals("flavor")) {
                             logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                             parameters.addAll(ssService.createFlavorParameters(prop.getValue().toString()));
