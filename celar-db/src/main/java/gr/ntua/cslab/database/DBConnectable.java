@@ -91,7 +91,7 @@ public abstract class DBConnectable {
         }
     }
     
-    private static void openConnectionWithSetProps(){
+    public static void openConnectionWithSetProps(){
         try {
             String DRIVER = "org." + BACKEND + ".Driver";
             Class.forName(DRIVER);

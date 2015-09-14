@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  *Helper class with static methods that abstract DataBase operations
@@ -25,6 +26,7 @@ public class DBTools extends DBConnectable{
 //    static{
 //        openConnection();
 //    }
+    static Logger LOG = Logger.getLogger(DBTools.class.getName());
     
     
     public static class Constrain{

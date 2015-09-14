@@ -27,7 +27,15 @@ def generate_okeanos():
         images.append([line[:i], line[i:].strip()])
 
 def generate_flexiant():
-    return
+    # genarate flavors
+    for c in cpu_sizes:
+        for r in ram_sizes:
+            for d in dik_sizes:
+                id = "vcpus:{0} ram:{1} disk:{2}".format(c, r, d)
+                flavors.append({'id': id, 'vcpus': c, 'ram': r, 'disk': d })
+    for line in open(mypath+"/flexiant_images.txt", "r"):
+        i = line.find(" ")
+        images.append([line[:i], line[i:].strip()])
 
 
 
