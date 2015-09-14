@@ -35,7 +35,7 @@ public class CSARParserTest {
         
         try {
             //create a Parser instance
-  Parser tc  = new CSARParser("/Users/npapa/Desktop/CELAR/balancer/balancer.csar");
+  Parser tc  = new CSARParser("/home/cmantas/test6Submit.1.csar");
             
 
             

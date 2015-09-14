@@ -205,6 +205,7 @@ public class CSARParser implements Parser{
             for(EObject o:component.getProperties().eContents()){
                 NodePropertiesTypeImpl on = (NodePropertiesTypeImpl) o;
                 String flavorString = on.getFlavor();
+                flavorString=flavorString.replace("\"", "");
                 componentProperties.put("flavor", ""+flavorString);  
                 logger.debug("flavor:"+flavorString);
             }
