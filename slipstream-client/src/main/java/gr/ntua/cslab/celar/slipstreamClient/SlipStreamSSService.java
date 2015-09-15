@@ -36,6 +36,7 @@ import com.sixsq.slipstream.persistence.ImageModule;
 import com.sixsq.slipstream.persistence.Module;
 import com.sixsq.slipstream.persistence.ModuleParameter;
 import com.sixsq.slipstream.persistence.ProjectModule;
+import com.sixsq.slipstream.persistence.Target;
 import com.sixsq.slipstream.persistence.User;
 import com.sixsq.slipstream.statemachine.States;
 import com.sixsq.slipstream.util.SerializationUtil;
@@ -52,7 +53,40 @@ public class SlipStreamSSService {
     public HashMap<String,String> baseImageReferences; //imageName-reference
     public HashMap<String,HashMap<String,String>> baseImages; //imageName-cloud-flavorID
     public List<ModuleParameter> baseParameters;
-
+    private static String preScaleScript=
+    		"#!/bin/bash\n"
+    		+ "set -e\n\n"
+    		+ "# Pre-scale: intended to be ran before any vertical scaling and horizontal downscaling action. \n\n"
+    		+ "function before_vm_remove() { echo \"Before VM remove\";\n $remove \n}\n"
+    		+ "function before_vm_resize() { echo \"Before VM resize\";\n $resize \n}\n"
+    		+ "function before_disk_attach() { echo \"Before disk attach\";\n $disk_attach \n}\n"
+    		+ "function before_disk_detach() { echo \"Before disk detach\";\n $disk_detach \n}\n\n"
+    		+ "case $SLIPSTREAM_SCALING_ACTION in\n"
+    		+ "vm_remove)\n"
+    		+ "before_vm_remove ;;\n"
+    		+ "vm_resize)\n"
+    		+ "before_vm_resize ;;\n"
+    		+ "disk_attach)\n"
+    		+ "before_disk_attach ;;\n"
+    		+ "disk_detach)\n"
+    		+ "before_disk_detach ;;\n"
+    		+ "esac\n";
+    
+    private static String postScaleScript=
+    		"#!/bin/bash\n"
+    		+ "set -e\n\n"
+    		+ "# Post-Scale: intended to be ran after vertical scaling action. \n\n"
+    		+ "function after_vm_resize() { echo \"After VM resize\";\n $resize \n}\n"
+    		+ "function after_disk_attach() { echo \"After disk attach\";\n $disk_attach \n}\n"
+    		+ "function after_disk_detach() { echo \"After disk detach\";\n $disk_detach \n}\n\n"
+    		+ "case $SLIPSTREAM_SCALING_ACTION in\n"
+    		+ "vm_resize)\n"
+    		+ "after_vm_resize ;;\n"
+    		+ "disk_attach)\n"
+    		+ "after_disk_attach ;;\n"
+    		+ "disk_detach)\n"
+    		+ "after_disk_detach ;;\n"
+    		+ "esac\n";
 
 	/*public Module getModule(String name) throws Exception{
 		String[] command = new String[] {"ss-module-get", "-u", user, "-p", password, "--endpoint", url, name};
@@ -833,5 +867,73 @@ public class SlipStreamSSService {
         String ret= httpsGet(getUrl()+"/run/"+deploymentId+"?media=xml");
         return parse(ret);
     }
+
+	public void generateTargetScripts(HashMap<String, String> scripts,
+			Set<Target> targets) {
+		String preScale = new String(preScaleScript);
+		String postScale = new String(postScaleScript);
+		String postOnVmAdd = "";
+		String postOnVmRemove = "";
+		for(Entry<String, String> script: scripts.entrySet()){
+			 if(script.getKey().contains("scaleOut") && script.getKey().contains("Pre")){
+				 //preScale = preScale.replace("$remove", script.getValue());
+			 }
+			 else if(script.getKey().contains("scaleOut") && (script.getKey().contains("Post") || script.getKey().contains("Lifecycle"))){
+				 postOnVmAdd = script.getValue();
+			 }
+			 else if(script.getKey().contains("scaleIn") && script.getKey().contains("Pre")){
+				 preScale = preScale.replace("$remove", script.getValue());
+			 }
+			 else if(script.getKey().contains("scaleIn") && (script.getKey().contains("Post") || script.getKey().contains("Lifecycle"))){
+				 postOnVmRemove = script.getValue();
+			 }
+			 else if(script.getKey().contains("vmResize") && script.getKey().contains("Pre")){
+				 preScale = preScale.replace("$resize", script.getValue());
+			 }
+			 else if(script.getKey().contains("vmResize") && (script.getKey().contains("Post") || script.getKey().contains("Lifecycle"))){
+				 postScale = postScale.replace("$resize", script.getValue());
+			 }
+			 else if(script.getKey().contains("attachDisk") && script.getKey().contains("Pre")){
+				 preScale = preScale.replace("$disk_attach", script.getValue());
+			 }
+			 else if(script.getKey().contains("attachDisk") && (script.getKey().contains("Post") || script.getKey().contains("Lifecycle"))){
+				 postScale = postScale.replace("$disk_attach", script.getValue());
+			 }
+			 else if(script.getKey().contains("detachDisk") && script.getKey().contains("Pre")){
+				 preScale = preScale.replace("$disk_detach", script.getValue());
+			 }
+			 else if(script.getKey().contains("detachDisk") && (script.getKey().contains("Post") || script.getKey().contains("Lifecycle"))){
+				 postScale = postScale.replace("$disk_detach", script.getValue());
+			 }
+		}
+		postScale = postScale.replace("$resize", "");
+		postScale = postScale.replace("$disk_attach", "");
+		postScale = postScale.replace("$disk_detach", "");
+		preScale = preScale.replace("$remove", "");
+		preScale = preScale.replace("$resize", "");
+		preScale = preScale.replace("$disk_attach", "");
+		preScale = preScale.replace("$disk_detach", "");
+		logger.debug("---------------------------------------------preScale---------------------------------------------");
+		logger.debug(preScale);
+		logger.debug("---------------------------------------------postScale---------------------------------------------");
+		logger.debug(postScale);
+		logger.debug("---------------------------------------------postOnVmAdd---------------------------------------------");
+		logger.debug(postOnVmAdd);
+		logger.debug("---------------------------------------------postOnVmRemove---------------------------------------------");
+		logger.debug(postOnVmRemove);
+
+        Target postOnVmAddt = new Target(Target.ONVMADD_TARGET, postOnVmAdd);
+        targets.add(postOnVmAddt);
+
+        Target postOnVmRemovet = new Target(Target.ONVMREMOVE_TARGET, postOnVmRemove);
+        targets.add(postOnVmRemovet);
+
+        Target postScalet = new Target(Target.POSTSCALE_TARGET, postScale);
+        targets.add(postScalet);
+        
+        Target preScalet = new Target(Target.POSTSCALE_TARGET, preScale);
+        targets.add(preScalet);
+        
+	}
     
 }
