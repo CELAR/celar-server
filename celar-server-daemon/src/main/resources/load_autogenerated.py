@@ -6,6 +6,7 @@ from sys import argv
 import psycopg2
 from os.path import dirname, realpath
 
+
 flavors = []
 images = []
 ram_sizes = []
@@ -27,6 +28,9 @@ def generate_okeanos():
         images.append([line[:i], line[i:].strip()])
 
 def generate_flexiant():
+    global ram_sizes
+    ram_sizes = []
+    for ram_exp in range(8,14):ram_sizes.append(int(pow(2, ram_exp)))
     # genarate flavors
     for c in cpu_sizes:
         for r in ram_sizes:

@@ -43,7 +43,7 @@ public class Search extends Entities{
         
         System.out.println(result.size());
         
-         List<ProvidedResource> flavors = getProvidedResourceByFlavorInfo(1, 512, 20);
+         List<ProvidedResource> flavors = getProvidedResourceByFlavorInfo(1, 256, 20);
          
          System.out.println("Flavors count: "+flavors.size());
          for (ProvidedResource pr: flavors) {
