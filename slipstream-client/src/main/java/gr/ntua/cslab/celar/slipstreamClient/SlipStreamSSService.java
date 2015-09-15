@@ -931,7 +931,7 @@ public class SlipStreamSSService {
         Target postScalet = new Target(Target.POSTSCALE_TARGET, postScale);
         targets.add(postScalet);
         
-        Target preScalet = new Target(Target.POSTSCALE_TARGET, preScale);
+        Target preScalet = new Target(Target.PRESCALE_TARGET, preScale);
         targets.add(preScalet);
         
 	}
