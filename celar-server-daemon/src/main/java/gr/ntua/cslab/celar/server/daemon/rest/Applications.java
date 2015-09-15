@@ -146,7 +146,7 @@ public class Applications {
                         if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                             logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                             imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString().replace(" ", "")));
-                        } else if (prop.getKey().toString().equals("executeScript")) {
+                        } else if (prop.getKey().toString().contains("execute")) {
                             logger.info("\t\t\t" + prop.getKey());
                             logger.debug("Execute script: " + prop.getValue().toString());
                             parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
