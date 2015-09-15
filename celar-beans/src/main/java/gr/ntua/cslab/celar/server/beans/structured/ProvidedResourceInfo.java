@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
- *
+ * Container class for Provided Resources and Their Specs
  * @author cmantas
  */
 @XmlRootElement
