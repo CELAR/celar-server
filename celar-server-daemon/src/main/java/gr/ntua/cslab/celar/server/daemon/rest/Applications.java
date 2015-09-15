@@ -137,13 +137,8 @@ public class Applications {
                     //component dependencies
                     logger.info("\t\t\tdepends on: " + tc.getComponentDependencies(component));
                     
-                    String preAttachScript="";
-                    String postAttachScript="";
-                    String preDetachScript="";
-                    String postDetachScript="";
-                    String preScaleScript="";
-                    String postScaleScript="";
                     //component properties
+                    HashMap<String,String> scripts = new HashMap<String,String>();
                     List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                     Set<Target> targets = new HashSet<Target>();
                     for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
@@ -151,38 +146,24 @@ public class Applications {
                         if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                             logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                             imModule.setModuleReference(ssService.getImageReference(prop.getValue().toString().replace(" ", "")));
-                        } else if (prop.getKey().toString().equals("executeScript")) {
+                        } else if (prop.getKey().toString().contains("execute")) {
                             logger.info("\t\t\t" + prop.getKey());
                             logger.debug("Execute script: " + prop.getValue().toString());
                             parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
                             Target t = new Target(Target.EXECUTE_TARGET, ssService.patchExecuteScript(prop.getValue().toString()));
                             targets.add(t);
-                        } else if (prop.getKey().toString().contains("scaleOut")) {
+                        } else if (prop.getKey().toString().contains("Script")) {
                             logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Add script: " + prop.getValue().toString());
+                            logger.debug("Script: " + prop.getValue().toString());
                             parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
-                            Target t = new Target(Target.ONVMADD_TARGET, prop.getValue().toString());
-                            targets.add(t);
-                        } else if (prop.getKey().toString().contains("scaleIn")) {
-                            logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Remove script: " + prop.getValue().toString());
-                            parameters.addAll(ssService.getOutputParamsFromScript(prop.getValue().toString()));
-                            Target t = new Target(Target.ONVMREMOVE_TARGET, prop.getValue().toString());
-                            targets.add(t);
-                        } else if (prop.getKey().toString().contains("vmResize")) {
-                            logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Script: " + prop.getValue().toString());
-                        } else if (prop.getKey().toString().contains("attachDisk")) {
-                            logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Script: " + prop.getValue().toString());
-                        } else if (prop.getKey().toString().contains("detachDisk")) {
-                            logger.info("\t\t\t" + prop.getKey());
-                            logger.debug("Script: " + prop.getValue().toString());
+                            scripts.put(prop.getKey().toString(), prop.getValue().toString());
+                           
                         } else if (prop.getKey().toString().equals("flavor")) {
                             logger.info("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                             parameters.addAll(ssService.createFlavorParameters(prop.getValue().toString()));
                         }
                     }
+                    ssService.generateTargetScripts(scripts, targets);
                     imModule.setTargets(targets);
                     
                     for (ModuleParameter p : parameters) {

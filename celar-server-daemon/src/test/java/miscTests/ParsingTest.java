@@ -46,7 +46,7 @@ public class ParsingTest {
     
     public static void main(String args[]) throws Exception{
      
-    	Parser tc = new CSARParser("/Users/npapa/Desktop/CELAR/MySubmittedApp.csar");
+    	Parser tc = new CSARParser("/Users/npapa/Desktop/CELAR/scan.csar");
         //store the description in  the DB
         ToscaHandler th = new ToscaHandler(tc);
         
@@ -63,41 +63,23 @@ public class ParsingTest {
                 System.out.println("\t\t" + component);
                 System.out.println("\t\t\tdepends on: " + tc.getComponentDependencies(component));
                 
-                String preAttachScript="";
-                String postAttachScript="";
-                String preDetachScript="";
-                String postDetachScript="";
-                String preScaleScript="";
-                String postScaleScript="";
                 //component properties
+                HashMap<String,String> scripts = new HashMap<String,String>();
                 List<ModuleParameter> parameters = new ArrayList<ModuleParameter>();
                 Set<Target> targets = new HashSet<Target>();
                 for (Map.Entry prop : tc.getComponentProperties(component).entrySet()) {
-                    System.out.println("\t\t\t" + prop.getKey() );
                     if (prop.getKey().toString().contains("ImageArtifactPropertiesType")) {
                         System.out.println("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                     } else if (prop.getKey().toString().equals("executeScript")) {
-                        System.out.println("\t\t\t" + prop.getKey());
-                        System.out.println("Execute script: " + prop.getValue().toString());
-                    } else if (prop.getKey().toString().contains("scaleOut")) {
-                        System.out.println("\t\t\t" + prop.getKey());
-                        System.out.println("Add script: " + prop.getValue().toString());
-                    } else if (prop.getKey().toString().contains("scaleIn")) {
-                        System.out.println("\t\t\t" + prop.getKey());
-                        System.out.println("Remove script: " + prop.getValue().toString());
-                    } else if (prop.getKey().toString().contains("vmResize")) {
-                        System.out.println("\t\t\t" + prop.getKey());
-                        System.out.println("Script: " + prop.getValue().toString());
-                    } else if (prop.getKey().toString().contains("attachDisk")) {
-                        //System.out.println("\t\t\t" + prop.getKey());
-                        //System.out.println("Script: " + prop.getValue().toString());
-                    } else if (prop.getKey().toString().contains("detachDisk")) {
-                        System.out.println("\t\t\t" + prop.getKey());
-                        System.out.println("Script: " + prop.getValue().toString());
+
+                    } else if (prop.getKey().toString().contains("Script")) {
+                        scripts.put(prop.getKey().toString(), prop.getValue().toString());
                     } else if (prop.getKey().toString().equals("flavor")) {
                         System.out.println("\t\t\t" + prop.getKey() + " : " + prop.getValue());
                     }
                 }
+                initClient();
+                ssService.generateTargetScripts(scripts, null);
             }
         }
         
