@@ -106,6 +106,8 @@ public abstract class DBConnectable {
             LOG.fatal("Failed to create connection to DB server "+HOST+":"+PORT);
             LOG.fatal("REASON: " + e);
             e.printStackTrace();
+            LOG.fatal("I cann't connect to the DB, therefore, I am shutting down. Hasta La Vista Baby");
+            System.exit(-666);
         }
         LOG.debug("Connection created");
     }
