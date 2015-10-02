@@ -418,6 +418,46 @@ public class SlipStreamSSService {
 		}*/
 	}
 	
+	public void addVM(String deploymentId, String type, Integer number, Integer cores, Integer ram, Integer disk) throws Exception {
+		logger.info(String.format("Adding %d VMs of type %s to deployment %s of flavor (%d cores, %d RAM, %d disk)", 
+				number,
+				type,
+				deploymentId,
+				cores,
+				ram,
+				disk));
+		String command;
+		if(cookieAuth) {
+			command=String.format("ss-node-add --cookie %s --endpoint %s %s %s %d --runtime-parameter %s", 
+					cookieFile,
+					url,
+					deploymentId,
+					type,
+					number,
+					calculateFlavorParameter(cores, ram, disk));
+		} else {
+			command=String.format("ss-node-add -u %s -p %s --endpoint %s %s %s %d --runtime-parameter %s", 
+					user,
+					password,
+					url,
+					deploymentId,
+					type,
+					number,
+					calculateFlavorParameter(cores, ram, disk));
+		}
+		Map<String, String> ret = executeCommand(command.split(" "));
+		logger.info("Returned: "+ret.toString());
+	}
+	private String calculateFlavorParameter(Integer cores, Integer ram, Integer disk) {
+		if(getConnectorName().equals("okeanos")) {
+			return "okeanos.instance.type:C"+cores+"R"+ram+"D"+disk+"drbd";
+		} else {		// TODO: implement Flexiant flavor creation
+			
+		}
+		return null;
+	}
+
+	// ss-node-add -u celar -p celar2015 --endpoint https://83.212.102.166 0e54569b-6b66-420d-b7c8-bcf247837445 Worker 1 --runtime-parameter okeanos.instance.type:C2R4096D20drbd
 	public String addVM(String deploymnetId, String type, Integer number) throws Exception {
 		logger.info("Adding "+number+" vms: "+type+" to deployment: "+deploymnetId);
 		String[] command;
@@ -935,5 +975,4 @@ public class SlipStreamSSService {
         targets.add(preScalet);
         
 	}
-    
 }
