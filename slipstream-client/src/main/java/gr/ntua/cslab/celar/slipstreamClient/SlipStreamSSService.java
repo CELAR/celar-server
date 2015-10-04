@@ -428,7 +428,7 @@ public class SlipStreamSSService {
 				disk));
 		String command;
 		if(cookieAuth) {
-			command=String.format("ss-node-add --cookie %s --endpoint %s %s %s %d --runtime-parameter %s", 
+			command=String.format("ss-node-add --cookie %s --endpoint %s %s %s %d %s", 
 					cookieFile,
 					url,
 					deploymentId,
@@ -436,7 +436,7 @@ public class SlipStreamSSService {
 					number,
 					calculateFlavorParameter(cores, ram, disk));
 		} else {
-			command=String.format("ss-node-add -u %s -p %s --endpoint %s %s %s %d --runtime-parameter %s", 
+			command=String.format("ss-node-add -u %s -p %s --endpoint %s %s %s %d %s", 
 					user,
 					password,
 					url,
@@ -448,13 +448,16 @@ public class SlipStreamSSService {
 		Map<String, String> ret = executeCommand(command.split(" "));
 		logger.info("Returned: "+ret.toString());
 	}
+	
+	// this method returns the necessary strings for flavor to be appended AS IS into ss-node-add command
 	private String calculateFlavorParameter(Integer cores, Integer ram, Integer disk) {
-		if(getConnectorName().equals("okeanos")) {
-			return "okeanos.instance.type:C"+cores+"R"+ram+"D"+disk+"drbd";
-		} else {		// TODO: implement Flexiant flavor creation
-			
+		if(getConnectorName().contains("okeanos")) {
+			return 	"--runtime-parameter="+getConnectorName()+".instance.type:C"+cores+"R"+ram+"D"+disk+"drbd " +
+					"--runtime-parameter="+getConnectorName()+".cpu:"+cores+" "+
+					"--runtime-parameter="+getConnectorName()+".ram:"+ram+" ";
+		} else {
+			return "--runtime-parameter="+getConnectorName()+".cpu:"+cores+" --runtime-parameter="+getConnectorName()+".ram:"+ram;
 		}
-		return null;
 	}
 
 	// ss-node-add -u celar -p celar2015 --endpoint https://83.212.102.166 0e54569b-6b66-420d-b7c8-bcf247837445 Worker 1 --runtime-parameter okeanos.instance.type:C2R4096D20drbd
