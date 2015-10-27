@@ -597,10 +597,15 @@ public class SlipStreamSSService {
         if(getConnectorName().equals("okeanos")){
         	module.setLoginUser("root");
         }
-        else{
-    		module.setLoginUser("ubuntu");
+        else{ //specific image used by Dataplay
+        	if(imageName.equals("af5194cf-f4e8-3213-baee-bd36c1c1c60b")) {
+        		module.setLoginUser("centos");
+        		module.setPlatform("centos");
+        	} else {
+        		module.setLoginUser("ubuntu");
+        		module.setPlatform("ubuntu");
+        	}
         }
-		module.setPlatform("ubuntu");
 		module.setDescription("Baseline Image "+imageName);
 		auth = new Authz(getUser(), module);
 		module.setAuthz(auth);
