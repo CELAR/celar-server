@@ -598,7 +598,7 @@ public class SlipStreamSSService {
         	module.setLoginUser("root");
         }
         else{ //specific image used by Dataplay
-        	if(imageName.equals("af5194cf-f4e8-3213-baee-bd36c1c1c60b")) {
+        	if(imageName.equals("af5194cf-f4e8-3213-baee-bd36c1c1c60b") || imageName.equals("092ffc8f-f494-35eb-96d5-c8035ba61b1f")) {
         		module.setLoginUser("centos");
         		module.setPlatform("centos");
         	} else {
